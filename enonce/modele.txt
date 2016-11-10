@@ -1,0 +1,50 @@
+
+TODO check if column name (UPPERCASE VS lowercase )  affect something
+TODO String vs Text
+
+
+avatar
+    Id      int
+    Nom     String    
+    Avatar  String B64
+    
+    
+//// contenu sur liste //////
+listesdelecture_musiques  
+    ListeDeLecture int    @listesdelecture.id
+    Musique        int   @musiques.id
+    Date           datetime
+    
+//// info sur liste //////
+listesdelecture
+   Id           int
+   Proprietaire int   @utilisateurs
+   Nom          String
+   Publique     bln
+   Active`      bln
+   Date         datetime
+
+    
+
+musiques
+  Id              int 
+  Proprietaire    int       @utilisateurs.id
+  Titre           text  
+  Artiste         text NOT NULL,
+  Musique         text NOT NULL,
+  Vignette        text
+  Publique        bln
+  Active          bln
+  Date`           datetime NOT NULL
+  
+  
+  
+
+utilisateurs
+  Id            int
+  Courriel      String
+  MotDePasse    String 
+  Alias         String
+  Avatar        int     @avatar.id
+  Actif         bln      
+  Date          datetime
