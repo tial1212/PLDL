@@ -4,24 +4,37 @@ import java.util.Date;
 
 import javax.persistence.Column;
 
+/**
+ * This class act as a relation between the songs and the playlist.
+ * It allows for multiple song to be in a playlist.
+ * It allows for a song to be in multiple playlist.
+ * 
+ * @author alexandrearsenault
+ *
+ */
 public class listesdelecture_musiques extends Modele {
 	
+    /**
+     * The ID of the selected Avatar.
+     * @see ListeDeLecture#id
+     */
+    @Column(name = "ListeDeLecture", length=11)
+    private int playList;
 	
 	
-	
-
-	   Publique     bln
-	   Active`      bln
-	   Date         datetime
-	   
-	   
-	   
-	   
-	   /**
-	     * The modification date
-	     */
-	    @Column(name = "DATE") 
-	    private Date date; 
+	/**
+     * The ID of the selected Avatar.
+     * @see Musique#id
+     */
+    @Column(name = "Musique", length=11)
+    private int song;
+   
+   
+   /**
+     * The last modification date.
+     */
+    @Column(name = "DATE") 
+    private Date date; 
 	   
 	   
 	   
@@ -39,14 +52,18 @@ public class listesdelecture_musiques extends Modele {
 	     * @param pNom, A description for the avatar 
 	     * @param pAvatar,  The avatar image in Base64
 	     */
-	    public listesdelecture_musiques(int pPlaylist ,  int pSong , boolean pIsPublic , boolean pIsActive ){
-			if(true ){ // TODO real validation
-				this.owner = pOwner ;
-				this.name    = pName;
-				this.isPublic = pIsPublic;
-				this.isActive = pIsActive;
+	    public listesdelecture_musiques(int pPlaylist ,  int pSong ){
+			if( true ){ // TODO real validation
+				this.song = pSong ;
+				this.playList    = pPlaylist;
 			}
 			
 		}
+	    
+	    
+	    @Override
+	    public String toString() {
+	    	return "listesdelecture/musiques linking song '"+this.song+"' and playList '"+this.playList+"'";
+	    }
 
 }

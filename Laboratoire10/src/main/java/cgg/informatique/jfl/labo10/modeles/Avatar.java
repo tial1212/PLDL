@@ -20,7 +20,7 @@ public class Avatar extends Modele {
     private String name;
     
 	/**
-	 *  The avatar image in Base64   TITI TATA
+	 *  The avatar image in Base64
 	 */
     @Column(name = "AVATAR")
     private String avatar;

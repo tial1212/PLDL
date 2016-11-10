@@ -54,7 +54,7 @@ public class DAOUtilisateur {
     
     public Token creerUtilisateur(String nom, String motDePasse, String courriel) {
         Token  token = new Token();
-        token.setAction("créerToken");
+        token.setAction("creerToken");
         
         List<Token> desToken = dao.rechercheParRequete(Token.class, "token.list", 0 ,100);
         
@@ -89,7 +89,7 @@ public class DAOUtilisateur {
     }
     
 
-	private Utilisateur creer(String nom, String motDePasse, String courriel) {
+	public Utilisateur creer(String nom, String motDePasse, String courriel) {
 
         Utilisateur utilisateur = new Utilisateur();
         utilisateur.setPassowrd(motDePasse);
