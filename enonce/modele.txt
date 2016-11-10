@@ -12,7 +12,7 @@ avatar
 //// contenu sur liste //////
 listesdelecture_musiques  
     ListeDeLecture int    @listesdelecture.id
-    Musique        int   @musiques.id
+    Musique        int    @musiques.id
     Date           datetime
     
 //// info sur liste //////
