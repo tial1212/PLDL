@@ -1,0 +1,72 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Page de Test pour le CSS</title>
+    <!--<meta name="viewport" content="width=device-width, initial-scale=1.0">-->
+    <link href="reset.css" type="text/css" rel="stylesheet">
+    <link href="style.css" type="text/css" rel="stylesheet">
+    <script type="text/javascript">
+      function previewQuerry(buttonID) {
+        tagResult = document.getElementById(buttonID + '_previewQuerryResult');
+        tagResult.innerHTML = 'Requête : "';
+        
+        // Initialize the querry's path with the part shared by all services
+        var querry = '/service';
+
+        /* Add to the querry's path the part corresponding to his group
+           (groups are determined by similar functionalities) */
+        switch (buttonID) {
+          case 'login':
+          case 'createUser':
+            querry += '/user';
+            break;
+        }
+
+        // Add to the querry's path the specific parameters
+        switch (buttonID) {
+          case 'login':
+            querry += '/login?username='
+                + getParameter('username', 'USERNAME')
+                + '&password='
+                + getParameter('password', 'PASSWORD');
+            break;
+          case 'createUser':
+            querry += '/create';
+            break;
+        }
+
+        tagResult.innerHTML += querry + '"';
+
+        tagResult.className =
+            tagResult.className.replace(new RegExp('(?:^|\\s)'+ 'hidden' + '(?:\\s|$)'), ' ');
+      }
+
+      function getParameter(inputID, defaultValue) {
+        input = document.getElementById(inputID);
+        return input.value != '' ? input.value : defaultValue;
+      }
+    </script>
+  </head>
+  <body class="standard-flex-display">
+    <header><h1>Test des Services</h1></header>
+    <form id="formTest">
+      <section>
+        <h2>Connexion</h2>
+        <div class="lbl-text-combo">
+          <label for="username">Username :</label>
+          <input type="text" id="username" placeholder="Username" />
+        </div>
+        <div class="lbl-text-combo">
+          <label for="password">Password :</label>
+          <input type="text" id="password" placeholder="Password" />
+        </div>
+        <div class="button-group">
+          <input type="button" id="login_previewQuerry" value="Aperçu" onclick="previewQuerry('login')" />
+          <input type="submit" id="login" value="Envoyer" />
+        </div>
+        <div id="login_previewQuerryResult" class="previewQuerryResult hidden"></div>
+      </section>
+    </form>
+  </body>
+</html>
