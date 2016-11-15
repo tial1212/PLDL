@@ -13,7 +13,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement(name = "avatar")
 public class Avatar extends Modele {
 	
-	@Column(name = "NOM", length=50 , nullable = false)
+	@Column(name = "Nom", length=50 , nullable = false)
 	/**
 	 * A description for the avatar 
 	 */
@@ -22,7 +22,7 @@ public class Avatar extends Modele {
 	/**
 	 *  The avatar image in Base64
 	 */
-    @Column(name = "AVATAR")
+    @Column(name = "Avatar")
     private String avatar;
 	
     

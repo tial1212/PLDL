@@ -7,13 +7,10 @@ import cgg.informatique.jfl.labo10.demarrage.Demarrage;
 import cgg.informatique.jfl.labo10.modeles.Token;
 
 import javax.inject.Inject;
-import javax.ws.rs.DefaultValue;
-import javax.ws.rs.GET;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
-import java.util.List;
 import java.util.logging.Logger;
 
 
@@ -32,43 +29,35 @@ public class ServiceToken {
 
     @Path("/connect")
 	@PUT
-	public Token connect(@QueryParam("courriel") String pCourriel,
-	                   		@QueryParam("motDePasse") String pMotDePasse) {
-		
-		 
+	public Token connect(@QueryParam("courriel")   String pCourriel,
+	                   	 @QueryParam("motDePasse") String pMotDePasse) {
+    	LOGGER.info("ServiceToken->connect("+ pCourriel + "," + pMotDePasse+")" );
+    	 
 	    boolean ok = doaUtil.login(pCourriel, pMotDePasse);
-	    
 	    Token token =  new Token();
 	    token.setEtat(ok);
-	    
 	    
 	    return token;
 	}
 
 	@Path("/createUser")
     @PUT
-    public Token createUser(@QueryParam("nom") String nom,
-                       		@QueryParam("motDePasse") String motDePasse,
-                       		@QueryParam("courriel") String courriel) {
-    	LOGGER.info("TOKEN CREER Nom:" + nom + " Password:" + motDePasse + " Courriel:" + courriel);
+    public Token createUser(@QueryParam("alias") 	  String pAalias,
+                       		@QueryParam("motDePasse") String pMotDePasse,
+                       		@QueryParam("courriel")   String pCourriel) {
+    	LOGGER.info("ServiceToken->createUser("+ pAalias + "," + pMotDePasse + "," + pCourriel+")" );
     	 
-        Token token =  doaUtil.creerUtilisateur(nom, motDePasse, courriel);
-        Token tokenRetour = new Token();
-        tokenRetour.setAction(token.getAction());
-        tokenRetour.setEtat(token.getEtat() );
-        tokenRetour.setId(token.getId() );
-        
-        
-        return tokenRetour;
+    	return doaUtil.creerUtilisateur(pAalias, pMotDePasse, pCourriel);
     }
     
     @Path("/confirmCreateUser")
 	@PUT
-	public Token confirmCreateUser(@QueryParam("idToken") Long idToken,
-	                               @QueryParam("captchaVal") String captchaVal ) {
-		LOGGER.info("UTILISATEUR CONFIRM CREER idToken:" + idToken + " captcha:" +captchaVal );
+	public Token confirmCreateUser(@QueryParam("idToken")    Long idToken,
+	                               @QueryParam("captchaVal") String captchaVal,
+	                               @QueryParam("courriel")   String pCourriel) {
+		LOGGER.info("ServiceToken->confirmCreateUser(" + idToken + "," +captchaVal+","+pCourriel+")" );
 		
-		boolean ok = daoToken.activerUser(idToken, captchaVal );
+		boolean ok = daoToken.activerUser(idToken, captchaVal , pCourriel);
 		
 		Token tokenRetour = new Token();
 		tokenRetour.setEtat(ok);
@@ -76,25 +65,24 @@ public class ServiceToken {
 		
 	  return tokenRetour;
 	}
-
+    
+    
+    /**
 	@Path("/afficherListe")
     @GET
     public List<Token> afficherListe(@QueryParam("premier") 
-     								 @DefaultValue("0") int premier,
+     								 @DefaultValue("0") int pPremier,
                                      @QueryParam("dernier") 
-    								 @DefaultValue("20") int dernier) {
-    	Logger LOGGER = Logger.getLogger(Demarrage.class.getName());
-    	LOGGER.info("UTILISATEUR AFFICHER LISTE");
-    	List<Token> desToken = daoToken.afficherListe(premier, dernier);
+    								 @DefaultValue("20") int pDernier) {
+    	LOGGER.info("afficherListe("+pPremier+","+pDernier+")"  );
     	
-    	
-        return desToken;
+    	return daoToken.afficherListe(pPremier, pDernier);
     }
     
     @Path("/afficher")
     @GET
-    public Token afficher(@QueryParam("id") long id) {
-    	LOGGER.info("message test");
-        return daoToken.rechercher(id);
-    }
+    public Token afficher(@QueryParam("id") long pId) {
+    	LOGGER.info("afficher("+pId+")" );
+        return daoToken.rechercher(pId);
+    }**/
 }

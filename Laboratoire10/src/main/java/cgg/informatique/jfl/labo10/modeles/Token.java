@@ -29,12 +29,6 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class Token extends Modele {
 
 	
-	private String nom;
-
-    private String couriel;
-    
-    private String mdp;
-    
     private String captchaVal;
     
     
@@ -47,41 +41,16 @@ public class Token extends Modele {
 	public Token() {
 	    // must have a no-args constructor
 	}
-    
-
-
-	public String getNom() {
-		return nom;
-	}
+	
 	
 	public String getSalt() {
 		return salt;
 	}
-
+	
 	public void setSalt(String salt) {
 		this.salt = salt;
 	}
-
-	public void setNom(String nom) {
-		this.nom = nom;
-	}
-
-	public String getCouriel() {
-		return couriel;
-	}
-
-	public void setCouriel(String couriel) {
-		this.couriel = couriel;
-	}
-
-	public String getMdp() {
-		return mdp;
-	}
-
-	public void setMdp(String mdp) {
-		this.mdp = mdp;
-	}
-
+	
 	public String getCaptchaVal() {
 		return captchaVal;
 	}

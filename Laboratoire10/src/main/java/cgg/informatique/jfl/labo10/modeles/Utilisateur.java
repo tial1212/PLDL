@@ -72,7 +72,14 @@ public class Utilisateur extends Modele {
     
     
     
-    /**
+    public Utilisateur(String pAlias , String pEMaill, String pPasword ) {
+		super();
+		this.alias = pAlias;
+		this.eMaill = pEMaill;
+		this.pasword = pPasword;
+	}
+
+	/**
      * Get the e-mail of the user.
      * @return eMaill, The E-mail of the user.
      */
@@ -116,8 +123,8 @@ public class Utilisateur extends Modele {
 	 * Set the user's alias.
 	 * @param alias , The new display name to be set.
 	 */
-	public void setAlias(String alias) {
-		this.alias = alias;
+	public void setAlias(String pAlias) {
+		this.alias = pAlias;
 	}
 	
 	/**

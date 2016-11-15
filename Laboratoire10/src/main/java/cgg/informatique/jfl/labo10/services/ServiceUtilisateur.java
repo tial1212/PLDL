@@ -39,26 +39,27 @@ import java.util.logging.Logger;
 public class ServiceUtilisateur {
 
     @EJB
-    private DAOUtilisateur dao;
+    private DAOUtilisateur daoUtil;
+    
+    private Logger LOGGER = Logger.getLogger(Demarrage.class.getName());
 
-    @Path("/creer")
+    @Path("/creerUtilisateur")
     @PUT
-    public Utilisateur creer(@QueryParam("nom") String nom,
-                       @QueryParam("motDePasse") String motDePasse,
-                       @QueryParam("courriel") String courriel) {
-    	Logger LOGGER = Logger.getLogger(Demarrage.class.getName());
-    	LOGGER.info("UTILISATEUR CREER Nom:" + nom + " Password:" + motDePasse + " Courriel:" + courriel);
+    public Utilisateur createUser(@QueryParam("alias") 	    String pAlias,
+                       		 	  @QueryParam("courriel")   String pCourriel,
+                       		 	  @QueryParam("motDePasse") String pMotDePasse) {
+    	LOGGER.info("ServiceUtilisateur->createUser(" + pAlias + "," + pCourriel + "," + pMotDePasse);
     	 
-        return dao.creer(nom, motDePasse, courriel);
+        return daoUtil.creer(pAlias, pCourriel, pMotDePasse);
     }
-
+    
     @Path("/afficherListe")
     @GET
     public List<Utilisateur> afficherListe(@QueryParam("premier") @DefaultValue("0") int premier,
-                           @QueryParam("dernier") @DefaultValue("20") int dernier) {
+                           				   @QueryParam("dernier") @DefaultValue("20") int dernier) {
     	Logger LOGGER = Logger.getLogger(Demarrage.class.getName());
     	LOGGER.info("UTILISATEUR AFFICHER LISTE");
-    	List<Utilisateur> desUtilisateurs = dao.afficherListe(premier, dernier);
+    	List<Utilisateur> desUtilisateurs = daoUtil.afficherListe(premier, dernier);
     	
     	
         return desUtilisateurs;
@@ -67,25 +68,25 @@ public class ServiceUtilisateur {
     @Path("/afficher/{id}")
     @GET
     public Utilisateur afficher(@PathParam("id") long id) {
-        return dao.rechercher(id);
+        return daoUtil.rechercher(id);
     }
 
     @Path("/effacer/{id}")
     @DELETE
     public void effacer(@PathParam("id") long id) {
-        dao.effacer(id);
+        daoUtil.effacer(id);
     }
 
     @Path("/modifier/{id}")
     @POST
     public Utilisateur modifier(
-    		           @PathParam("id") Long id,
-                       @QueryParam("nom") String nom,
+    		           @PathParam("id") 		 Long   id,
+                       @QueryParam("nom") 		 String nom,
                        @QueryParam("motDePasse") String motDePasse,
-                       @QueryParam("courriel") String courriel) {
+                       @QueryParam("courriel")   String courriel) {
     	
     	
     	 
-        return dao.modifier(id, nom, motDePasse, courriel);
+        return daoUtil.modifier(id, nom, motDePasse, courriel);
     }
 }

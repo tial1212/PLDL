@@ -18,8 +18,6 @@ package cgg.informatique.jfl.labo10.dao;
 
 import cgg.informatique.jfl.labo10.demarrage.Demarrage;
 import cgg.informatique.jfl.labo10.modeles.Token;
-import cgg.informatique.jfl.labo10.modeles.Utilisateur;
-import cgg.informatique.jfl.labo10.services.serviceCaptcha;
 import java.util.List;
 import java.util.logging.Logger;
 import javax.ejb.Lock;
@@ -38,43 +36,41 @@ public class DAOToken {
     DAOUtilisateur daoUser;
     
     Logger LOGGER = Logger.getLogger(Demarrage.class.getName());
-
-
     
-    public boolean activerUser(long idToken , String captcha) {
+    public boolean activerUser(long pIdToken , String pCaptcha , String pCourriel) {
+    	LOGGER.info("DAOToken->activerUser("+pIdToken+","+pCaptcha+","+pCourriel+")");
     	
-    	
-    	Token token = rechercher(idToken);
-    	if ( token != null  && token.getCaptchaVal().equals( captcha ) )  {
-    		daoUser.creerUtilisateur(token.getNom(), token.getMdp(), token.getCouriel() ); 
-    		this.effacer(idToken);
-    		return true;
+    	Token token = rechercher(pIdToken);
+    	if ( token != null  && token.getCaptchaVal().equals( pCaptcha )              ) {
+    		boolean ok = daoUser.activerUtil( pCourriel );
+    		if(ok){
+    			this.effacer(pIdToken);
+    		}
+    		return ok;
 		} else {
 			return false ;
 		}
-    	
 	}
     
-    
-    public List<Token> afficherListe(int premier, int dernier) {
-    	
-    	LOGGER.info("DAO TOKEN->LIST");
-        return dao.rechercheParRequete(Token.class, "token.list", premier, dernier);
+    public List<Token> afficherListe(int pPremier, int pDernier) {
+    	LOGGER.info("DAOToken->afficherListe("+pPremier+","+pDernier+")");
+        return dao.rechercheParRequete(Token.class, "token.list", pPremier, pDernier);
     }
     
-    public Token rechercher(long id) {
-        return dao.rechercher(Token.class, id);
+    public Token rechercher(long pId) {
+    		LOGGER.info("DAOToken->rechercher("+pId+")");
+        return dao.rechercher(Token.class, pId);
     }
 
-    public void effacer(long id) {
-        dao.effacer(Token.class, id);
+    public void effacer(long pId) {
+    		LOGGER.info("DAOToken->effacer("+pId+")");
+        dao.effacer(Token.class, pId);
     }
 
-    public Token modifier(long id, String param) {
-    	Token token = dao.rechercher(Token.class, id);
-         
-    	//token.setParam(param);
-    	
+    public Token modifier(long id, String pParam) {
+    		LOGGER.info("DAOToken->modifier("+id+","+pParam+")");
+    		Token token = dao.rechercher(Token.class, id);
+    		//token.setParam(param);    TODO 
     	return dao.modifier(token);
     }
 }

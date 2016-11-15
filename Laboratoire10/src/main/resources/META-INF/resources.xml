@@ -23,8 +23,8 @@
 	auth = Container 
 	 
     driverClassName = com.mysql.jdbc.Driver
-    url = jdbc:mysql://207.162.80.103:3306/web2?useSSL=false
-    UserName = web2
+    url = jdbc:mysql://207.162.80.103:3306/web4?useSSL=false
+    UserName = web4
     Password = 5PA123
     JtaManaged = true
     maxActive = 15 
@@ -36,8 +36,8 @@
 	auth =  Container
 	 
     driverClassName = com.mysql.jdbc.Driver
-    url = jdbc:mysql://207.162.80.103:3306/web2?useSSL=false
-    UserName = web2
+    url = jdbc:mysql://207.162.80.103:3306/web4?useSSL=false
+    UserName = web4
     Password = 5PA123
     JtaManaged = false
     maxActive = 15 

@@ -32,31 +32,37 @@ public class DAOFilm {
 
     @Inject
     private DAO dao;
+    
+    private Logger LOGGER = Logger.getLogger(Demarrage.class.getName());
+	
 
     public Film creer(String pTitre, String pAffiche, String pBandeAnnonce, String pResume) {
+    	LOGGER.info("DAOFilm->creer("+pTitre+","+pAffiche+","+pBandeAnnonce+","+pResume+")");
     	Film film = new  Film(pTitre , pAffiche , pBandeAnnonce , pResume);
     	
         return dao.creer(film);
     }
     
-    public List<Film> afficherListe(int premier, int dernier) {
-    	Logger LOGGER = Logger.getLogger(Demarrage.class.getName());
-    	LOGGER.info("DAO FILM->LIST");
-        return dao.rechercheParRequete(Film.class, "film.list", premier, dernier);
+    public List<Film> afficherListe(int pPremier, int pDernier) {
+    	LOGGER.info("DAOFilm->afficherListe("+pPremier+","+pDernier+")");
+        return dao.rechercheParRequete(Film.class, "film.list", pPremier, pDernier);
     }
 
-    public Film rechercher(long id) {
-        return dao.rechercher(Film.class, id);
+    public Film rechercher(long pId) {
+    	LOGGER.info("DAOFilm->rechercher("+pId+")");
+        return dao.rechercher(Film.class, pId);
     }
 
-    public void effacer(long id) {
-        dao.effacer(Film.class, id);
+    public void effacer(long pId) {
+    	LOGGER.info("DAOFilm->effacer("+pId+")");
+        dao.effacer(Film.class, pId);
     }
 
-    public Film modifier(long id, String pTitre, String pAffiche, String pBandeAnnonce, String pResume) {
-    	Film film = dao.rechercher(Film.class, id);
+    public Film modifier(long pId, String pTitre, String pAffiche, String pBandeAnnonce, String pResume) {
+    	LOGGER.info("DAOFilm->afficherListe("+pId+","+pTitre+","+pAffiche+","+pBandeAnnonce+","+pResume+")");
+    	Film film = dao.rechercher(Film.class, pId);
         if (film == null) {
-            throw new IllegalArgumentException("MAJ id " + id + " n\'existe pas!");
+            throw new IllegalArgumentException("MAJ id " + pId + " n\'existe pas!");
         }
          
         film.setTitre(pTitre);

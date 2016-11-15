@@ -38,40 +38,45 @@ public class DAO {
 
     @PersistenceContext(unitName = "PERSISTENCE10")
     private EntityManager em;
-
+    
+    private Logger LOGGER = Logger.getLogger(Demarrage.class.getName());
+    private static Logger LOGGER2 = Logger.getLogger(Demarrage.class.getName());
+    
     public <E> E creer(E e) {
+    	LOGGER.info("DAO->creer("+e+")" );
         em.persist(e);
        
         return e;
     }
-
+    
     public <E> E modifier(E e) {
+    	LOGGER.info("DAO->modifier("+e+")" );
         return em.merge(e);
     }
-
-    public <E> void effacer(Class<E> clazz, long id) {
-    	 
-        
-        em.remove(em.find(clazz, id));
+    
+    public <E> void effacer(Class<E> clazz, long pId) {
+    	LOGGER.info("DAO->effacer("+clazz+","+pId+")" );
+        em.remove(em.find(clazz, pId));
     }
-
+    
     public <E> E rechercher(Class<E> clazz, long id) {
+    	LOGGER.info("DAO->find("+clazz+","+id+")" );
         return em.find(clazz, id);
     }
-
+    
     public <E> List<E> find(Class<E> clazz, String query, int premier, int dernier) {
-    	
+    	LOGGER.info("DAO->find("+clazz+","+query+","+premier+","+dernier+")" );
         return queryRange(em.createQuery(query, clazz), premier, dernier).getResultList();
     }
-
+    
     public <E> List<E> rechercheParRequete(Class<E> clazz, String query, int premier, int dernier) {
-    	Logger LOGGER = Logger.getLogger(Demarrage.class.getName());
-    	LOGGER.info("DAO->LIST");
+    	LOGGER.info("DAO->rechercheParRequete("+clazz+","+query+","+premier+","+dernier+")" );
     	
         return queryRange(em.createNamedQuery(query, clazz), premier, dernier).getResultList();
     }
-
+    
     private static Query queryRange(Query query, int premier, int dernier) {
+    	LOGGER2.info("DAO->queryRange("+query+","+premier+","+dernier+")" );
         if (dernier >= 0) {
             query.setMaxResults(dernier);
         }

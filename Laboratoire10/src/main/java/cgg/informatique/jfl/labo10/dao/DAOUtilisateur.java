@@ -39,48 +39,45 @@ public class DAOUtilisateur {
     
     
     public boolean login(String pCourriel, String pMotDePasse) {
+    	boolean ok = false;
     	List<Utilisateur>  desUtilisateur = dao.rechercheParRequete(Utilisateur.class, "utilisateur.list", 0 , 100 );
 	    for (int i = 0; i < desUtilisateur.size(); i++) {
 	    	if (desUtilisateur.get(i).getEMaill().equals(pCourriel) && 
 	    		desUtilisateur.get(i).getPassowrd().equals(pMotDePasse)   ) {
-	    		LOGGER.info("DAO USER LOGIN -> SUCCESS "  );
-		        return true;
+	    		ok = true;
 		    }
 		}
-	    LOGGER.info("DAO USER LOGIN -> FAILLED , nb user->"+desUtilisateur.size() )  ;
-		return false;
+	    LOGGER.info("DAOUtilisateur->login( "+pCourriel+","+pMotDePasse+") : SUCCESS="+ok + " nbUser="+desUtilisateur.size() );
+		return ok;
 	}
     
     
-    public Token creerUtilisateur(String nom, String motDePasse, String courriel) {
+    public Token creerUtilisateur(String pAlias, String pCourriel, String pPasword) {
+    	LOGGER.info("DAOUtilisateur->creerUtilisateur("+pAlias+","+ pCourriel+","+pPasword+")"  );
         Token  token = new Token();
-        token.setAction("creerToken");
+        token.setAction("creerUtilisateur");
         
-        List<Token> desToken = dao.rechercheParRequete(Token.class, "token.list", 0 ,100);
-        
-        for (int i = 0; i < desToken.size() ; i++) {
-			if (  desToken.get(i).getCouriel().equals(courriel)  ) {
-				LOGGER.info("DAO TOKEN CREER->TOKEN EXISTE DEJA");
-				token.setEtat(false);
-				token.setAction("token deja existant");
-				return token;
-			}
-			
-		}
+        //FIXME use querry to look up for email && alias are free
         List<Utilisateur> desUtils = dao.rechercheParRequete(Utilisateur.class, "utilisateur.list", 0 ,100);
         for (int i = 0; i < desUtils.size() ; i++) {
-			if (desUtils.get(i).getEMaill().equals(courriel)  ) {
-				LOGGER.info("DAO TOKEN CREER->UTILISATEUR  EXISTE DEJA");
+			if ( false ) {  //FIXME
+				LOGGER.info("DAOUtilisateur->creerUtilisateur-> COURRIEL EXISTE DEJA ");
+				token.setAction("courriel deja pris");
+				LOGGER.info("DAOUtilisateur->creerUtilisateur-> ALIAS DEJA PRIS");
+				token.setAction("alias deja pris");
+				
+				
 				token.setEtat(false);
-				token.setAction("utilisateur deja existant");
 				return token;
 			}
 			
 		}
+        if ( token.getEtat() ) {
+        	Utilisateur utilisateur = new Utilisateur(pAlias, pCourriel, pPasword);
+            dao.creer(utilisateur);
+		}
         
-        token.setNom(nom);
-        token.setMdp(motDePasse);
-        token.setCouriel(courriel);
+        
         token.setEtat(true);
         serviceCaptcha servCapt = new serviceCaptcha();
         String captchaStr =  servCapt.getCaptchaStr();
@@ -88,22 +85,31 @@ public class DAOUtilisateur {
         return dao.creer(token);
     }
     
-
-	public Utilisateur creer(String nom, String motDePasse, String courriel) {
-
-        Utilisateur utilisateur = new Utilisateur();
-        utilisateur.setPassowrd(motDePasse);
-        utilisateur.setEMaill(courriel);
-        
-        LOGGER.info("DAO USER CREER " + utilisateur.getEMaill() );
-        
-        return dao.creer(utilisateur);
+    /**
+     * 
+     * @param pCourriel
+     * @return ok , if user exist and has
+     */
+	public boolean activerUtil(String pCourriel ) {
+		LOGGER.info("DAOUtilisateur->activerUtil(" + pCourriel + ")" );
+        //FIXME use querry
+		Utilisateur utilisateur;
+		List<Utilisateur> desUtils = dao.rechercheParRequete(Utilisateur.class, "utilisateur.list", 0 ,100);
+        for (int i = 0; i < desUtils.size() ; i++) {
+			if ( desUtils.get(i).getEMaill().equals(pCourriel)  ) { 
+				utilisateur = desUtils.get(i);
+				utilisateur.setActive(true);
+				break;
+			}
+			
+		}
+		
+        return false;
     }
 
-    public List<Utilisateur> afficherListe(int premier, int dernier) {
-    	Logger LOGGER = Logger.getLogger(Demarrage.class.getName());
-    	LOGGER.info("DAO USER->LIST");
-        return dao.rechercheParRequete(Utilisateur.class, "utilisateur.list", premier, dernier);
+    public List<Utilisateur> afficherListe( int pPremier, int pDernier ) {
+    	LOGGER.info("DAOUtilisateur->afficherListe("+pPremier+","+pDernier+")");
+        return dao.rechercheParRequete(Utilisateur.class, "utilisateur.list", pPremier, pDernier);
     }
 
     public Utilisateur rechercher(long id) {

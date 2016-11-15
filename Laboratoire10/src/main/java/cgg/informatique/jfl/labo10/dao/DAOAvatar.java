@@ -18,8 +18,6 @@ package cgg.informatique.jfl.labo10.dao;
 
 import cgg.informatique.jfl.labo10.demarrage.Demarrage;
 import cgg.informatique.jfl.labo10.modeles.Avatar;
-import cgg.informatique.jfl.labo10.modeles.Film;
-import cgg.informatique.jfl.labo10.modeles.Utilisateur;
 
 import javax.ejb.Lock;
 import javax.ejb.LockType;
@@ -37,7 +35,6 @@ public class DAOAvatar {
     
     private Logger LOGGER = Logger.getLogger(Demarrage.class.getName());
 	
-    
     public Avatar creer(String pNom, String pAvatar ) {
     	LOGGER.info("DAOAvatar->creer("+pNom+","+pAvatar+")" );
     	Avatar avatar = new Avatar(pNom, pAvatar);
@@ -48,18 +45,17 @@ public class DAOAvatar {
     	LOGGER.info("DAOAvatar->afficherListe("+pPremier+","+pDernier+")" );
         return dao.rechercheParRequete(Avatar.class, "avatar.list", pPremier, pDernier);
     }
-
+    
     public Avatar rechercher(int pId) {
     	LOGGER.info("DAOAvatar->rechercher("+pId+")" );
         return dao.rechercher(Avatar.class, pId);
     }
-
+    
     public void effacer(int pId) {
     	LOGGER.info("DAOAvatar->effacer("+pId+")" );
         dao.effacer(Avatar.class, pId);
     }
     
-
     public Avatar modifier(long pId, String pNom , String pAvatar ) {
     	LOGGER.info("DAOAvatar->modifier("+pId+","+pNom+","+pAvatar+")" );
     	Avatar avatar = dao.rechercher(Avatar.class, pId);
