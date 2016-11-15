@@ -67,6 +67,23 @@ public class ServiceToken {
 	}
     
     
+    @Path("/getActionToken")
+	@PUT
+	public Token getActionToken(@QueryParam("courriel")    String pEMail) {
+		LOGGER.info("ServiceToken->getActionToken(" + pEMail +")" );
+		
+		//TODO querry user exist && isActive
+		boolean ok = true
+		
+		
+		
+		Token token = new Token();
+		
+		
+	  return tokenRetour;
+	}
+    
+    
     /**
 	@Path("/afficherListe")
     @GET

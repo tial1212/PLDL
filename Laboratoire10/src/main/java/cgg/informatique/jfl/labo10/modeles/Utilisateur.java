@@ -67,16 +67,22 @@ public class Utilisateur extends Modele {
      */
     @Column(name = "DATE") 
     private Date date; 
-
     
     
     
-    
+	/**
+	 * Create an unactivated user.
+	 * 
+	 * @param pAlias
+	 * @param pEMaill
+	 * @param pPasword
+	 */
     public Utilisateur(String pAlias , String pEMaill, String pPasword ) {
 		super();
 		this.alias = pAlias;
 		this.eMaill = pEMaill;
 		this.pasword = pPasword;
+		this.active = false;
 	}
 
 	/**

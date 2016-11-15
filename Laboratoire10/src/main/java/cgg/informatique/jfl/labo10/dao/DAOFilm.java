@@ -65,9 +65,9 @@ public class DAOFilm {
             throw new IllegalArgumentException("MAJ id " + pId + " n\'existe pas!");
         }
          
-        film.setTitre(pTitre);
-        film.setAffiche(pAffiche);
-        film.setBandeAnnonce(pBandeAnnonce);
+        film.setTitle(pTitre);
+        film.setCoverArt(pAffiche);
+        film.setTrailler(pBandeAnnonce);
         film.setResume(pResume);
         return dao.modifier(film);
     }

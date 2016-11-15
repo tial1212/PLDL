@@ -21,16 +21,16 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import cgg.informatique.jfl.labo10.utilitaires.MD5Digest;
+
 @Entity
 @NamedQueries({
    @NamedQuery(name = "token.list", query = "select t from Token t")
               })
 @XmlRootElement(name = "token")
 public class Token extends Modele {
-
 	
-    private String captchaVal;
-    
+    private String captchaStr;
     
     private String action;
     
@@ -38,25 +38,39 @@ public class Token extends Modele {
     
 	private Boolean etat;
 	
-	public Token() {
-	    // must have a no-args constructor
-	}
+	
+	/**
+     * DO NOT USE it is useless 
+     *  "Unenhanced classes must have a public or protected no-args constructor"
+     */
+	public Token() { }
 	
 	
 	public String getSalt() {
 		return salt;
 	}
 	
-	public void setSalt(String salt) {
-		this.salt = salt;
+	/**
+	 * Set the salt.
+	 * @param pSalt , the desired salt.
+	 */
+	public void setSalt(String pSalt) {
+		this.salt = MD5Digest.getMD5(pSalt);
+	}
+	
+	/**
+	 * Set salt with the default "salt".
+	 */
+	public void setSalt() {
+		this.salt = MD5Digest.getMD5("salt");
 	}
 	
 	public String getCaptchaVal() {
-		return captchaVal;
+		return captchaStr;
 	}
 
-	public void setCaptchaVal(String captchaImg) {
-		this.captchaVal = captchaImg;
+	public void setCaptchaVal(String captchaStr) {
+		this.captchaStr = captchaStr;
 	}
 
 	

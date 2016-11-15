@@ -16,6 +16,7 @@
  */
 package cgg.informatique.jfl.labo10.modeles;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
@@ -29,63 +30,123 @@ import javax.xml.bind.annotation.XmlRootElement;
               })
 @XmlRootElement(name = "film")
 public class Film extends Modele {
-
+	
+	/**
+	 * The title.
+	 */
     @NotNull
     @Size(min = 3, max = 15)
-    private String titre 		= new String();
+    private String title 		= new String();
     
+    /**
+	 * An artwork selling the movie.
+	 */
     @NotNull
-    private String affiche 		= new String();
+    @Column(name = "Affiche")
+    private String coverArt 		= new String();
     
+    /**
+	 * An URL to the video of the trailler (a small teaser to incite to watch the movie ).
+	 */
     @NotNull
-    private String bandeAnnonce = new String();
+    @Column(name = "BandeAnnonce")
+    private String trailler = new String();
     
+    /**
+	 * A small text that explain the movie's plot.
+	 */
     @NotNull
-	private String resume 		= new String();
+    @Column(name = "Resume")
+    private String resume 		= new String();
     
-    public Film() {
-    // must have a no-args constructor
-	}
     
-    public Film(String titre, String affiche, String bandeAnnonce, String resume)
+    /**
+     *  DO NOT USE it is useless 
+     * "Unenhanced classes must have a public or protected no-args constructor"
+     */
+    public Film() { }
+    
+    
+    /**
+     * Use this constructor instead.
+     * 4 param constructor.
+     * 
+     * @param pTitle
+     * @param pCoverArt
+     * @param pTrailler
+     * @param pResume
+     */
+    public Film(String pTitle, String pCoverArt, String pTrailler, String pResume)
 	{
-		this.titre = titre;
-		this.affiche = affiche;
-		this.bandeAnnonce = bandeAnnonce;
-		this.resume = resume;
+    	
+		this.title = pTitle;
+		this.coverArt = pCoverArt;
+		this.trailler = pTrailler;
+		this.resume = pResume;
 	}
     
-
-	public String getTitre() {
-		return this.titre;
-	}
-	public void setTitre(String titre) {
-		this.titre = titre;
-	}
-
-	
-	
-	public String getAffiche() {
-		return this.affiche;
-	}
-	public void setAffiche(String affiche) {
-		this.affiche = affiche;
+    /**
+     * Get the movie's title.
+     * @return titre
+     */
+	public String getTitle() {
+		return this.title;
 	}
 	
-	
-	public String getBandeAnnonce() {
-		return this.bandeAnnonce;
+	/**
+	 * Set the movie's title.
+	 * @param pTitle
+	 */
+	public void setTitle(String pTitle) {
+		this.title = pTitle;
 	}
-	public void setBandeAnnonce(String bandeAnnonce) {
-		this.bandeAnnonce = bandeAnnonce;
+	
+	/**
+	 * Get the movie's Cover Art.
+	 * @return coverArt
+	 */
+	public String getCoverArt() {
+		return this.coverArt;
 	}
 	
+	/**
+	 * Set the movie's Cover Art.
+	 * @param pCoverArt
+	 */
+	public void setCoverArt(String pCoverArt) {
+		this.coverArt = pCoverArt;
+	}
 	
+	/**
+	 * Get the movie's trailler.
+	 * @return trailler
+	 */
+	public String getTrailler() {
+		return this.trailler;
+	}
+	
+	/**
+	 * Set the movie's trailler.
+	 * @param pTrailler
+	 */
+	public void setTrailler(String pTrailler) {
+		this.trailler = pTrailler;
+	}
+	
+	/**
+	 * Get the movie's resume.
+	 * @return
+	 */
 	public String getResume() {
 		return this.resume;
 	}
-	public void setResume(String resume) {
-		this.resume = resume;
+	
+	/**
+	 * Set the movie's resume.
+	 * @param pResume
+	 */
+	public void setResume(String pResume) {
+		this.resume = pResume;
 	}
 	
 }

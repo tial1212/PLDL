@@ -1,7 +1,7 @@
 
 TODO check if column name (UPPERCASE VS lowercase )  affect something
 TODO String vs Text
-
+TODO Ask if old table (token ) must fit exactly
 
 avatar
     Id      int

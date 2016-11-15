@@ -74,9 +74,7 @@ public class Musique extends Modele  {
      * DO NOT USE it is useless 
      *  "Unenhanced classes must have a public or protected no-args constructor"
      */
-	public Musique(){
-		
-	}
+	public Musique(){ }
 	
 	
 	/**

@@ -98,7 +98,6 @@
 	<classpathentry kind="var" path="M2_REPO2/org/apache/tomcat/tomcat-jasper-el/8.0.22/tomcat-jasper-el-8.0.22.jar"/>
 	<classpathentry kind="var" path="M2_REPO2/org/eclipse/jdt/core/compiler/ecj/4.4/ecj-4.4.jar"/>
 	<classpathentry kind="var" path="M2_REPO2/org/apache/velocity/velocity/1.6.4/velocity-1.6.4.jar"/>
-	<classpathentry kind="var" path="M2_REPO2/oro/oro/2.0.8/oro-2.0.8.jar"/>
 	<classpathentry kind="var" path="M2_REPO2/org/apache/openejb/tomee-jaxrs/2.0.0-SNAPSHOT/tomee-jaxrs-2.0.0-SNAPSHOT.jar"/>
 	<classpathentry kind="var" path="M2_REPO2/org/apache/openejb/openejb-rest/5.0.0-SNAPSHOT/openejb-rest-5.0.0-SNAPSHOT.jar"/>
 	<classpathentry kind="var" path="M2_REPO2/org/apache/openejb/openejb-cxf-rs/5.0.0-SNAPSHOT/openejb-cxf-rs-5.0.0-SNAPSHOT.jar"/>

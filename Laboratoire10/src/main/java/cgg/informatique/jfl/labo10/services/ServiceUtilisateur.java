@@ -42,16 +42,7 @@ public class ServiceUtilisateur {
     private DAOUtilisateur daoUtil;
     
     private Logger LOGGER = Logger.getLogger(Demarrage.class.getName());
-
-    @Path("/creerUtilisateur")
-    @PUT
-    public Utilisateur createUser(@QueryParam("alias") 	    String pAlias,
-                       		 	  @QueryParam("courriel")   String pCourriel,
-                       		 	  @QueryParam("motDePasse") String pMotDePasse) {
-    	LOGGER.info("ServiceUtilisateur->createUser(" + pAlias + "," + pCourriel + "," + pMotDePasse);
-    	 
-        return daoUtil.creer(pAlias, pCourriel, pMotDePasse);
-    }
+    
     
     @Path("/afficherListe")
     @GET
