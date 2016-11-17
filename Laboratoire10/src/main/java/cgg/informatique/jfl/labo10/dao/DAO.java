@@ -85,4 +85,16 @@ public class DAO {
         }
         return query;
     }
+    
+    /**
+     * Execute a desired querry.
+     *
+     *@param pQuerry , a querry to execute.
+     * @return result , the result of the querry
+     */
+    public int querry(String pQuerry) {
+    	LOGGER.info("DAO->querry("+pQuerry+")" );
+    	
+    	return    em.createQuery(pQuerry).executeUpdate();
+    }
 }

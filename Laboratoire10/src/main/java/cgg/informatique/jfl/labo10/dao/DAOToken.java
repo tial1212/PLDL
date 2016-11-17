@@ -73,4 +73,11 @@ public class DAOToken {
     		//token.setParam(param);    TODO 
     	return dao.modifier(token);
     }
+    
+    
+    public boolean confirmCanDoAction(long pIdToken, String pSalt) {
+		boolean ok =false;
+		//TODO  real validation
+	return ok;
+}
 }

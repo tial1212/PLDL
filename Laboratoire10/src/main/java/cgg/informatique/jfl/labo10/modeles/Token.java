@@ -21,6 +21,7 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import cgg.informatique.jfl.labo10.services.serviceCaptcha;
 import cgg.informatique.jfl.labo10.utilitaires.MD5Digest;
 
 @Entity
@@ -30,12 +31,25 @@ import cgg.informatique.jfl.labo10.utilitaires.MD5Digest;
 @XmlRootElement(name = "token")
 public class Token extends Modele {
 	
+	/**
+	 * The string value of the captcha 
+	 */
     private String captchaStr;
-    
+
+	/**
+	 * Detail information about what has happened
+	 * indicate last action completed or specific error if there is.
+	 */
     private String action;
-    
+
+	/**
+	 * 
+	 */
     private String salt;
-    
+
+	/**
+	 * If transaction was succesful.
+	 */
 	private Boolean etat;
 	
 	
@@ -44,6 +58,17 @@ public class Token extends Modele {
      *  "Unenhanced classes must have a public or protected no-args constructor"
      */
 	public Token() { }
+	
+	
+	/**
+	 * 2 param constructor. 
+	 * Create a token with : etat & action
+	 */
+	public Token( boolean pEtat , String pAction) {
+		this.etat = pEtat;
+		this.action = pAction;
+		
+	}
 	
 	
 	public String getSalt() {
@@ -65,6 +90,11 @@ public class Token extends Modele {
 		this.salt = MD5Digest.getMD5("salt");
 	}
 	
+	/**
+	 * To get the Base64 call 
+	 * @see serviceCaptcha#getCaptcha64()
+	 * @return captchaStr
+	 */
 	public String getCaptchaVal() {
 		return captchaStr;
 	}

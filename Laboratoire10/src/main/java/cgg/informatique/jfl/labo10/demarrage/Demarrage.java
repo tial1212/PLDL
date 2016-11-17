@@ -52,7 +52,7 @@ public class Demarrage {
         //final Film titi = films.creer("titre", "google.ca","google.ca" , "il etasi une fois ....");  
     }
 
-    // Effacer les données dans la BD toutes les 30 minutes (pas très bien codé)
+    // Effacer les donnï¿½es dans la BD toutes les 30 minutes (pas trï¿½s bien codï¿½)
     @Schedule(second = "0", minute = "30", hour = "*", persistent = false)
     private void cleanData() {
         LOGGER.info("Cleaning data");
@@ -62,7 +62,6 @@ public class Demarrage {
     }
 
     private void deleteAll() {
-        
-        em.createQuery("delete From User").executeUpdate();
+       em.createQuery("delete From User").executeUpdate();
     }
 }

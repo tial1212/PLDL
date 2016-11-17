@@ -69,6 +69,12 @@ public class Utilisateur extends Modele {
     private Date date; 
     
     
+	/**
+     * DO NOT USE it is useless 
+     * "Unenhanced classes must have a public or protected no-args constructor"
+     */
+    public Utilisateur() {
+	}
     
 	/**
 	 * Create an unactivated user.

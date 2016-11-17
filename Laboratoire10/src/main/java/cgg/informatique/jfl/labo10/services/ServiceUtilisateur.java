@@ -16,6 +16,7 @@
  */
 package cgg.informatique.jfl.labo10.services;
 
+import cgg.informatique.jfl.labo10.dao.DAOToken;
 import cgg.informatique.jfl.labo10.dao.DAOUtilisateur;
 import cgg.informatique.jfl.labo10.demarrage.Demarrage;
 import cgg.informatique.jfl.labo10.modeles.Utilisateur;
@@ -25,7 +26,6 @@ import javax.ws.rs.DELETE;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -40,6 +40,9 @@ public class ServiceUtilisateur {
 
     @EJB
     private DAOUtilisateur daoUtil;
+    
+    @EJB
+    private DAOToken daoToken;
     
     private Logger LOGGER = Logger.getLogger(Demarrage.class.getName());
     
@@ -61,23 +64,29 @@ public class ServiceUtilisateur {
     public Utilisateur afficher(@PathParam("id") long id) {
         return daoUtil.rechercher(id);
     }
-
+    
+    
+    @Path("/modifier/{id}")
+    @POST
+    public Utilisateur modifier(
+    		           @PathParam("idToken")      long   pIdToken,
+                       @QueryParam("salt") 	      String pSalt,
+                       @PathParam("idUtil")       Long   pIdUser,
+                       @QueryParam("courriel") 	  String pEMaill,
+                       @QueryParam("motDePasse")  String pPasword,
+                       @QueryParam("alias")       String pAlias,
+                       @QueryParam("avatar")      int    pAvatar) {
+    
+    	if (daoToken.confirmCanDoAction(pIdToken, pSalt )  ){
+    		return daoUtil.modifier(pIdUser, pEMaill, pPasword, pAlias, pAvatar);
+		}
+    	//FIXME
+        return new Utilisateur();
+    }
+    
     @Path("/effacer/{id}")
     @DELETE
     public void effacer(@PathParam("id") long id) {
         daoUtil.effacer(id);
-    }
-
-    @Path("/modifier/{id}")
-    @POST
-    public Utilisateur modifier(
-    		           @PathParam("id") 		 Long   id,
-                       @QueryParam("nom") 		 String nom,
-                       @QueryParam("motDePasse") String motDePasse,
-                       @QueryParam("courriel")   String courriel) {
-    	
-    	
-    	 
-        return daoUtil.modifier(id, nom, motDePasse, courriel);
     }
 }

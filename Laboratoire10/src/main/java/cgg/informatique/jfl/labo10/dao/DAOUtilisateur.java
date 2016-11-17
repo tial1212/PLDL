@@ -16,6 +16,7 @@
  */
 package cgg.informatique.jfl.labo10.dao;
 import cgg.informatique.jfl.labo10.demarrage.Demarrage;
+import cgg.informatique.jfl.labo10.modeles.Avatar;
 import cgg.informatique.jfl.labo10.modeles.Token;
 import cgg.informatique.jfl.labo10.modeles.Utilisateur;
 import cgg.informatique.jfl.labo10.services.serviceCaptcha;
@@ -24,6 +25,8 @@ import javax.ejb.Lock;
 import javax.ejb.LockType;
 import javax.ejb.Singleton;
 import javax.inject.Inject;
+import javax.persistence.Column;
+
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -120,14 +123,22 @@ public class DAOUtilisateur {
         dao.effacer(Utilisateur.class, id);
     }
 
-    public Utilisateur modifier(long id, String nom, String motDePasse, String courriel) {
-        Utilisateur utilisateur = dao.rechercher(Utilisateur.class, id);
+    public Utilisateur modifier(long pId, String pEMaill, String pPasword, String pAlias , int pAvatar) {
+        Utilisateur utilisateur = dao.rechercher(Utilisateur.class, pId);
         if (utilisateur == null) {
-            throw new IllegalArgumentException("MAJ id " + id + " n\'existe pas!");
+            throw new IllegalArgumentException("MAJ id " + pId + " n\'existe pas!");
         }
          
-        utilisateur.setPassowrd(motDePasse);
-        utilisateur.setEMaill(courriel);
+        utilisateur.setPassowrd(pPasword);
+        utilisateur.setEMaill(pAlias);
         return dao.modifier(utilisateur);
     }
+    /**
+    private String eMaill;
+    private String pasword;
+    private String alias;
+    private int avatar;
+    private boolean active;
+    **/
+    
 }

@@ -73,14 +73,11 @@ public class ServiceToken {
 		LOGGER.info("ServiceToken->getActionToken(" + pEMail +")" );
 		
 		//TODO querry user exist && isActive
-		boolean ok = true
-		
-		
-		
+		boolean ok = true;
 		Token token = new Token();
 		
 		
-	  return tokenRetour;
+	  return token;
 	}
     
     
