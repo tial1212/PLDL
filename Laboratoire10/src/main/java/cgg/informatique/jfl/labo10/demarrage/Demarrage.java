@@ -48,8 +48,6 @@ public class Demarrage {
     @PostConstruct
     public void createSomeData() {
         //final Utilisateur tomee = utilisateurs.creer("tomee", "tomee", "tomee@apache.org");
-        //final Utilisateur openejb = utilisateurs.creer("alexandre", "arsenault", "openejb@apache.org");
-        //final Film titi = films.creer("titre", "google.ca","google.ca" , "il etasi une fois ....");  
     }
 
     // Effacer les donn�es dans la BD toutes les 30 minutes (pas tr�s bien cod�)

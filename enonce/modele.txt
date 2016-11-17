@@ -1,7 +1,8 @@
 
-TODO check if column name (UPPERCASE VS lowercase )  affect something
+FIX all column name & specs must match 
 TODO String vs Text
-TODO Ask if old table (token ) must fit exactly
+TODO  DAOMusiques , DAOListesdelecture_musiques ,  
+
 
 avatar
     Id      int

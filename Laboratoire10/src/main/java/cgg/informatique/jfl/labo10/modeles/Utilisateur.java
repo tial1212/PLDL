@@ -17,6 +17,9 @@
 package cgg.informatique.jfl.labo10.modeles;
 
 import java.util.Date;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.NamedQueries;
@@ -84,16 +87,21 @@ public class Utilisateur extends Modele {
 	 * @param pPasword
 	 */
     public Utilisateur(String pAlias , String pEMaill, String pPasword ) {
-		super();
-		this.alias = pAlias;
-		this.eMaill = pEMaill;
-		this.pasword = pPasword;
-		this.active = false;
+    	super();
+    	if (validateAlias(pAlias) && validateEMaill(pEMaill) && validatePassowrd(pPasword) ) {
+    		this.alias = pAlias;
+    		this.eMaill = pEMaill;
+    		this.pasword = pPasword;
+    		this.active = false;
+		}
+    	else{
+    		System.err.println("Utilisateur.constructor("+pAlias+""+pEMaill+""+pPasword +") -> INVALIDE");
+    	}
 	}
 
 	/**
      * Get the e-mail of the user.
-     * @return eMaill, The E-mail of the user.
+     * @return eMaill The E-mail of the user.
      */
 	public String getEMaill() {
 		return eMaill;
@@ -102,10 +110,38 @@ public class Utilisateur extends Modele {
 	/**
 	 * Set the e-mail of the user.
 	 * @param pEMaill,   The e-mail to be set
+	 * @return ok if email has been changed.
 	 */
-	public void setEMaill(String pEMaill) {
-		this.eMaill = pEMaill;
+	public boolean setEMaill(String pEMaill) {
+		boolean ok = validateEMaill(pEMaill);
+		this.eMaill = (ok?pEMaill:this.eMaill);
+		return ok;
 	}
+	
+	/**
+	 * Validate an e-mail adress.<br>
+	 * 
+	 * 
+	 * <p>The policy for an user's e-mail is:</p>
+	 * <ul>
+	 *  <li><p>At least 4 chars</p></li>
+	 *  <li><p>No longer than 50 chars</p></li>
+	 *	<li><p> Must be in a valid form ( name@compagny.domain ).</p></li>
+	 *	</ul>
+	 * @param pEMaill The e-mail to validate
+	 * @return ok
+	 */
+	public static boolean validateEMaill(String pEMaill) {
+		Pattern VALID_EMAIL_ADDRESS_REGEX =  Pattern.compile("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$", Pattern.CASE_INSENSITIVE);
+		Matcher matcher = VALID_EMAIL_ADDRESS_REGEX .matcher(pEMaill);
+		int length = pEMaill.length();
+		boolean ok = matcher.find() && length>=4 && length<=50 ;
+		if (!ok) {
+			System.err.println("Utilisateur.validateEMaill("+pEMaill+") ->INVALIDE");
+		}
+        return ok;
+	}
+	
 	
 	/**
 	 * Get the user's pasword.
@@ -116,16 +152,45 @@ public class Utilisateur extends Modele {
 	}
 	
 	/**
+	 * 
 	 * Set the user's pasword.
-	 * @param pPassowrd, The pasword to be set.
+	 * @param pPassowrd The pasword to be set.
+	 * @return ok if pasword has been changed.
 	 */
-	public void setPassowrd(String pPassowrd) {
-		this.pasword = pPassowrd;
+	public boolean setPassowrd(String pPassowrd) {
+		boolean ok = validatePassowrd(pPassowrd);
+		this.pasword = (ok?pPassowrd:this.pasword);
+		return ok;
+	}
+	
+	/**
+	 * Validate a  pasword.<br>
+	 * <p>The policy for an user's password is:</p>
+	 * <ul>
+	 *  <li><p>At least 8 chars</p></li>
+	 *  <li><p>No longer than 50 chars</p></li>
+	 *	<li><p>Contains at least one digit</p></li>
+	 *	<li><p>Contains at least one lower alpha char and one upper alpha char</p></li>
+	 *	<li><p>Contains at least one char within a set of special chars (<code>@#%$^</code> etc.)</p></li>
+	 *	<li><p>Does not contain space, tab, etc.</p></li>
+	 *	</ul>
+	 * @param pPassowrd The pasword to validate.
+	 * @return ok 
+	 */
+	public static boolean validatePassowrd(String pPassowrd) {
+		Pattern VALID_EMAIL_ADDRESS_REGEX =  Pattern.compile("^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?=\\S+$).{8,}$", Pattern.CASE_INSENSITIVE);
+		Matcher matcher = VALID_EMAIL_ADDRESS_REGEX .matcher(pPassowrd);
+		int length = pPassowrd.length();
+		boolean ok = matcher.find() && length<=50;
+		if (!ok) {
+			System.err.println("Utilisateur.validatePassowrd("+pPassowrd+") ->INVALIDE");
+		}
+        return ok;
 	}
 	
 	/**
 	 * Get the user's alias.
-	 * @return�alias, The display name of the user 
+	 * @return alias The display name of the user 
 	 */
 	public String getAlias() {
 		return alias;
@@ -133,15 +198,37 @@ public class Utilisateur extends Modele {
 	
 	/**
 	 * Set the user's alias.
-	 * @param alias , The new display name to be set.
+	 * @param pAlias The new display name to be set.
+	 * @return ok if alias has been changed.
 	 */
-	public void setAlias(String pAlias) {
-		this.alias = pAlias;
+	public boolean setAlias(String pAlias) {
+		boolean ok = validateAlias(pAlias);
+		this.alias = (ok?pAlias:this.alias);
+		return ok;
+	}
+	
+	/**
+	 * Validate an alias.<br>
+	 * <p>The policy for an user's alias is:</p>
+	 * <ul>
+	 *  <li><p>At least 4 chars</p></li>
+	 *  <li><p>No longer than 50 chars</p></li>
+	 *	</ul>
+	 * @param pAlias The alias to validate
+	 * @return ok
+	 */
+	public static boolean validateAlias(String pAlias) {
+		int length = pAlias.length();
+		boolean ok = length>=4 && length<=50;
+		if (!ok) {
+			System.err.println("Utilisateur.validateAlias("+pAlias+") ->INVALIDE");
+		}
+        return ok;
 	}
 	
 	/**
 	 * If the user has been activated
-	 * @return active , boolean
+	 * @return active
 	 */
 	public boolean isActive() {
 		return active;
@@ -149,7 +236,7 @@ public class Utilisateur extends Modele {
 	
 	/**
 	 * Set if the user is activated
-	 * @param pActive , boolean
+	 * @param pActive
 	 */
 	public void setActive(boolean pActive) {
 		this.active = pActive;
@@ -157,7 +244,7 @@ public class Utilisateur extends Modele {
 	
 	/**
 	 * Get the last modification date  date.
-	 * @return date , The creation date
+	 * @return date The creation date
 	 */
 	public Date getDate() {
 		return date;
@@ -168,5 +255,18 @@ public class Utilisateur extends Modele {
 	 */
 	public void setDate() {
 		this.date = new Date();
+	}
+	
+	/**
+	 * Set the last modification date to the desired date.
+	 * @param pDate The desired date.
+	 */
+	public void setDate(Date pDate) {
+		this.date = new Date();
+	}
+	
+	@Override
+	public String toString() {
+		return "User '"+this.eMaill+"' goes by '"+this.alias+"'It has :"+(this.active?" ":" not " ) +" been activated ";
 	}
 }

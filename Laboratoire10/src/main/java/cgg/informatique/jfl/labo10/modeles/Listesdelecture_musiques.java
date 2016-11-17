@@ -12,7 +12,7 @@ import javax.persistence.Column;
  * @author alexandrearsenault
  *
  */
-public class listesdelecture_musiques extends Modele {
+public class Listesdelecture_musiques extends Modele {
 	
     /**
      * The ID of the selected Avatar.
@@ -42,7 +42,7 @@ public class listesdelecture_musiques extends Modele {
 	     * DO NOT USE it is useless 
 	     * "Unenhanced classes must have a public or protected no-args constructor"
 	     */
-	    public listesdelecture_musiques(){
+	    public Listesdelecture_musiques(){
 	    }
 	    
 	    
@@ -52,7 +52,7 @@ public class listesdelecture_musiques extends Modele {
 	     * @param pNom, A description for the avatar 
 	     * @param pAvatar,  The avatar image in Base64
 	     */
-	    public listesdelecture_musiques(int pPlaylist ,  int pSong ){
+	    public Listesdelecture_musiques(int pPlaylist ,  int pSong ){
 			if( true ){ // TODO real validation
 				this.song = pSong ;
 				this.playList    = pPlaylist;

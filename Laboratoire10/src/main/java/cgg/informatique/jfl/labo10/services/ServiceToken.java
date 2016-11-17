@@ -9,6 +9,7 @@ import cgg.informatique.jfl.labo10.modeles.Token;
 import javax.inject.Inject;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import java.util.logging.Logger;
@@ -27,9 +28,9 @@ public class ServiceToken {
     
     Logger LOGGER = Logger.getLogger(Demarrage.class.getName());
 
-    @Path("/connect")
+    @Path("/login")
 	@PUT
-	public Token connect(@QueryParam("courriel")   String pCourriel,
+	public Token login(@QueryParam("courriel")   String pCourriel,
 	                   	 @QueryParam("motDePasse") String pMotDePasse) {
     	LOGGER.info("ServiceToken->connect("+ pCourriel + "," + pMotDePasse+")" );
     	 
@@ -38,6 +39,17 @@ public class ServiceToken {
 	    token.setEtat(ok);
 	    
 	    return token;
+	}
+    
+    
+    @Path("/logoff")
+	@PUT
+	public Token logoff(@PathParam("idToken")      long   pIdToken,
+            				@QueryParam("cle") 	      String pKey,
+            				@QueryParam("courriel")   String pCourriel) {
+    	LOGGER.info("ServiceToken->disconnect("+pIdToken+","+pKey+","+pCourriel+")" );
+    	//TODO
+	    return new Token();
 	}
 
 	@Path("/createUser")
@@ -76,27 +88,6 @@ public class ServiceToken {
 		boolean ok = true;
 		Token token = new Token();
 		
-		
 	  return token;
 	}
-    
-    
-    /**
-	@Path("/afficherListe")
-    @GET
-    public List<Token> afficherListe(@QueryParam("premier") 
-     								 @DefaultValue("0") int pPremier,
-                                     @QueryParam("dernier") 
-    								 @DefaultValue("20") int pDernier) {
-    	LOGGER.info("afficherListe("+pPremier+","+pDernier+")"  );
-    	
-    	return daoToken.afficherListe(pPremier, pDernier);
-    }
-    
-    @Path("/afficher")
-    @GET
-    public Token afficher(@QueryParam("id") long pId) {
-    	LOGGER.info("afficher("+pId+")" );
-        return daoToken.rechercher(pId);
-    }**/
 }

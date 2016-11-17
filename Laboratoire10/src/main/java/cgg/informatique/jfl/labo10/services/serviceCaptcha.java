@@ -29,13 +29,14 @@ public class serviceCaptcha {
 			"t1t1 T4t4"));
 	;
 	
-	@Path("/getCaptcha")
-	@GET
+	
 	/**
 	 * Get a Base 64 captcha of adesired string.
 	 * @param pCaptcha , the text to be transformed into an image.
 	 * @return captcha64
 	 */
+	@Path("/getCaptcha")
+	@GET
 	public String getCaptcha64(String pCaptcha) {
 		Captcha captcha = new Captcha( pCaptcha   , 20);
 		return captcha.getCatpcha();

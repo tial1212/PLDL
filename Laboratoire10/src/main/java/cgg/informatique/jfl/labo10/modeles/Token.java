@@ -16,6 +16,9 @@
  */
 package cgg.informatique.jfl.labo10.modeles;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import javax.persistence.Entity;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
@@ -37,13 +40,14 @@ public class Token extends Modele {
     private String captchaStr;
 
 	/**
-	 * Detail information about what has happened
-	 * indicate last action completed or specific error if there is.
+	 * Detailed information about last transaction.<br>
+	 * Can also indicate last action completed or specific error message if there is.
 	 */
     private String action;
 
 	/**
-	 * 
+	 * A salt used to secure the user's pasowrd <br>
+	 * The salt is save in the database in MD5
 	 */
     private String salt;
 
@@ -65,57 +69,161 @@ public class Token extends Modele {
 	 * Create a token with : etat & action
 	 */
 	public Token( boolean pEtat , String pAction) {
-		this.etat = pEtat;
-		this.action = pAction;
+		if ( validateAction(pAction) ) {
+			this.etat = pEtat;
+			this.action = pAction;
+		}
+		else {
+			System.err.println("Token.constructor("+pEtat+""+pAction+") -> INVALIDE");
+		}
 		
 	}
 	
 	
+	/**
+	 * Get the token salt
+	 * @return salt
+	 */
 	public String getSalt() {
 		return salt;
 	}
 	
 	/**
-	 * Set the salt.
-	 * @param pSalt , the desired salt.
+	 * Set salt with the default "longAssSalt".
+	 * @return ok If the salt has been change to the default.
 	 */
-	public void setSalt(String pSalt) {
-		this.salt = MD5Digest.getMD5(pSalt);
+	public boolean setSalt() {
+		String defaultSalt = "longAssSalt";
+		boolean ok = validateSalt(defaultSalt);
+		this.salt = (ok?MD5Digest.getMD5("salt") :this.salt);
+		return ok;
+	}
+
+
+	/**
+	 * Set a specific salt.
+	 * @param pSalt The salt to be set.
+	 * @return ok If the salt has been change.
+	 */
+	public boolean setSalt(String pSalt) {
+		this.salt = pSalt;
+		boolean ok = validateSalt(pSalt);
+		this.salt = (ok?MD5Digest.getMD5("salt") :this.salt);
+		return ok;
 	}
 	
 	/**
-	 * Set salt with the default "salt".
+	 * Validate a salt.<br>
+	 * <p>The policy for a token's salt is:</p>
+	 * <ul>
+	 *  <li><p>At least 8 chars</p></li>
+	 *  <li><p>No longer than 50 chars</p></li>
+	 *	</ul>
+	 *@param pSalt The salt to validate.
+	 * @return ok
 	 */
-	public void setSalt() {
-		this.salt = MD5Digest.getMD5("salt");
+	public boolean validateSalt(String pSalt){
+		int length = pSalt.length();
+		boolean ok = length>=8 && length<=50;
+		if (!ok) {
+			System.err.println("Token.validateSalt("+pSalt+") ->INVALIDE");
+		}
+        return ok;
 	}
-	
+
+
 	/**
-	 * To get the Base64 call 
-	 * @see serviceCaptcha#getCaptcha64()
+	 * Get the string captcha<br>
+	 * To get a Base 64 img call "serviceCaptcha"
+	 * @see serviceCaptcha#getCaptcha64
 	 * @return captchaStr
 	 */
-	public String getCaptchaVal() {
+	public String getCaptchaStr() {
 		return captchaStr;
 	}
-
-	public void setCaptchaVal(String captchaStr) {
-		this.captchaStr = captchaStr;
+	
+	/**
+	 * Set the string captcha 
+	 * @see serviceCaptcha#getCaptcha64()
+	 * @param pCaptchaStr The captcha to be set.
+	 * @return ok
+	 */
+	public boolean setCaptchaStr(String pCaptchaStr) {
+		boolean ok = validateCaptchaStr(pCaptchaStr);
+		this.captchaStr = (ok? pCaptchaStr :this.captchaStr);
+		return ok;
+	}
+	
+	/**
+	 * Validate a captcha.<br>
+	 * <p>The policy for a token's captcha is:</p>
+	 * <ul>
+	 *  <li><p>At least 5 chars</p></li>
+	 *  <li><p>No longer than 15 chars</p></li>
+	 *	</ul>
+	 *@param pCaptchaStr The salt to validate.
+	 * @return ok
+	 */
+	public boolean validateCaptchaStr(String pCaptchaStr){
+		int length = pCaptchaStr.length();
+		boolean ok = length>=5 && length<=15;
+		if (!ok) {
+			System.err.println("Token.validateCaptchaStr("+pCaptchaStr+") ->INVALIDE");
+		}
+        return ok;
 	}
 
-	
+	/**
+	 * Get the token's action.
+	 * @return action
+	 */
 	 public String getAction() {
 		return action;
 	}
-
-	public void setAction(String action) {
-		this.action = action;
+	 
+	 
+	 /**
+	  * Set the token's action.
+	  * 
+	  * @param pAction The action to be set.
+	  * @return ok If the action has been change.
+	  */
+	public boolean setAction(String pAction) {
+		boolean ok = validateAction(pAction);
+		this.action = (ok? pAction :this.action);
+		return ok;
 	}
 	
+	/**
+	 * Validate an action/error message.<br>
+	 * <p>The policy for a token's action is:</p>
+	 * <ul>
+	 *  <li><p>At least 5 chars</p></li>
+	 *  <li><p>No longer than 50 chars</p></li>
+	 *	</ul>
+	 *@param pAction The action to validate.
+	 * @return ok
+	 */
+	public boolean validateAction(String pAction){
+		int length = pAction.length();
+		boolean ok = length>=5 && length<=50;
+		if (!ok) {
+			System.err.println("Token.validateAction("+pAction+") ->INVALIDE");
+		}
+        return ok;
+	}
+	
+	/**
+	 * Get the token's action state (succes/faillure)
+	 * @return etat
+	 */
 	public Boolean getEtat() {
 		return etat;
 	}
 
+	/**
+	 * Set the token's action state (succes/faillure)
+	 */
 	public void setEtat(Boolean etat) {
 		this.etat = etat;
 	}

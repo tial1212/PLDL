@@ -70,14 +70,14 @@ public class ServiceUtilisateur {
     @POST
     public Utilisateur modifier(
     		           @PathParam("idToken")      long   pIdToken,
-                       @QueryParam("salt") 	      String pSalt,
+                       @QueryParam("cle") 	      String pKey,
                        @PathParam("idUtil")       Long   pIdUser,
                        @QueryParam("courriel") 	  String pEMaill,
                        @QueryParam("motDePasse")  String pPasword,
                        @QueryParam("alias")       String pAlias,
                        @QueryParam("avatar")      int    pAvatar) {
     
-    	if (daoToken.confirmCanDoAction(pIdToken, pSalt )  ){
+    	if (daoToken.confirmCanDoAction(pIdToken, pKey )  ){
     		return daoUtil.modifier(pIdUser, pEMaill, pPasword, pAlias, pAvatar);
 		}
     	//FIXME

@@ -89,7 +89,7 @@ public class Musique extends Modele  {
 	 * @param pActive
 	 */
 	public Musique( int pOwner ,String pTitle ,String pArtist ,String pMusic ,String pCoverArt ,boolean pIsPublic ,boolean pIsActive ){
-		if(true){   // TODO real validation
+		if(validateTitle(pTitle) && validateArtist(pArtist) ){
 			this.owner = pOwner;
 			this.title = pTitle;
 			this.artist = pArtist;
@@ -97,6 +97,9 @@ public class Musique extends Modele  {
 			this.isPublic = pIsPublic;
 			this.isActive = pIsActive;
 		}
+		else{
+    		System.err.println("Musique.constructor("+pOwner+""+pTitle+""+pArtist +""+pMusic+""+pCoverArt +""+pIsPublic+""+pIsActive +") -> INVALIDE");
+    	}
 	
 	}
 	
@@ -125,10 +128,33 @@ public class Musique extends Modele  {
 	
 	/**
 	 * Set the song's title.
-	 * @param pTitle
+	 * @param pTitle The title to be set.
+	  * @return ok If the title has been change.
 	 */
-	public void setTitle(String pTitle) {
-		this.title = pTitle;
+	public boolean setTitle(String pTitle) {
+		boolean ok = validateTitle(pTitle);
+		this.title = (ok? pTitle :this.title);
+		return ok;
+	}
+	
+	
+	/**
+	 * Validate a title.<br>
+	 * <p>The policy for a song's title is:</p>
+	 * <ul>
+	 *  <li><p>At least 5 chars</p></li>
+	 *  <li><p>No longer than 50 chars</p></li>
+	 *	</ul>
+	 *@param pTitle The title to validate.
+	 * @return ok
+	 */
+	public static boolean validateTitle(String pTitle) {
+		int length = pTitle.length();
+		boolean ok = length>=5 && length<=50;
+		if (!ok) {
+			System.err.println("Musique.validateTitle("+pTitle+") ->INVALIDE");
+		}
+        return ok;
 	}
 	
 	/**
@@ -141,12 +167,35 @@ public class Musique extends Modele  {
 	
 	/**
 	 * Set the song's artist.
-	 * @param artist
+	 * @param pArtist The artist to be set.
+	  * @return ok If the artist has been change.
 	 */
-	public void setArtist(String artist) {
-		this.artist = artist;
+	public boolean setArtist(String pArtist) {
+		boolean ok = validateArtist(pArtist);
+		this.artist = (ok? pArtist :this.artist);
+		return ok;
 	}
 	
+	/**
+	 * Validate an artist.<br>
+	 * <p>The policy for an artist's song is:</p>
+	 * <ul>
+	 *  <li><p>At least 5 chars</p></li>
+	 *  <li><p>No longer than 50 chars</p></li>
+	 *	</ul>
+	 *@param pArtist The title to validate.
+	 * @return ok
+	 */
+	public static boolean validateArtist(String pArtist) {
+		int length = pArtist.length();
+		boolean ok = length>=5 && length<=50;
+		if (!ok) {
+			System.err.println("Musique.validateArtist("+pArtist+") ->INVALIDE");
+		}
+        return ok;
+	}
+
+
 	/**
 	 * Get the song data itself ( Base64 )
 	 * @return
@@ -161,6 +210,7 @@ public class Musique extends Modele  {
 	 */
 	public void setMusic(String music) {
 		this.music = music;
+		//TODO validation
 	}
 	
 	/**
@@ -177,6 +227,7 @@ public class Musique extends Modele  {
 	 */
 	public void setCoverArt(String pCoverArt) {
 		this.coverArt = pCoverArt;
+		//TODO validation
 	}
 	
 	/**
@@ -220,11 +271,19 @@ public class Musique extends Modele  {
 	}
 	
 	/**
-	 *Get the last modification date.
+	 *Set the last modification date to the current date.
 	 * @param date
 	 */
-	public void setDate(Date date) {
-		this.date = date;
+	public void setDate() {
+		this.date = new Date();
+	}
+	
+	/**
+	 * Set the last modification date to the desired date.
+	 * @param pDate The desired date.
+	 */
+	public void setDate(Date pDate) {
+		this.date = new Date();
 	}
 	
 	@Override

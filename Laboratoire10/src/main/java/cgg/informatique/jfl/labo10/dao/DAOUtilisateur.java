@@ -16,7 +16,6 @@
  */
 package cgg.informatique.jfl.labo10.dao;
 import cgg.informatique.jfl.labo10.demarrage.Demarrage;
-import cgg.informatique.jfl.labo10.modeles.Avatar;
 import cgg.informatique.jfl.labo10.modeles.Token;
 import cgg.informatique.jfl.labo10.modeles.Utilisateur;
 import cgg.informatique.jfl.labo10.services.serviceCaptcha;
@@ -25,7 +24,6 @@ import javax.ejb.Lock;
 import javax.ejb.LockType;
 import javax.ejb.Singleton;
 import javax.inject.Inject;
-import javax.persistence.Column;
 
 import java.util.List;
 import java.util.logging.Logger;
@@ -84,7 +82,7 @@ public class DAOUtilisateur {
         token.setEtat(true);
         serviceCaptcha servCapt = new serviceCaptcha();
         String captchaStr =  servCapt.getCaptchaStr();
-        token.setCaptchaVal(captchaStr  ) ;
+        token.setCaptchaStr(captchaStr  ) ;
         return dao.creer(token);
     }
     

@@ -39,7 +39,7 @@ public class Avatar extends Modele {
      * Use this constructor instead. 2 params
      * 
      * @param pNom, A description for the avatar 
-     * @param pAvatar,  The avatar image in Base64
+     * @param pAvatar The avatar image in Base64
      */
     public Avatar(String pNom , String pAvatar ){
 		if(pNom.length()<= 50){
@@ -51,7 +51,7 @@ public class Avatar extends Modele {
 
     /**
      * Get the avatar's name ( description ) 
-     * @return nom
+     * @return name
      */
 	public String getName() {
 		return name;
@@ -59,16 +59,39 @@ public class Avatar extends Modele {
 
 	/**
 	 * Set the name (description) of the avatar. 
-	 * @param pNom , The name to be set.
+	 * @param pName The name to be set.
+	 * @return ok If the name has been change.
 	 */
 	
-	public void setName(String pNom) {
-		this.name = pNom;
+	public boolean setName(String pName) {
+		boolean ok = validateName(pName);
+		this.name = (ok?pName  :this.name);
+		return ok;
 	}
+	
+	/**
+	 * Validate a name.<br>
+	 * <p>The policy for an avatar's name is:</p>
+	 * <ul>
+	 *  <li><p>At least 4 chars</p></li>
+	 *  <li><p>No longer than 20 chars</p></li>
+	 *	</ul>
+	 *@param pName The name to validate.
+	 * @return ok
+	 */
+	public static boolean validateName(String pName) {
+		int length = pName.length();
+		boolean ok = length>=5 && length<=50;
+		if (!ok) {
+			System.err.println("Avatar.validateArtist("+pName+") ->INVALIDE");
+		}
+		return ok;
+	}
+
 
 	/**
 	 *  Get the avatar (image in Base64 )
-	 * @return avatar,  a description for the avatar.
+	 * @return avatar a description for the avatar.
 	 */
 	public String getAvatar() {
 		return avatar;
@@ -76,7 +99,7 @@ public class Avatar extends Modele {
 
 	/**
 	 *  Set the avatar (image in Base64 )
-	 * @param pAvatar, The avatar to be set
+	 * @param pAvatar The avatar to be set
 	 */
 	public void setAvatar(String pAvatar) {
 		this.avatar = pAvatar;

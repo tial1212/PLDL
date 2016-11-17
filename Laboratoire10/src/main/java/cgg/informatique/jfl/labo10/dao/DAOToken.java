@@ -41,7 +41,7 @@ public class DAOToken {
     	LOGGER.info("DAOToken->activerUser("+pIdToken+","+pCaptcha+","+pCourriel+")");
     	
     	Token token = rechercher(pIdToken);
-    	if ( token != null  && token.getCaptchaVal().equals( pCaptcha )              ) {
+    	if ( token != null  && token.getCaptchaStr().equals( pCaptcha )              ) {
     		boolean ok = daoUser.activerUtil( pCourriel );
     		if(ok){
     			this.effacer(pIdToken);
@@ -75,7 +75,7 @@ public class DAOToken {
     }
     
     
-    public boolean confirmCanDoAction(long pIdToken, String pSalt) {
+    public boolean confirmCanDoAction(long pIdToken, String pKey) {
 		boolean ok =false;
 		//TODO  real validation
 	return ok;
