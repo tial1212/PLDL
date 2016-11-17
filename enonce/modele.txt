@@ -1,8 +1,7 @@
 
 FIX all column name & specs must match 
 TODO String vs Text
-TODO  DAOMusiques , DAOListesdelecture_musiques ,  
-
+TODO  DAOMusique , DAOListesdelecture_musiques , DAOListesDeLecture 
 
 avatar
     Id      int

@@ -98,7 +98,7 @@ public class Utilisateur extends Modele {
     		System.err.println("Utilisateur.constructor("+pAlias+""+pEMaill+""+pPasword +") -> INVALIDE");
     	}
 	}
-
+    
 	/**
      * Get the e-mail of the user.
      * @return eMaill The E-mail of the user.
@@ -244,7 +244,7 @@ public class Utilisateur extends Modele {
 	
 	/**
 	 * Get the last modification date  date.
-	 * @return date The creation date
+	 * @return date The last modification date
 	 */
 	public Date getDate() {
 		return date;
