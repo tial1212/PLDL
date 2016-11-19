@@ -1,7 +1,5 @@
 package cgg.informatique.jfl.labo10.modeles;
 
-import java.util.Date;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.NamedQueries;
@@ -13,7 +11,7 @@ import javax.xml.bind.annotation.XmlRootElement;
    @NamedQuery(name = "listesdelecture.list", query = "select l from ListesDeLecture l")
               })
 @XmlRootElement(name = "listesdelecture")
-public class ListesDeLecture extends Modele{
+public class ListesDeLecture extends ModeleDate{
 	
 	
 	
@@ -44,12 +42,6 @@ public class ListesDeLecture extends Modele{
 	 */
 	@Column(name = "Active" , columnDefinition   ="TINYINT(1)" )
 	private boolean isActive;
-	
-	/**
-     * The modification date
-     */
-    @Column(name = "DATE") 
-    private Date date; 
 	
 	
 	/**
@@ -166,31 +158,6 @@ public class ListesDeLecture extends Modele{
 	public void setActive(boolean pIsActive) {
 		this.isActive = pIsActive;
 	}
-	
-	/**
-	 * Get the last modification date  date.
-	 * @return date The last modification date
-	 */
-	public Date getDate() {
-		return date;
-	}
-	
-	/**
-	 * Set the last modification date to the current date.
-	 */
-	public void setDate() {
-		this.date = new Date();
-	}
-
-
-	/**
-	 * Set the last modification date to the desired date.
-	 * @param pDate The desired date.
-	 */
-	public void setDate(Date date) {
-		this.date = date;
-	}
-    
     
 
 }

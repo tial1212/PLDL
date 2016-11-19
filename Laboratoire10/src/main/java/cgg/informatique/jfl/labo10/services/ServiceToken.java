@@ -1,10 +1,12 @@
 
 package cgg.informatique.jfl.labo10.services;
 
+import cgg.informatique.jfl.labo10.dao.DAO;
 import cgg.informatique.jfl.labo10.dao.DAOToken;
 import cgg.informatique.jfl.labo10.dao.DAOUtilisateur;
 import cgg.informatique.jfl.labo10.demarrage.Demarrage;
 import cgg.informatique.jfl.labo10.modeles.Token;
+import cgg.informatique.jfl.labo10.modeles.Utilisateur;
 
 import javax.inject.Inject;
 import javax.ws.rs.PUT;
@@ -24,22 +26,13 @@ public class ServiceToken {
     
 	 @Inject
     private DAOUtilisateur doaUtil;
+	
+	 @Inject
+	 private DAO dao;
+	
 	 
-    
     Logger LOGGER = Logger.getLogger(Demarrage.class.getName());
-
-    @Path("/login")
-	@PUT
-	public Token login(@QueryParam("courriel")   String pCourriel,
-	                   	 @QueryParam("motDePasse") String pMotDePasse) {
-    	LOGGER.info("ServiceToken->connect("+ pCourriel + "," + pMotDePasse+")" );
-    	 
-	    boolean ok = doaUtil.login(pCourriel, pMotDePasse);
-	    Token token =  new Token();
-	    token.setEtat(ok);
-	    
-	    return token;
-	}
+    
     
     
     @Path("/logoff")
@@ -51,32 +44,8 @@ public class ServiceToken {
     	//TODO
 	    return new Token();
 	}
-
-	@Path("/createUser")
-    @PUT
-    public Token createUser(@QueryParam("alias") 	  String pAalias,
-                       		@QueryParam("motDePasse") String pMotDePasse,
-                       		@QueryParam("courriel")   String pCourriel) {
-    	LOGGER.info("ServiceToken->createUser("+ pAalias + "," + pMotDePasse + "," + pCourriel+")" );
-    	 
-    	return doaUtil.creerUtilisateur(pAalias, pMotDePasse, pCourriel);
-    }
     
-    @Path("/confirmCreateUser")
-	@PUT
-	public Token confirmCreateUser(@QueryParam("idToken")    Long idToken,
-	                               @QueryParam("captchaVal") String captchaVal,
-	                               @QueryParam("courriel")   String pCourriel) {
-		LOGGER.info("ServiceToken->confirmCreateUser(" + idToken + "," +captchaVal+","+pCourriel+")" );
-		
-		boolean ok = daoToken.activerUser(idToken, captchaVal , pCourriel);
-		
-		Token tokenRetour = new Token();
-		tokenRetour.setEtat(ok);
-		tokenRetour.setAction("confirmCreerRetour");
-		
-	  return tokenRetour;
-	}
+    
     
     
     @Path("/getActionToken")
@@ -85,9 +54,16 @@ public class ServiceToken {
 		LOGGER.info("ServiceToken->getActionToken(" + pEMail +")" );
 		
 		//TODO querry user exist && isActive
-		boolean ok = true;
-		Token token = new Token();
+		Utilisateur util = dao.querrySingle("SELECT u FROM Utilisateur u WHERE u.Courriel = "+pEMail );
 		
-	  return token;
+		String message = "getActionToken";
+		if (util == null || !util.isActive()) {
+			message = ( !util.isActive() ?"Utilisateur non actif":"Utilisateur non existant");
+			return new Token(false, message);
+		}else {
+			 Token token = new Token(true, message , Token.generateRdmSalt() );
+			 return daoToken.persistToken(token);
+		}
+		
 	}
 }

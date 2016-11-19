@@ -16,11 +16,11 @@
  */
 package cgg.informatique.jfl.labo10.modeles;
 
+import java.util.Date;
+
 import javax.persistence.Access;
 import javax.persistence.AccessType;
 import javax.persistence.Column;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -31,6 +31,7 @@ import javax.xml.bind.annotation.XmlAccessorType;
  * fields:
  * <ul>
  * <li>id</li>
+ * <li>date</li>
  * </ul>
  * @author alexandrearsenault
  *
@@ -38,21 +39,57 @@ import javax.xml.bind.annotation.XmlAccessorType;
 @MappedSuperclass
 @Access(AccessType.FIELD)
 @XmlAccessorType(XmlAccessType.FIELD)
-public abstract class Modele {
+public abstract class ModeleDate extends Modele {
+	
+    /**
+     * The modification date
+     * (user expire if never confirm )
+     */
+    @Column(name = "Date") 
+    protected Date date; 
+    
 
 	/**
-	 *  An unique id for the DataBase
+	 * Get the last modification date  date.
+	 * @return date The last modification date
 	 */
-    @Id
-    @GeneratedValue
-    @Column(name = "ID", length=11)
-    protected int id;
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
+	public Date getDate() {
+		return date;
+	}
+	
+	/**
+	 * Set the last modification date to the current date.
+	 */
+	public void setDate() {
+		this.date = new Date();
+	}
+	
+	/**
+	 * Set the last modification date to the desired date.
+	 * @param pDate The desired date.
+	 */
+	public boolean setDate(Date pDate) {
+		boolean ok = validateDate(pDate);
+		this.date = (ok? pDate :this.date);
+		return ok;
+	}
+	
+	
+	/**
+	 * Validate an alias.<br>
+	 * <p>The policy for an object's date is:</p>
+	 * <ul>
+	 *  <li><p>XXXXXXXX</p></li>
+	 *  <li><p>YYYYYYYY</p></li>
+	 *	</ul>
+	 * @param pDate The alias to validate
+	 * @return ok
+	 */
+	public static boolean validateDate(Date pDate) {
+		boolean ok = true;
+		if (!ok) {
+			//TODO real date validation according to policy
+		}
+        return ok;
+	}
 }

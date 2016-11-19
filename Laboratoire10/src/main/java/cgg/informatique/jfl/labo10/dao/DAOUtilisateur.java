@@ -44,7 +44,7 @@ public class DAOUtilisateur {
     	List<Utilisateur>  desUtilisateur = dao.rechercheParRequete(Utilisateur.class, "utilisateur.list", 0 , 100 );
 	    for (int i = 0; i < desUtilisateur.size(); i++) {
 	    	if (desUtilisateur.get(i).getEMaill().equals(pCourriel) && 
-	    		desUtilisateur.get(i).getPassowrd().equals(pMotDePasse)   ) {
+	    		desUtilisateur.get(i).getPasowrd().equals(pMotDePasse)   ) {
 	    		ok = true;
 		    }
 		}
@@ -53,26 +53,34 @@ public class DAOUtilisateur {
 	}
     
     
-    public Token creerUtilisateur(String pAlias, String pCourriel, String pPasword) {
+
+    public Token creerUtilisateur(String pAlias, String pCourriel, String pPasword , int pIdAvatar) {
     	LOGGER.info("DAOUtilisateur->creerUtilisateur("+pAlias+","+ pCourriel+","+pPasword+")"  );
+        
+        // does't respect policy
+        if (!Utilisateur.validateAlias(pAlias) || !Utilisateur.validateEMaill(pCourriel) || !Utilisateur.validatePasowrd(pPasword) ) {
+        	String alias = (!Utilisateur.validateAlias(pAlias)?"Alias non compliant w/ policy! " :"");
+        	String email = (!Utilisateur.validateEMaill(pCourriel)?"EMail non compliant w/ policy! " :"");
+        	String pswd = (!Utilisateur.validatePasowrd(pPasword)?"Pswd non compliant w/ policy! " :"");
+        	Token token = new Token(false, email + alias + pswd);
+        	LOGGER.info("DAOUtilisateur->creerUtilisateur() ERROR : "+token.getAction()  );
+       	 return token;
+		}
+        // email &&|| alias already used  &&|| Avatar.id non-existing
+        boolean duplEmail  = (dao.querrySingle("SELECT u FROM Utilisateur u WHERE u.Courriel = "+pCourriel) != null);
+        boolean duplAlias  = (dao.querrySingle("SELECT u FROM Utilisateur u WHERE u.Alias = "   +pAlias   ) != null);
+        boolean AvatarExist = (dao.querrySingle("SELECT a FROM Avatar a WHERE a.id = "   +pIdAvatar   ) != null);
+        if ( duplEmail || duplAlias || !AvatarExist) {
+        	 Token token = new Token(false, (duplEmail?"EMail already used!":"")+
+        			 						(duplAlias?"Alias already used!":"")+
+        			 						(AvatarExist?"Avatar does'nt exist":"") );
+        	 LOGGER.info("DAOUtilisateur->creerUtilisateur() ERROR : "+token.getAction()  );
+        	 return token;
+		}
+        
         Token  token = new Token();
         token.setAction("creerUtilisateur");
         
-        //FIXME use querry to look up for email && alias are free
-        List<Utilisateur> desUtils = dao.rechercheParRequete(Utilisateur.class, "utilisateur.list", 0 ,100);
-        for (int i = 0; i < desUtils.size() ; i++) {
-			if ( false ) {  //FIXME
-				LOGGER.info("DAOUtilisateur->creerUtilisateur-> COURRIEL EXISTE DEJA ");
-				token.setAction("courriel deja pris");
-				LOGGER.info("DAOUtilisateur->creerUtilisateur-> ALIAS DEJA PRIS");
-				token.setAction("alias deja pris");
-				
-				
-				token.setEtat(false);
-				return token;
-			}
-			
-		}
         if ( token.getEtat() ) {
         	Utilisateur utilisateur = new Utilisateur(pAlias, pCourriel, pPasword);
             dao.creer(utilisateur);
@@ -91,7 +99,7 @@ public class DAOUtilisateur {
      * @param pCourriel
      * @return ok , if user exist and has
      */
-	public boolean activerUtil(String pCourriel ) {
+	public boolean activateUser(String pCourriel ) {
 		LOGGER.info("DAOUtilisateur->activerUtil(" + pCourriel + ")" );
         //FIXME use querry
 		Utilisateur utilisateur;
@@ -127,7 +135,7 @@ public class DAOUtilisateur {
             throw new IllegalArgumentException("MAJ id " + pId + " n\'existe pas!");
         }
          
-        utilisateur.setPassowrd(pPasword);
+        utilisateur.setPasowrd(pPasword);
         utilisateur.setEMaill(pAlias);
         return dao.modifier(utilisateur);
     }

@@ -16,6 +16,7 @@
  */
 package cgg.informatique.jfl.labo10.modeles;
 
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -23,6 +24,8 @@ import javax.persistence.Entity;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.xml.bind.annotation.XmlRootElement;
+
+import org.apache.commons.lang.RandomStringUtils;
 
 import cgg.informatique.jfl.labo10.services.serviceCaptcha;
 import cgg.informatique.jfl.labo10.utilitaires.MD5Digest;
@@ -65,8 +68,10 @@ public class Token extends Modele {
 	
 	
 	/**
-	 * 2 param constructor. 
+	 * 2 param constructor. (Error Token)<br> 
 	 * Create a token with : etat & action
+	 * @param pEtat
+	 * @param pAction
 	 */
 	public Token( boolean pEtat , String pAction) {
 		if ( validateAction(pAction) ) {
@@ -76,7 +81,58 @@ public class Token extends Modele {
 		else {
 			System.err.println("Token.constructor("+pEtat+""+pAction+") -> INVALIDE");
 		}
-		
+	}
+	
+	/**
+	 * 3 param constructor. (Action Token)<br>
+	 * Create a token with : etat , action & salt
+	 * @param pEtat
+	 * @param pAction
+	 * @param pSalt
+	 */
+	public Token( boolean pEtat , String pAction, String pSalt) {
+		if ( validateAction(pAction) && validateSalt(pSalt) ) {
+			this.etat = pEtat;
+			this.action = pAction;
+			this.salt = pSalt;
+		}
+		else {
+			System.err.println("Token.constructor("+pEtat+","+pAction+","+pSalt+") -> INVALIDE");
+		}
+	}
+	
+	/**
+	 * Generate a random salt that comply with the folowing policy 
+	 * <p>The policy for a token's salt is:</p>
+	 * <ul>
+	 *  <li><p>At least 8 chars</p></li>
+	 *  <li><p>No longer than 50 chars</p></li>
+	 *	</ul>
+	 * @return salt
+	 */
+	public static String generateRdmSalt() {
+		int length = ThreadLocalRandom.current().nextInt(8, 50 + 1);
+		return RandomStringUtils.randomAlphabetic( length );
+	}
+	
+	
+	/**
+	 * Generate a token with a random salt
+	 * @return Token
+	 */
+	public static Token generateConfirmationToken() {
+		Token token = new Token();
+		//token.
+	}
+	
+	/**
+	 * 
+	 * @param pEmail
+	 * @return token
+	 */
+	public static Token generateConfirmUserToken(String pEmail) {
+		Token token = new Token();
+		//token.
 	}
 	
 	
@@ -226,6 +282,15 @@ public class Token extends Modele {
 	 */
 	public void setEtat(Boolean etat) {
 		this.etat = etat;
+	}
+	
+	@Override
+	public String toString() {
+		String captchaStr = (this.captchaStr != null?"captcha = "+this.captchaStr+" ":"");
+		String action = (this.action != null?"action = "+this.action+" ":"");
+		String salt = (this.salt != null?"salt = "+this.salt+" ":"");
+		String etat = (this.captchaStr != null?"etat = "+this.etat.toString()+" ":"");
+		return "Token #"+this.id+" "+captchaStr+action+salt+etat;
 	}
     
 }

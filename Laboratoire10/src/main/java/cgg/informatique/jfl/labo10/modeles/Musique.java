@@ -1,6 +1,5 @@
 package cgg.informatique.jfl.labo10.modeles;
 
-import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.NamedQueries;
@@ -12,7 +11,7 @@ import javax.xml.bind.annotation.XmlRootElement;
    @NamedQuery(name = "musique.list", query = "select m from Musique m")
               })
 @XmlRootElement(name = "musique")
-public class Musique extends Modele  {
+public class Musique extends ModeleDate  {
 	
 	
 	/**
@@ -60,16 +59,8 @@ public class Musique extends Modele  {
 	@Column(name = "Active" , columnDefinition   ="TINYINT(1)" )
 	private boolean isActive;
 	
-	/**
-	 *  The last modification date
-	 */
-	@Column(name = "Date") 
-	private Date date;
 	
 	
-	
-	
-
 	/**
      * DO NOT USE it is useless 
      *  "Unenhanced classes must have a public or protected no-args constructor"
@@ -260,30 +251,6 @@ public class Musique extends Modele  {
 	 */
 	public void setActive(boolean pIsActive) {
 		this.isActive = pIsActive;
-	}
-	
-	/**
-	 * Get the last modification date.
-	 * @return
-	 */
-	public Date getDate() {
-		return date;
-	}
-	
-	/**
-	 *Set the last modification date to the current date.
-	 * @param date
-	 */
-	public void setDate() {
-		this.date = new Date();
-	}
-	
-	/**
-	 * Set the last modification date to the desired date.
-	 * @param pDate The desired date.
-	 */
-	public void setDate(Date pDate) {
-		this.date = new Date();
 	}
 	
 	@Override

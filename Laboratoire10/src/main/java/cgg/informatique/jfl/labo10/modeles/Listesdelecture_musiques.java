@@ -1,7 +1,5 @@
 package cgg.informatique.jfl.labo10.modeles;
 
-import java.util.Date;
-
 import javax.persistence.Column;
 
 /**
@@ -12,7 +10,7 @@ import javax.persistence.Column;
  * @author alexandrearsenault
  *
  */
-public class Listesdelecture_musiques extends Modele {
+public class Listesdelecture_musiques extends ModeleDate {
 	
     /**
      * The ID of the selected Avatar.
@@ -30,11 +28,6 @@ public class Listesdelecture_musiques extends Modele {
     private int song;
    
    
-   /**
-     * The last modification date.
-     */
-    @Column(name = "DATE") 
-    private Date date; 
 	   
 	   
 	   
@@ -88,29 +81,6 @@ public class Listesdelecture_musiques extends Modele {
 			this.song = pSong;
 		}
 		
-		/**
-		 * Get the last modification date  date.
-		 * @return date The last modification date
-		 */
-		public Date getDate() {
-			return date;
-		}
-		
-		/**
-		 *Set the last modification date to the current date.
-		 * @param date
-		 */
-		public void setDate() {
-			this.date = new Date();
-		}
-		
-		/**
-		 * Set the last modification date to the desired date.
-		 * @param pDate The desired date.
-		 */
-		public void setDate(Date pDate) {
-			this.date = pDate;
-		}
 		
 		@Override
 		public String toString() {

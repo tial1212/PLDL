@@ -18,6 +18,9 @@ package cgg.informatique.jfl.labo10.dao;
 
 import cgg.informatique.jfl.labo10.demarrage.Demarrage;
 import cgg.informatique.jfl.labo10.modeles.Token;
+import cgg.informatique.jfl.labo10.modeles.Utilisateur;
+import cgg.informatique.jfl.labo10.services.serviceCaptcha;
+
 import java.util.List;
 import java.util.logging.Logger;
 import javax.ejb.Lock;
@@ -37,12 +40,12 @@ public class DAOToken {
     
     Logger LOGGER = Logger.getLogger(Demarrage.class.getName());
     
-    public boolean activerUser(long pIdToken , String pCaptcha , String pCourriel) {
+    public Token activerUser(long pIdToken , String pCaptcha , String pCourriel) {
     	LOGGER.info("DAOToken->activerUser("+pIdToken+","+pCaptcha+","+pCourriel+")");
     	
     	Token token = rechercher(pIdToken);
-    	if ( token != null  && token.getCaptchaStr().equals( pCaptcha )              ) {
-    		boolean ok = daoUser.activerUtil( pCourriel );
+    	if ( token != null  && token.getCaptchaStr().equals( pCaptcha ) ) {
+    		boolean ok = daoUser.activateUser(pCourriel);
     		if(ok){
     			this.effacer(pIdToken);
     		}
@@ -56,6 +59,11 @@ public class DAOToken {
     	LOGGER.info("DAOToken->afficherListe("+pPremier+","+pDernier+")");
         return dao.rechercheParRequete(Token.class, "token.list", pPremier, pDernier);
     }
+    public Token persistToken(Token pToken ) {
+    	LOGGER.info("DAOToken->persistToken("+pToken.toString()+")"  );
+        return dao.creer(pToken);
+    }
+    
     
     public Token rechercher(long pId) {
     		LOGGER.info("DAOToken->rechercher("+pId+")");

@@ -16,7 +16,6 @@
  */
 package cgg.informatique.jfl.labo10.modeles;
 
-import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -31,45 +30,38 @@ import javax.xml.bind.annotation.XmlRootElement;
    @NamedQuery(name = "utilisateur.list", query = "select u from Utilisateur u")
               })
 @XmlRootElement(name = "utilisateur")
-public class Utilisateur extends Modele {
+public class Utilisateur extends ModeleDate {
 	/**
      * The E-mail of the user.
      */
-    @Column(name = "COURRIEL", length=50 , nullable = false , unique=true )
+    @Column(name = "Courriel", length=50 , nullable = false , unique=true )
     private String eMaill;
     
     /**
      * The pasword (MD5 encrypted ) of the user.
      */
-    @Column(name = "MOT_DE_PASSE", columnDefinition = "text")
+    @Column(name = "MotDePasse", columnDefinition = "text")
     private String pasword;
     
     /**
      * The displayed name of the user (NickName)
      */
-    @Column(name = "ALIAS", length=50)
+    @Column(name = "Alias", length=50)
     private String alias;
     
     /**
      * The ID of the selected Avatar.
      * @see Avatar#id
      */
-    @Column(name = "AVATAR", length=11)
+    @Column(name = "Avatar", length=11)
     private int avatar;
     
     /**
      * If the user has been activated 
      * (has validate captcha ) 
      */
-    @Column(name = "ACTIF" , columnDefinition   ="TINYINT(1)")
+    @Column(name = "Actif" , columnDefinition   ="TINYINT(1)")
     private boolean active;
-    
-    /**
-     * The modification date
-     * (user expire if never confirm )
-     */
-    @Column(name = "DATE") 
-    private Date date; 
     
     
 	/**
@@ -88,7 +80,7 @@ public class Utilisateur extends Modele {
 	 */
     public Utilisateur(String pAlias , String pEMaill, String pPasword ) {
     	super();
-    	if (validateAlias(pAlias) && validateEMaill(pEMaill) && validatePassowrd(pPasword) ) {
+    	if (validateAlias(pAlias) && validateEMaill(pEMaill) && validatePasowrd(pPasword) ) {
     		this.alias = pAlias;
     		this.eMaill = pEMaill;
     		this.pasword = pPasword;
@@ -147,19 +139,19 @@ public class Utilisateur extends Modele {
 	 * Get the user's pasword.
 	 * @return pasword
 	 */
-	public String getPassowrd() {
+	public String getPasowrd() {
 		return pasword;
 	}
 	
 	/**
 	 * 
 	 * Set the user's pasword.
-	 * @param pPassowrd The pasword to be set.
+	 * @param pPasword The pasword to be set.
 	 * @return ok if pasword has been changed.
 	 */
-	public boolean setPassowrd(String pPassowrd) {
-		boolean ok = validatePassowrd(pPassowrd);
-		this.pasword = (ok?pPassowrd:this.pasword);
+	public boolean setPasowrd(String pPasword) {
+		boolean ok = validatePasowrd(pPasword);
+		this.pasword = (ok?pPasword:this.pasword);
 		return ok;
 	}
 	
@@ -174,16 +166,16 @@ public class Utilisateur extends Modele {
 	 *	<li><p>Contains at least one char within a set of special chars (<code>@#%$^</code> etc.)</p></li>
 	 *	<li><p>Does not contain space, tab, etc.</p></li>
 	 *	</ul>
-	 * @param pPassowrd The pasword to validate.
+	 * @param pPasword The pasword to validate.
 	 * @return ok 
 	 */
-	public static boolean validatePassowrd(String pPassowrd) {
+	public static boolean validatePasowrd(String pPasword) {
 		Pattern VALID_EMAIL_ADDRESS_REGEX =  Pattern.compile("^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?=\\S+$).{8,}$", Pattern.CASE_INSENSITIVE);
-		Matcher matcher = VALID_EMAIL_ADDRESS_REGEX .matcher(pPassowrd);
-		int length = pPassowrd.length();
+		Matcher matcher = VALID_EMAIL_ADDRESS_REGEX .matcher(pPasword);
+		int length = pPasword.length();
 		boolean ok = matcher.find() && length<=50;
 		if (!ok) {
-			System.err.println("Utilisateur.validatePassowrd("+pPassowrd+") ->INVALIDE");
+			System.err.println("Utilisateur.validatePassowrd("+pPasword+") ->INVALIDE");
 		}
         return ok;
 	}
@@ -240,29 +232,6 @@ public class Utilisateur extends Modele {
 	 */
 	public void setActive(boolean pActive) {
 		this.active = pActive;
-	}
-	
-	/**
-	 * Get the last modification date  date.
-	 * @return date The last modification date
-	 */
-	public Date getDate() {
-		return date;
-	}
-	
-	/**
-	 * Set the last modification date to the current date.
-	 */
-	public void setDate() {
-		this.date = new Date();
-	}
-	
-	/**
-	 * Set the last modification date to the desired date.
-	 * @param pDate The desired date.
-	 */
-	public void setDate(Date pDate) {
-		this.date = new Date();
 	}
 	
 	@Override

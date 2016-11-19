@@ -87,14 +87,34 @@ public class DAO {
     }
     
     /**
-     * Execute a desired querry.
+     * Execute a desired querry.<br>
+     * ***MAKE SURE TO VERIFY THE RESULT***<br>
+     *  Might return empty list or even cause a roolback
      *
      *@param pQuerry , a querry to execute.
      * @return result , the result of the querry
      */
-    public int querry(String pQuerry) {
+    public <E> List<E> querry(String pQuerry) {
     	LOGGER.info("DAO->querry("+pQuerry+")" );
-    	
-    	return    em.createQuery(pQuerry).executeUpdate();
+    	Query query = em.createQuery("SELECT c FROM Country c");
+    	List<E> results = query.getResultList();
+    	return results;
+    }
+    
+    /**
+     * Execute a desired querry.<br>
+     * RETURNING 1 OBJECT.<br>
+     * ***MAKE SURE TO VERIFY THE RESULT***<br>
+     *  Might return empty or even cause a roolback
+     *
+     *@param pQuerry , a querry to execute.
+     * @return 
+     * @return result , the result of the querry
+     */
+    public <E> E querrySingle(String pQuerry) {
+    	LOGGER.info("DAO->querry("+pQuerry+")" );
+    	Query query = em.createNamedQuery(pQuerry);
+    	E results = (E) query.getSingleResult();
+    	return results;
     }
 }

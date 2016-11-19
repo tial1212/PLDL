@@ -72,7 +72,7 @@ public class ServiceUtilisateurTest {
         final UserServiceClientAPI client = JAXRSClientFactory.create(uri, UserServiceClientAPI.class);
         final Utilisateur retrievedUser = client.show(user.getId());
         assertNotNull(retrievedUser);
-        assertEquals("dummy", retrievedUser.getPassowrd());
+        assertEquals("dummy", retrievedUser.getPasowrd());
         assertEquals("foo@dummy.org", retrievedUser.getEMaill() );
     }
 
