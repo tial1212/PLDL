@@ -40,34 +40,26 @@ public class DAOToken {
     
     Logger LOGGER = Logger.getLogger(Demarrage.class.getName());
     
-    public Token activerUser(long pIdToken , String pCaptcha , String pCourriel) {
-    	LOGGER.info("DAOToken->activerUser("+pIdToken+","+pCaptcha+","+pCourriel+")");
-    	
-    	Token token = rechercher(pIdToken);
-    	if ( token != null  && token.getCaptchaStr().equals( pCaptcha ) ) {
-    		boolean ok = daoUser.activateUser(pCourriel);
-    		if(ok){
-    			this.effacer(pIdToken);
-    		}
-    		return ok;
-		} else {
-			return false ;
-		}
-	}
     
     public List<Token> afficherListe(int pPremier, int pDernier) {
     	LOGGER.info("DAOToken->afficherListe("+pPremier+","+pDernier+")");
         return dao.rechercheParRequete(Token.class, "token.list", pPremier, pDernier);
     }
+    
+    /**
+     * Create (persist) a token in database 
+     * @param pToken
+     * @return
+     */
     public Token persistToken(Token pToken ) {
     	LOGGER.info("DAOToken->persistToken("+pToken.toString()+")"  );
         return dao.creer(pToken);
     }
     
     
-    public Token rechercher(long pId) {
-    		LOGGER.info("DAOToken->rechercher("+pId+")");
-        return dao.rechercher(Token.class, pId);
+    public Token rechercher(long pIdUser) {
+    		LOGGER.info("DAOToken->rechercher("+pIdUser+")");
+        return dao.rechercher(Token.class, pIdUser);
     }
 
     public void effacer(long pId) {
@@ -75,17 +67,29 @@ public class DAOToken {
         dao.effacer(Token.class, pId);
     }
 
-    public Token modifier(long id, String pParam) {
-    		LOGGER.info("DAOToken->modifier("+id+","+pParam+")");
-    		Token token = dao.rechercher(Token.class, id);
+    public Token modifier(long pIdUser, String pParam) {
+    		LOGGER.info("DAOToken->modifier("+pIdUser+","+pParam+")");
+    		Token token = dao.rechercher(Token.class, pIdUser);
     		//token.setParam(param);    TODO 
     	return dao.modifier(token);
     }
     
     
-    public boolean confirmCanDoAction(long pIdToken, String pKey) {
-		boolean ok =false;
-		//TODO  real validation
-	return ok;
+    public Token confirmCanDoAction(long pIdToken, String pKey) {
+    	LOGGER.info("DAOToken->confirmCanDoAction("+pIdToken+","+pKey+")");
+		Token token = dao.querrySingle("SELECT t FROM Token WHERE t.id ="+pIdToken);
+		if (token != null) {
+			if (token.getSalt().equals(pKey) ) { //FIXME
+				Token token2 = new Token(false, "Token d'action");
+				LOGGER.info("DAOToken->confirmCanDoAction() SUCCESS");
+				return token2;
+			}
+			Token token3 = new Token(false, "Token inexistant");
+			LOGGER.info("DAOToken->confirmCanDoAction() ECHEC : "+token3.getAction() );
+			return token3;
+		}
+		Token token4 = new Token(false, "Token inexistant");
+		LOGGER.info("DAOToken->confirmCanDoAction() ECHEC : "+token4.getAction() );
+		return token4;
 }
 }

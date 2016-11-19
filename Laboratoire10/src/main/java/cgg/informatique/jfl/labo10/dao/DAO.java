@@ -42,6 +42,12 @@ public class DAO {
     private Logger LOGGER = Logger.getLogger(Demarrage.class.getName());
     private static Logger LOGGER2 = Logger.getLogger(Demarrage.class.getName());
     
+    
+    /**
+     * Persist an object
+     * @param e
+     * @return e
+     */
     public <E> E creer(E e) {
     	LOGGER.info("DAO->creer("+e+")" );
         em.persist(e);

@@ -18,14 +18,12 @@ package cgg.informatique.jfl.labo10.dao;
 import cgg.informatique.jfl.labo10.demarrage.Demarrage;
 import cgg.informatique.jfl.labo10.modeles.Token;
 import cgg.informatique.jfl.labo10.modeles.Utilisateur;
-import cgg.informatique.jfl.labo10.services.serviceCaptcha;
 
 import javax.ejb.Lock;
 import javax.ejb.LockType;
 import javax.ejb.Singleton;
 import javax.inject.Inject;
 
-import java.util.List;
 import java.util.logging.Logger;
 
 @Singleton
@@ -35,33 +33,93 @@ public class DAOUtilisateur {
     @Inject
     private DAO dao;
     
+    @Inject
+    private DAOToken daoToken;
+    
     Logger LOGGER = Logger.getLogger(Demarrage.class.getName()); 
     
     
-    
-    public boolean login(String pCourriel, String pMotDePasse) {
-    	boolean ok = false;
-    	List<Utilisateur>  desUtilisateur = dao.rechercheParRequete(Utilisateur.class, "utilisateur.list", 0 , 100 );
-	    for (int i = 0; i < desUtilisateur.size(); i++) {
-	    	if (desUtilisateur.get(i).getEMaill().equals(pCourriel) && 
-	    		desUtilisateur.get(i).getPasowrd().equals(pMotDePasse)   ) {
-	    		ok = true;
-		    }
+    /**
+     * Login as an existing user
+     * 
+     * to be able to login :<br>
+     * <ul>
+     * 	<li>User must exist</li>
+     * 	<li>User must be activated</li>
+     * 	<li>pswd must match</li>
+     * </ul>
+     * @param pCourriel
+     * @param pMotDePasse
+     * @return ok 
+     */
+    public Token login(String pCourriel, String pMotDePasse) {
+    	LOGGER.info("DAOUtilisateur->login( "+pCourriel+","+pMotDePasse+")");
+		
+    	Utilisateur utilisateur = dao.querrySingle(""); //FIXME
+	    if (utilisateur != null) {
+	    	if (utilisateur.isActive() ) {
+	    		if (utilisateur.getPasword().equals(pMotDePasse) ) {
+		    		Token token = new Token(true, "login succeed");
+			    	LOGGER.info("DAOUtilisateur->login() OK : "+token.getAction() );
+			    	return token;
+				}
+		    	Token token2 = new Token(false, "login failled");
+		    	LOGGER.info("DAOUtilisateur->login() ECHEC : user exist, wrong pswd" );
+		    	return token2;
+			}
+	    	Token token3 = new Token(false, "user not activated");
+	    	LOGGER.info("DAOUtilisateur->login() ECHEC : user exist, but not activated" );
+	    	return token3;
 		}
-	    LOGGER.info("DAOUtilisateur->login( "+pCourriel+","+pMotDePasse+") : SUCCESS="+ok + " nbUser="+desUtilisateur.size() );
-		return ok;
+	    Token token4 = new Token(false, "login failled");
+	    LOGGER.info("DAOUtilisateur->login() ECHEC : non existing user" );
+	    return token4;
 	}
     
     
-
-    public Token creerUtilisateur(String pAlias, String pCourriel, String pPasword , int pIdAvatar) {
-    	LOGGER.info("DAOUtilisateur->creerUtilisateur("+pAlias+","+ pCourriel+","+pPasword+")"  );
-        
+    public Token logoff(String pCourriel) {
+    	LOGGER.info("DAOUtilisateur->logoff( "+pCourriel+")");
+		
+    	Utilisateur utilisateur = dao.querrySingle("SELECT u FROM Utilisateur u WHERE u.Courriel = "+pCourriel );
+	    if (utilisateur != null) {
+	    	if (utilisateur.isActive() ) {
+	    		dao.querry("DELETE t FROM Token t WHERE t.Courriel = "+pCourriel );
+		    	Token token = new Token(false, "login failled");
+		    	LOGGER.info("DAOUtilisateur->logoff() ECHEC : user exist, wrong pswd" );
+		    	return token;
+			}
+	    	Token token2 = new Token(false, "user not activated");
+	    	LOGGER.info("DAOUtilisateur->logoff() ECHEC : user exist, but not activated" );
+	    	return token2;
+		}
+	    Token token3 = new Token(false, "login failled");
+	    LOGGER.info("DAOUtilisateur->logoff() ECHEC : non existing user" );
+	    return token3;
+	}
+    
+    /**
+     * Create an user
+     * To be valid :<br>
+     * <ul>
+     * 	<li>User's param must respect policy</li>
+     * 	<li>Email must be available</li>
+     * 	<li>Alias must be available</li>
+     *  <li>Avatar must exist</li>
+     * </ul>
+     * 
+     * @param pAlias
+     * @param pCourriel
+     * @param pPasword
+     * @param pIdAvatar
+     * @return
+     */
+    public Token createUser(String pAlias, String pCourriel, String pPasword , int pIdAvatar) {
+    	LOGGER.info("DAOUtilisateur->creerUtilisateur("+pAlias+","+ pCourriel+","+pPasword+","+pIdAvatar+")"  );
         // does't respect policy
         if (!Utilisateur.validateAlias(pAlias) || !Utilisateur.validateEMaill(pCourriel) || !Utilisateur.validatePasowrd(pPasword) ) {
-        	String alias = (!Utilisateur.validateAlias(pAlias)?"Alias non compliant w/ policy! " :"");
+        	String alias = (!Utilisateur.validateAlias(pAlias)    ?"Alias non compliant w/ policy! " :"");
         	String email = (!Utilisateur.validateEMaill(pCourriel)?"EMail non compliant w/ policy! " :"");
-        	String pswd = (!Utilisateur.validatePasowrd(pPasword)?"Pswd non compliant w/ policy! " :"");
+        	String pswd  = (!Utilisateur.validatePasowrd(pPasword)?"Pswd non compliant w/ policy! "  :"");
         	Token token = new Token(false, email + alias + pswd);
         	LOGGER.info("DAOUtilisateur->creerUtilisateur() ERROR : "+token.getAction()  );
        	 return token;
@@ -77,62 +135,81 @@ public class DAOUtilisateur {
         	 LOGGER.info("DAOUtilisateur->creerUtilisateur() ERROR : "+token.getAction()  );
         	 return token;
 		}
+        // create objects
+        Token  token = Token.generateConfirmUserToken(pCourriel );
+        Utilisateur utilisateur = new Utilisateur(pAlias, pCourriel, pPasword , pIdAvatar);
+        //persist objects
+        Token  token2 = dao.creer(token);
+        Utilisateur utilisateur2 = dao.creer(utilisateur);
         
-        Token  token = new Token();
-        token.setAction("creerUtilisateur");
         
-        if ( token.getEtat() ) {
-        	Utilisateur utilisateur = new Utilisateur(pAlias, pCourriel, pPasword);
-            dao.creer(utilisateur);
+        //verify that created object (in DB) are correct
+        // delete all if error 
+        if ( !token2.getEtat().equals(pCourriel) 		 || 
+        	 !utilisateur2.getEMaill().equals(pCourriel) || 
+        	 utilisateur2.getAvatar() != pIdAvatar 		 ||
+        	 !utilisateur2.getAlias().equals(pAlias )		 ||
+        	 !utilisateur2.getPasowrd().equals(pPasword)    ) {
+        	Token token3 = new Token(false, "erreur création user dans DB");
+        	LOGGER.info("DAOUtilisateur->creerUtilisateur() ERROR : "+token3.getAction()  );
+        	return token3;
 		}
         
-        
-        token.setEtat(true);
-        serviceCaptcha servCapt = new serviceCaptcha();
-        String captchaStr =  servCapt.getCaptchaStr();
-        token.setCaptchaStr(captchaStr  ) ;
-        return dao.creer(token);
+        return token;
     }
     
     /**
-     * 
+     * Activate an user 
+     * <ul><li>Token and User must exist</li>
+     * <li>captcha must match.</li></ul>
+     * @param pIdToken
+     * @param pCaptcha
      * @param pCourriel
-     * @return ok , if user exist and has
+     * @return
      */
-	public boolean activateUser(String pCourriel ) {
-		LOGGER.info("DAOUtilisateur->activerUtil(" + pCourriel + ")" );
-        //FIXME use querry
-		Utilisateur utilisateur;
-		List<Utilisateur> desUtils = dao.rechercheParRequete(Utilisateur.class, "utilisateur.list", 0 ,100);
-        for (int i = 0; i < desUtils.size() ; i++) {
-			if ( desUtils.get(i).getEMaill().equals(pCourriel)  ) { 
-				utilisateur = desUtils.get(i);
-				utilisateur.setActive(true);
-				break;
+    public Token activateUser(long pIdToken , String pCaptcha ) {
+    	LOGGER.info("DAOUtilisateur->activerUser("+pIdToken+","+pCaptcha+")");
+    	
+    	Token token = daoToken.rechercher(pIdToken);
+    	
+    	if (token != null && token.getCaptchaStr().equals(pCaptcha) ) {
+    		if (token.getEMail() != null) {
+    			Utilisateur utilisateurRequested = dao.querrySingle("SELECT u FROM Utilisateur u WHERE u.Courriel = "+token.getEMail() );
+                if (utilisateurRequested != null) {
+                	utilisateurRequested.setActive(true);
+                	dao.modifier(utilisateurRequested);
+                	daoToken.effacer(pIdToken);
+                	return new Token(true, "activation réussie");
+        		}
+                Token token2 = new Token(false, "utilisateur demander non existant");
+                LOGGER.info("DAOUtilisateur->activerUser() -> ECHEC : "+token2.getAction() );
+                return token2;
 			}
-			
+    		Token token3 = new Token(false, "token ne contien pas d'utilisateur ascocié");
+            LOGGER.info("DAOUtilisateur->activerUser() -> ECHEC : "+token3.getAction() );
+            return token3;
 		}
-		
-        return false;
+    	Token token4 = new Token(false, "token demander non existant");
+        LOGGER.info("DAOUtilisateur->activerUser() -> ECHEC : "+token4.getAction() );
+        return token4;
+	}
+
+
+    public Utilisateur rechercher(long pId) {
+    	LOGGER.info("DAOUtilisateur->rechercher("+pId+")");
+    	return dao.rechercher(Utilisateur.class, pId);
     }
 
-    public List<Utilisateur> afficherListe( int pPremier, int pDernier ) {
-    	LOGGER.info("DAOUtilisateur->afficherListe("+pPremier+","+pDernier+")");
-        return dao.rechercheParRequete(Utilisateur.class, "utilisateur.list", pPremier, pDernier);
+    public void effacer(long pId) {
+    	LOGGER.info("DAOUtilisateur->effacer("+pId+")");
+    	dao.effacer(Utilisateur.class, pId);
     }
 
-    public Utilisateur rechercher(long id) {
-        return dao.rechercher(Utilisateur.class, id);
-    }
-
-    public void effacer(long id) {
-        dao.effacer(Utilisateur.class, id);
-    }
-
-    public Utilisateur modifier(long pId, String pEMaill, String pPasword, String pAlias , int pAvatar) {
-        Utilisateur utilisateur = dao.rechercher(Utilisateur.class, pId);
+    public Utilisateur modifier(long pIdUser, String pEMaill, String pPasword, String pAlias , int pAvatar) {
+    	LOGGER.info("DAOUtilisateur->activerUser("+pIdUser+","+pEMaill+","+pPasword+","+pAlias+","+pAvatar+")");
+    	Utilisateur utilisateur = dao.rechercher(Utilisateur.class, pIdUser);
         if (utilisateur == null) {
-            throw new IllegalArgumentException("MAJ id " + pId + " n\'existe pas!");
+            throw new IllegalArgumentException("MAJ id " + pIdUser + " n\'existe pas!");
         }
          
         utilisateur.setPasowrd(pPasword);

@@ -17,16 +17,14 @@
 package cgg.informatique.jfl.labo10.modeles;
 
 import java.util.concurrent.ThreadLocalRandom;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import org.apache.commons.lang.RandomStringUtils;
-
 import cgg.informatique.jfl.labo10.services.serviceCaptcha;
 import cgg.informatique.jfl.labo10.utilitaires.MD5Digest;
 
@@ -60,6 +58,14 @@ public class Token extends Modele {
 	private Boolean etat;
 	
 	
+	
+    
+    /**
+     * The E-mail of the user requesting the action.
+     */
+    @Column(name = "Courriel", length=50 , nullable = false  )
+    private String eMail;
+	
 	/**
      * DO NOT USE it is useless 
      *  "Unenhanced classes must have a public or protected no-args constructor"
@@ -68,7 +74,7 @@ public class Token extends Modele {
 	
 	
 	/**
-	 * 2 param constructor. (Error Token)<br> 
+	 * 2 param constructor. (Succes/Error Token) <br> 
 	 * Create a token with : etat & action
 	 * @param pEtat
 	 * @param pAction
@@ -110,29 +116,57 @@ public class Token extends Modele {
 	 *	</ul>
 	 * @return salt
 	 */
-	public static String generateRdmSalt() {
+	private static String generateRdmSalt() {
 		int length = ThreadLocalRandom.current().nextInt(8, 50 + 1);
 		return RandomStringUtils.randomAlphabetic( length );
 	}
 	
-	
 	/**
-	 * Generate a token with a random salt
-	 * @return Token
-	 */
-	public static Token generateConfirmationToken() {
-		Token token = new Token();
-		//token.
-	}
-	
-	/**
-	 * 
+	 *  Generate a confirmation token used for an user activation.
 	 * @param pEmail
 	 * @return token
 	 */
-	public static Token generateConfirmUserToken(String pEmail) {
+	public static Token generateConfirmUserToken(String pEMaill) {
 		Token token = new Token();
-		//token.
+		token.setCaptchaStr(serviceCaptcha.getRdmCaptchaStr() );
+		token.setEMaill(pEMaill);
+		token.setAction("confirmation creer");
+		token.setEtat(true);
+		return token;
+	}
+	
+	/**
+	 *  Generate an action token. Used to confirm any action.
+	 * @param pEMail
+	 * @return Token
+	 */
+	public static Token generateActionToken(String pEMail) {
+		Token token = new Token();
+		token.setSalt( generateRdmSalt() );
+		token.setAction("action token");
+		token.setEMail(pEMail);
+		token.setEtat(true);
+		return token;
+	}
+	
+	
+	/**
+     * Get the e-mail of the user requesting the action.
+     * @return eMaill The E-mail of the user.
+     */
+	public String getEMail() {
+		return eMail;
+	}
+	
+	/**
+	 * Set the e-mail of the user requesting the action.
+	 * @param pEMaill,   The e-mail to be set
+	 * @return ok if email has been changed.
+	 */
+	public boolean setEMail(String pEMail) {
+		boolean ok = Utilisateur.validateEMaill(pEMail);
+		this.eMail = (ok?pEMail:this.eMail);
+		return ok;
 	}
 	
 	

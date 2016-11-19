@@ -16,6 +16,7 @@
  */
 package cgg.informatique.jfl.labo10.services;
 
+import cgg.informatique.jfl.labo10.dao.DAO;
 import cgg.informatique.jfl.labo10.dao.DAOToken;
 import cgg.informatique.jfl.labo10.dao.DAOUtilisateur;
 import cgg.informatique.jfl.labo10.demarrage.Demarrage;
@@ -24,15 +25,12 @@ import cgg.informatique.jfl.labo10.modeles.Utilisateur;
 
 import javax.ejb.EJB;
 import javax.ws.rs.DELETE;
-import javax.ws.rs.DefaultValue;
-import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
-import java.util.List;
 import java.util.logging.Logger;
 
 
@@ -47,7 +45,8 @@ public class ServiceUtilisateur {
     private DAOToken daoToken;
     
     @EJB
-	private DAOUtilisateur doaUtil;
+    private DAO dao;
+    
     private Logger LOGGER = Logger.getLogger(Demarrage.class.getName());
     
     
@@ -58,68 +57,86 @@ public class ServiceUtilisateur {
                        		@QueryParam("motDePasse") String pMotDePasse,
                        		@QueryParam("courriel")   String pCourriel,
                        		@QueryParam("avatar")     int    pIdAvatar) {
-    	LOGGER.info("ServiceToken->createUser("+ pAalias + "," + pMotDePasse + "," + pCourriel+")" );
-    	 
-    	return doaUtil.creerUtilisateur(pAalias, pMotDePasse, pCourriel, pIdAvatar);
+    	LOGGER.info("ServiceUtilisateur->createUser("+ pAalias + "," + pMotDePasse + "," + pCourriel+")" ); 
+    	return daoUtil.createUser(pAalias, pMotDePasse, pCourriel, pIdAvatar);
     }
     
     @Path("/confirmCreateUser")
 	@PUT
-	public Token confirmCreateUser(@QueryParam("idToken")    Long idToken,
-	                               @QueryParam("captchaVal") String captchaVal,
-	                               @QueryParam("courriel")   String pCourriel) {
-		LOGGER.info("ServiceToken->confirmCreateUser(" + idToken + "," +captchaVal+","+pCourriel+")" );
-		
-		boolean ok = daoToken.activerUser(idToken, captchaVal);
-		
-		Token tokenRetour = new Token();
-		tokenRetour.setEtat(ok);
-		tokenRetour.setAction("confirmCreerRetour");
-		
-	  return tokenRetour;
+	public Token confirmCreateUser(@QueryParam("idToken")    Long pIdToken,
+	                               @QueryParam("captchaVal") String pCaptchaVal) {
+		LOGGER.info("ServiceUtilisateur->confirmCreateUser(" + pIdToken + "," +pCaptchaVal+")" );
+		return daoUtil.activateUser(pIdToken, pCaptchaVal);
 	}
     
     @Path("/login")
 	@PUT
 	public Token login(@QueryParam("courriel")   String pCourriel,
 	                   	 @QueryParam("motDePasse") String pMotDePasse) {
-    	LOGGER.info("ServiceToken->connect("+ pCourriel + "," + pMotDePasse+")" );
-    	 
-	    boolean ok = doaUtil.login(pCourriel, pMotDePasse);
-	    Token token =  new Token();
-	    token.setEtat(ok);
-	    
+	    	LOGGER.info("ServiceUtilisateur->login("+ pCourriel + "," + pMotDePasse+")" );
+	    	Token token  = daoUtil.login(pCourriel, pMotDePasse);
 	    return token;
 	}
-
-    @Path("/afficher/{id}")
-    @GET
-    public Utilisateur afficher(@PathParam("id") long id) {
-        return daoUtil.rechercher(id);
-    }
     
+    @Path("/logoff")
+	@PUT
+	public Token logoff(@PathParam( "idToken")      long   pIdToken,
+            			@QueryParam("cle") 	      String pKey,
+            			@QueryParam("courriel")   String pCourriel) {
+    		LOGGER.info("ServiceUtilisateur->logoff("+pIdToken+","+pKey+","+pCourriel+")" );
+    		//TODO delete all token w/ user email is referenced
+    		
+    		Token token = daoToken.confirmCanDoAction(pIdToken, pKey );
+        	if ( token.getEtat()  ){
+        		return daoUtil.logoff(pCourriel);
+        		
+        	}
+	    return token;
+	}
     
     @Path("/modifier/{id}")
     @POST
-    public Utilisateur modifier(
-    		           @PathParam("idToken")      long   pIdToken,
+    public Token modifier(
+    		           @PathParam( "idToken")     long   pIdToken,
                        @QueryParam("cle") 	      String pKey,
-                       @PathParam("idUtil")       Long   pIdUser,
+                       @PathParam( "idUtil")      Long   pIdUser,
                        @QueryParam("courriel") 	  String pEMaill,
                        @QueryParam("motDePasse")  String pPasword,
                        @QueryParam("alias")       String pAlias,
                        @QueryParam("avatar")      int    pAvatar) {
-    
-    	if (daoToken.confirmCanDoAction(pIdToken, pKey )  ){
-    		return daoUtil.modifier(pIdUser, pEMaill, pPasword, pAlias, pAvatar);
+    	LOGGER.info("ServiceToken->modifier("+ pIdToken + ","+ pKey + ","+ pIdUser + ","+ pEMaill + ","+ pPasword + ","+ pAlias + ","+ pAvatar +")" );
+    	Token token = daoToken.confirmCanDoAction(pIdToken, pKey );
+    	if ( token.getEtat()  ){
+    		Utilisateur util =  daoUtil.modifier(pIdUser, pEMaill, pPasword, pAlias, pAvatar);
+    		if (util.getId() == pIdUser && 
+    			util.getAlias().equals(pAlias) &&
+    			util.getAvatar() == pAvatar &&
+    			util.getEMaill().equals(pEMaill) &&
+    			util.getPasowrd().equals(pPasword) ) {
+				return new Token(true, "Modification utilisateur ok");
+			}
 		}
-    	//FIXME
-        return new Utilisateur();
+    	return token;
     }
     
     @Path("/effacer/{id}")
     @DELETE
-    public void effacer(@PathParam("id") long id) {
-        daoUtil.effacer(id);
+    public Token effacer(
+    				@PathParam("idToken")     long   pIdToken,
+    				@QueryParam("cle") 	      String pKey,
+    				@PathParam("idUser") 	  long pIdUser) {
+    	LOGGER.info("ServiceToken->effacer("+ pIdToken + "," + pKey+ "," + pIdUser+")" );
+    	Token token = daoToken.confirmCanDoAction(pIdToken, pKey );
+    	if ( token.getEtat()  ){
+    		Utilisateur utilisateurRequested = dao.querrySingle("SELECT u FROM Utilisateur u WHERE u.Courriel = "+token.getEMail() );
+            if (utilisateurRequested != null) {
+            	daoUtil.effacer(utilisateurRequested.getId() );
+            	return new Token(true, "supression utilisateur réussie");
+    		}
+            Token token2 = new Token(false, "utilisateur demander non existant");
+            LOGGER.info("DAOUtilisateur->activerUser() -> ECHEC : "+token2.getAction() );
+            return token2;
+		}
+    	return token;
     }
 }

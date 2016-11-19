@@ -37,7 +37,7 @@ public class serviceCaptcha {
 	 */
 	@Path("/getCaptcha")
 	@GET
-	public String getCaptcha64(String pCaptcha) {
+	public static String getCaptcha64(String pCaptcha) {
 		Captcha captcha = new Captcha( pCaptcha   , 20);
 		return captcha.getCatpcha();
 	}
@@ -46,7 +46,7 @@ public class serviceCaptcha {
 	 * Get a random captcha from a static list.
 	 * @return captchaStr
 	 */
-	public String getCaptchaStr() {
+	public static String getRdmCaptchaStr() {
 		return listeCaptcha.get(new Random().nextInt( listeCaptcha.size() ) );
 	}
 

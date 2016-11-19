@@ -77,8 +77,9 @@ public class Utilisateur extends ModeleDate {
 	 * @param pAlias
 	 * @param pEMaill
 	 * @param pPasword
+	 * @param pAvatar
 	 */
-    public Utilisateur(String pAlias , String pEMaill, String pPasword ) {
+    public Utilisateur(String pAlias , String pEMaill, String pPasword , int pAvatar ) {
     	super();
     	if (validateAlias(pAlias) && validateEMaill(pEMaill) && validatePasowrd(pPasword) ) {
     		this.alias = pAlias;
@@ -233,7 +234,31 @@ public class Utilisateur extends ModeleDate {
 	public void setActive(boolean pActive) {
 		this.active = pActive;
 	}
-	
+	//TODO javadoc
+	public String geteMaill() {
+		return eMaill;
+	}
+
+	public void seteMaill(String eMaill) {
+		this.eMaill = eMaill;
+	}
+
+	public String getPasword() {
+		return pasword;
+	}
+
+	public void setPasword(String pasword) {
+		this.pasword = pasword;
+	}
+
+	public int getAvatar() {
+		return avatar;
+	}
+
+	public void setAvatar(int avatar) {
+		this.avatar = avatar;
+	}
+
 	@Override
 	public String toString() {
 		return "User '"+this.eMaill+"' goes by '"+this.alias+"'It has :"+(this.active?" ":" not " ) +" been activated ";
