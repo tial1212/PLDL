@@ -38,7 +38,7 @@ public class DAOAvatar {
     public Avatar creer(String pNom, String pAvatar ) {
     	LOGGER.info("DAOAvatar->creer("+pNom+","+pAvatar+")" );
     	Avatar avatar = new Avatar(pNom, pAvatar);
-    	return dao.creer(avatar);
+    	return dao.persist(avatar);
     }
     
     public List<Avatar> afficherListe(int pPremier, int pDernier) {
@@ -48,17 +48,17 @@ public class DAOAvatar {
     
     public Avatar rechercher(int pId) {
     	LOGGER.info("DAOAvatar->rechercher("+pId+")" );
-        return dao.rechercher(Avatar.class, pId);
+        return dao.find(Avatar.class, pId);
     }
     
     public void effacer(int pId) {
     	LOGGER.info("DAOAvatar->effacer("+pId+")" );
-        dao.effacer(Avatar.class, pId);
+        dao.remove(Avatar.class, pId);
     }
     
     public Avatar modifier(long pId, String pNom , String pAvatar ) {
     	LOGGER.info("DAOAvatar->modifier("+pId+","+pNom+","+pAvatar+")" );
-    	Avatar avatar = dao.rechercher(Avatar.class, pId);
+    	Avatar avatar = dao.find(Avatar.class, pId);
         if (avatar == null) {
             throw new IllegalArgumentException("DAOAvatar->modifier("+pId+","+pNom+","+pAvatar+") :" + pId + " n\'existe pas!");
         }

@@ -53,43 +53,76 @@ public class DAOToken {
      */
     public Token persistToken(Token pToken ) {
     	LOGGER.info("DAOToken->persistToken("+pToken.toString()+")"  );
-        return dao.creer(pToken);
+        return dao.persist(pToken);
     }
     
     
     public Token rechercher(long pIdUser) {
     		LOGGER.info("DAOToken->rechercher("+pIdUser+")");
-        return dao.rechercher(Token.class, pIdUser);
+        return dao.find(Token.class, pIdUser);
     }
 
     public void effacer(long pId) {
     		LOGGER.info("DAOToken->effacer("+pId+")");
-        dao.effacer(Token.class, pId);
+        dao.remove(Token.class, pId);
     }
 
     public Token modifier(long pIdUser, String pParam) {
     		LOGGER.info("DAOToken->modifier("+pIdUser+","+pParam+")");
-    		Token token = dao.rechercher(Token.class, pIdUser);
+    		Token token = dao.find(Token.class, pIdUser);
     		//token.setParam(param);    TODO 
     	return dao.modifier(token);
     }
     
-    
+    /**
+     * Confirm that the action can be executed
+     *  <ul>
+     * 	<li>Token must exist</li>
+     *  <li>key must match </li>
+     *  <li>Token must be an ActionToken </li>
+     * </ul>
+     * key = psdw.salted<br>
+     * 
+     * @param pIdToken
+     * @param pKey
+     * @return
+     */
     public Token confirmCanDoAction(long pIdToken, String pKey) {
     	LOGGER.info("DAOToken->confirmCanDoAction("+pIdToken+","+pKey+")");
 		Token token = dao.querrySingle("SELECT t FROM Token WHERE t.id ="+pIdToken);
 		if (token != null) {
-			if (token.getSalt().equals(pKey) ) { //FIXME
-				Token token2 = new Token(false, "Token d'action");
-				LOGGER.info("DAOToken->confirmCanDoAction() SUCCESS");
+			if ( !token.getAction().equals(Token.txtActionToken ) ) { 
+				Token token2 = new Token(false, "Token is not an action token");
+				LOGGER.info("DAOToken->confirmCanDoAction() SUCCESS : "+token2.getAction());
 				return token2;
 			}
-			Token token3 = new Token(false, "Token inexistant");
-			LOGGER.info("DAOToken->confirmCanDoAction() ECHEC : "+token3.getAction() );
-			return token3;
+			
+			if (token.getSalt().equals(pKey) ) { //FIXME
+				Token token3 = new Token(false, "Token can do action");
+				LOGGER.info("DAOToken->confirmCanDoAction() SUCCESS");
+				return token3;
+			}
+			else{
+				Token token4 = new Token(false, "Key non valide");
+				LOGGER.info("DAOToken->confirmCanDoAction() ECHEC : "+token4.getAction() );
+				return token4;
+			}
+			
 		}
-		Token token4 = new Token(false, "Token inexistant");
-		LOGGER.info("DAOToken->confirmCanDoAction() ECHEC : "+token4.getAction() );
-		return token4;
-}
+		Token token5 = new Token(false, "Token inexistant");
+		LOGGER.info("DAOToken->confirmCanDoAction() ECHEC : "+token5.getAction() );
+		return token5;
+    }
+    
+    /**
+     * 
+     * @param pIdToken
+     * @param pKey
+     * @return
+     */
+    public int getUserForToken(org.apache.taglibs.standard.lang.jstl.parser.Token pIdToken) {
+    	LOGGER.info("DAOToken->getUserForToken("+pIdToken.toString()+")");
+		//FIXME
+		return -1;
+    }
 }

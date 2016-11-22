@@ -36,6 +36,15 @@ import cgg.informatique.jfl.labo10.utilitaires.MD5Digest;
 public class Token extends Modele {
 	
 	/**
+	 * Describe an action token's action
+	 */
+	public static String txtActionToken =  "action token";
+	/**
+	 * Describe a user confirmation token's action
+	 */
+	public static String txtConfirmToken = "confirmation creer";
+	
+	/**
 	 * The string value of the captcha 
 	 */
     private String captchaStr;
@@ -126,11 +135,11 @@ public class Token extends Modele {
 	 * @param pEmail
 	 * @return token
 	 */
-	public static Token generateConfirmUserToken(String pEMaill) {
+	public static Token generateConfirmUserToken(String pEMail) {
 		Token token = new Token();
 		token.setCaptchaStr(serviceCaptcha.getRdmCaptchaStr() );
-		token.setEMaill(pEMaill);
-		token.setAction("confirmation creer");
+		token.setEMail(pEMail);
+		token.setAction(txtConfirmToken);
 		token.setEtat(true);
 		return token;
 	}
@@ -143,7 +152,7 @@ public class Token extends Modele {
 	public static Token generateActionToken(String pEMail) {
 		Token token = new Token();
 		token.setSalt( generateRdmSalt() );
-		token.setAction("action token");
+		token.setAction(txtActionToken);
 		token.setEMail(pEMail);
 		token.setEtat(true);
 		return token;

@@ -31,12 +31,12 @@ import java.util.logging.Logger;
 public class DAOUtilisateur {
 
     @Inject
-    private DAO dao;
+    private static DAO dao;
     
     @Inject
     private DAOToken daoToken;
     
-    Logger LOGGER = Logger.getLogger(Demarrage.class.getName()); 
+    static Logger LOGGER = Logger.getLogger(Demarrage.class.getName()); 
     
     
     /**
@@ -139,8 +139,8 @@ public class DAOUtilisateur {
         Token  token = Token.generateConfirmUserToken(pCourriel );
         Utilisateur utilisateur = new Utilisateur(pAlias, pCourriel, pPasword , pIdAvatar);
         //persist objects
-        Token  token2 = dao.creer(token);
-        Utilisateur utilisateur2 = dao.creer(utilisateur);
+        Token  token2 = dao.persist(token);
+        Utilisateur utilisateur2 = dao.persist(utilisateur);
         
         
         //verify that created object (in DB) are correct
@@ -195,33 +195,132 @@ public class DAOUtilisateur {
 	}
 
 
-    public Utilisateur rechercher(long pId) {
+    public static  Utilisateur rechercher(long pId) {
     	LOGGER.info("DAOUtilisateur->rechercher("+pId+")");
-    	return dao.rechercher(Utilisateur.class, pId);
+    	return dao.find(Utilisateur.class, pId);
     }
 
     public void effacer(long pId) {
     	LOGGER.info("DAOUtilisateur->effacer("+pId+")");
-    	dao.effacer(Utilisateur.class, pId);
-    }
-
-    public Utilisateur modifier(long pIdUser, String pEMaill, String pPasword, String pAlias , int pAvatar) {
-    	LOGGER.info("DAOUtilisateur->activerUser("+pIdUser+","+pEMaill+","+pPasword+","+pAlias+","+pAvatar+")");
-    	Utilisateur utilisateur = dao.rechercher(Utilisateur.class, pIdUser);
-        if (utilisateur == null) {
-            throw new IllegalArgumentException("MAJ id " + pIdUser + " n\'existe pas!");
-        }
-         
-        utilisateur.setPasowrd(pPasword);
-        utilisateur.setEMaill(pAlias);
-        return dao.modifier(utilisateur);
+    	dao.remove(Utilisateur.class, pId);
     }
     /**
-    private String eMaill;
-    private String pasword;
-    private String alias;
-    private int avatar;
-    private boolean active;
-    **/
+     * Modify an user
+     * <ul>
+	 *  <li>User must exist</li>
+     *  <li>Pswd must comply policy</li> 
+     * 	<li>Alias must comply policy</li>
+     *  <li>Avatar must exist</li>
+     *  <li>Avatar must exist</li>
+     * 	<li>Song must belong to the user</li>
+     * </ul>
+     * 
+     * @param pIdUser
+     * @param pPasword
+     * @param pAlias
+     * @param pAvatar
+     * @return
+     */
+    public Token modifier(long pIdUser,  String pPasword, String pAlias , int pAvatar) {
+    	LOGGER.info("DAOUtilisateur->modifier("+pIdUser+","+pPasword+","+pAlias+","+pAvatar+")");
+    	Utilisateur utilisateur = dao.find(Utilisateur.class, pIdUser);
+        if (utilisateur == null) {
+            return null;
+        }
+        //FIXME 
+        boolean okUserExist  = false;
+        boolean okPswd  = Utilisateur.validatePasowrd(pPasword);
+        boolean okAlias = Utilisateur.validateAlias(pAlias);
+        boolean okAliasAvailable = false;
+        boolean okAvatar = false;
+        
+        
+        if ( !okUserExist || !okPswd || !okAlias || !okAliasAvailable || !okAvatar  ) {
+        	String action = (okUserExist?"":"Utilisateur inexistant! ")+(okPswd?"":"Pswd non conforme! ") + 
+		    (okAlias?"":"Alias non conforme! ")+(okAliasAvailable?"":"Alias déjà pris! ")+
+		    (okAvatar?"":"Avatar non existant! ");
+        	return new Token( false , action ) ;
+		}
+        else{
+        	return null;
+        	//dao.modifier(utilisateur);
+        }
+    }
     
+    /**
+     * Check if user is existing from an User Email,
+     * @param pEMaill
+     * @return ok
+     */
+    public static boolean isUserExisting(String pEMaill){
+    	
+    	Utilisateur utilisateurRequested = dao.querrySingle("SELECT u FROM Utilisateur u WHERE u.Courriel = "+pEMaill );
+    	boolean ok = (utilisateurRequested != null);
+        LOGGER.info("DAOUtilisateur->isUserExisting("+pEMaill+") : "+(ok?"YES" : "NO" ) );
+    	
+        return ok;
+    }
+    
+    /**
+     * Check if user is existing from an User ID,
+     * @param pIdUser
+     * @return ok
+     */
+    public static boolean isUserExisting(int pIdUser){
+    	Utilisateur utilisateurRequested = rechercher(pIdUser);
+    	boolean ok = (utilisateurRequested != null);
+        LOGGER.info("DAOUtilisateur->isUserExisting("+pIdUser+") : "+(ok?"YES" : "NO" ) );
+        return ok;
+    }
+    
+    /**
+     * Check if user is activated from an User Email,
+     * @param pEMaill
+     * @return ok
+     */
+    public static boolean isUserActivated(String pEMaill){
+    	boolean okExist = isUserExisting(pEMaill);
+    	if (!okExist) {
+    		LOGGER.info("DAOUtilisateur->isUserActivated("+pEMaill+") : user DOESN'T exist" );
+            return false;
+		}
+    	Utilisateur utilisateurRequested = dao.querrySingle("SELECT u FROM Utilisateur u WHERE u.Courriel = "+pEMaill );
+    	boolean okActivated = utilisateurRequested.isActive();
+        LOGGER.info("DAOUtilisateur->isUserActivated("+pEMaill+") : "+(okActivated?"YES" : "NO" ) );
+        return okActivated;
+    }
+    
+    
+    /**
+     * Check if user is activated from an User ID,
+     * @param pIdUser
+     * @return ok
+     */
+    public static boolean isUserActivated(int pIdUser){
+    	boolean okExist = isUserExisting(pIdUser);
+    	if (!okExist) {
+    		LOGGER.info("DAOUtilisateur->isUserActivated("+pIdUser+") : user DOESN'T exist" );
+            return false;
+		}
+    	Utilisateur utilisateurRequested = rechercher(pIdUser);
+    	boolean okActivated = utilisateurRequested.isActive();
+        LOGGER.info("DAOUtilisateur->isUserActivated("+pIdUser+") : "+(okActivated?"YES" : "NO" ) );
+        return okActivated;
+        
+    }
+    /**
+     * Get the User.id for an EMail.
+     * <br> !!!MIGTH!!!<br> return -1 if user doesn't exist
+     * @param pEMaill
+     * @return id
+     */
+    public static int getIdForUser(String pEMaill){
+    	Utilisateur utilisateurRequested = dao.querrySingle("SELECT u FROM Utilisateur u WHERE u.Courriel = "+pEMaill );
+    	if (utilisateurRequested != null ) {
+    		utilisateurRequested.getId();
+		}
+    	return -1;
+    	
+        
+    }
 }

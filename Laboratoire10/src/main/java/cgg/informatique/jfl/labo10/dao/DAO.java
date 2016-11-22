@@ -44,12 +44,12 @@ public class DAO {
     
     
     /**
-     * Persist an object
-     * @param e
-     * @return e
+     * Persist an object in DB
+     * @param e The object to persist
+     * @return e The persisted object
      */
-    public <E> E creer(E e) {
-    	LOGGER.info("DAO->creer("+e+")" );
+    public <E> E persist(E e) {
+    	LOGGER.info("DAO->persist("+e+")" );
         em.persist(e);
        
         return e;
@@ -60,16 +60,35 @@ public class DAO {
         return em.merge(e);
     }
     
-    public <E> void effacer(Class<E> clazz, long pId) {
-    	LOGGER.info("DAO->effacer("+clazz+","+pId+")" );
+    /**
+     * remove an object in DB
+     * @param clazz The class of desired object
+     * @param pId
+     */
+    public <E> void remove(Class<E> clazz, long pId) {
+    	LOGGER.info("DAO->remove("+clazz+","+pId+")" );
         em.remove(em.find(clazz, pId));
     }
     
-    public <E> E rechercher(Class<E> clazz, long id) {
+    /**
+     * Find an object by id
+     * @param clazz The class of desired object
+     * @param id 
+     * @return
+     */
+    public <E> E find(Class<E> clazz, long id) {
     	LOGGER.info("DAO->find("+clazz+","+id+")" );
         return em.find(clazz, id);
     }
     
+    /**
+     * Find an object List by id
+     * @param clazz The class of desired objects
+     * @param query
+     * @param premier First index from result
+     * @param dernier Last index from result
+     * @return
+     */
     public <E> List<E> find(Class<E> clazz, String query, int premier, int dernier) {
     	LOGGER.info("DAO->find("+clazz+","+query+","+premier+","+dernier+")" );
         return queryRange(em.createQuery(query, clazz), premier, dernier).getResultList();
