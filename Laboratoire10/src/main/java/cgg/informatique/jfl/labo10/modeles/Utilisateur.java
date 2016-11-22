@@ -235,28 +235,26 @@ public class Utilisateur extends ModeleDate {
 		this.active = pActive;
 	}
 	//TODO javadoc
-	public String geteMaill() {
-		return eMaill;
-	}
-
-	public void seteMaill(String eMaill) {
-		this.eMaill = eMaill;
-	}
-
-	public String getPasword() {
-		return pasword;
-	}
-
-	public void setPasword(String pasword) {
-		this.pasword = pasword;
-	}
-
+	
+	
+	/**
+	 * Get the avatar id for the user.
+	 * 
+	 * @return avatar
+	 * @see Avatar#id
+	 */
 	public int getAvatar() {
 		return avatar;
 	}
-
-	public void setAvatar(int avatar) {
-		this.avatar = avatar;
+	
+	/**
+	 * Set the avatar id.
+	 * 
+	 * @param pIdAvatar
+	 * @see Avatar#id
+	 */
+	public void setAvatar(int pIdAvatar) {
+		this.avatar = pIdAvatar;
 	}
 
 	@Override

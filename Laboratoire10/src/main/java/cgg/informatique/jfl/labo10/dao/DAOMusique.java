@@ -122,15 +122,14 @@ public class DAOMusique {
 		}
         Musique musique = dao.persist(new Musique(pIdOwner, pTitle, pArtist, pMusic, pCoverArt, pIsPublic, pIsActive) );
        
-        //verify that created object (in DB) are correct
-        // delete all if error 
+        //verify that modified object (in DB) are correct
         if ( !musique.getTitle().equals(pTitle) 	 || 
         	 !musique.getArtist().equals(pArtist)  	 || 
         	 !musique.getMusic().equals(pMusic)  	 ||
         	 !musique.getCoverArt().equals(pCoverArt)||
         	  musique.isPublic() != pIsPublic  		 ||
         	  musique.isActive() !=pIsActive         ) {
-        	Token token2 = new Token(false, "erreur création musique dans DB");
+        	Token token2 = new Token(false, "erreur modification musique dans DB");
         	LOGGER.info("DAOMusique->createMusique() ERROR : "+token2.getAction()  );
         	return token2;
 		}
@@ -166,8 +165,7 @@ public class DAOMusique {
     	boolean okFinal 		 = tokenExist && tokenIsAction && userExist && songExist && songBelongToUser ;
     	
     	if (!tokenExist || !tokenIsAction) {
-    		return new Token(false , "Error "+(pActive?"":"des")+"activating song : ");
-    		Token token2 = new Token(false, "erreur création musique dans DB");
+    		Token token2 = new Token(false, (tokenExist?"Token pas ActionToken":"Token inexistant") );
         	LOGGER.info("DAOMusique->creerUtilisateur() ERROR : "+token2.getAction()  );
         	return token2;
 		}
@@ -194,6 +192,6 @@ public class DAOMusique {
      * @return
      */
     public Token setPublic(long pIdSong , int pIdToken , boolean pActive ) {
-    	
+    	return new Token(false , "TODO");
     }
 }

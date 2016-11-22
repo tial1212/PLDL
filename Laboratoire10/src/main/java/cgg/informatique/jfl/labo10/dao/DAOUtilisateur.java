@@ -36,6 +36,9 @@ public class DAOUtilisateur {
     @Inject
     private DAOToken daoToken;
     
+    @Inject
+    private DAOUtilisateur daoUtil;
+    
     static Logger LOGGER = Logger.getLogger(Demarrage.class.getName()); 
     
     
@@ -218,32 +221,39 @@ public class DAOUtilisateur {
      * @param pIdUser
      * @param pPasword
      * @param pAlias
-     * @param pAvatar
+     * @param pIdAvatar
      * @return
      */
-    public Token modifier(long pIdUser,  String pPasword, String pAlias , int pAvatar) {
-    	LOGGER.info("DAOUtilisateur->modifier("+pIdUser+","+pPasword+","+pAlias+","+pAvatar+")");
+    public Token modifier(long pIdUser,  String pPasword, String pAlias , int pIdAvatar) {
+    	LOGGER.info("DAOUtilisateur->modifier("+pIdUser+","+pPasword+","+pAlias+","+pIdAvatar+")");
     	Utilisateur utilisateur = dao.find(Utilisateur.class, pIdUser);
-        if (utilisateur == null) {
-            return null;
-        }
-        //FIXME 
-        boolean okUserExist  = false;
+        boolean okUserExist  = DAOUtilisateur.rechercher(pIdUser) != null ;
         boolean okPswd  = Utilisateur.validatePasowrd(pPasword);
         boolean okAlias = Utilisateur.validateAlias(pAlias);
-        boolean okAliasAvailable = false;
+        boolean okAliasAvailable = dao.querry("SELECT u FROM Utilisateur u WHERE u.Alias").size() == 0;
         boolean okAvatar = false;
-        
         
         if ( !okUserExist || !okPswd || !okAlias || !okAliasAvailable || !okAvatar  ) {
         	String action = (okUserExist?"":"Utilisateur inexistant! ")+(okPswd?"":"Pswd non conforme! ") + 
 		    (okAlias?"":"Alias non conforme! ")+(okAliasAvailable?"":"Alias déjà pris! ")+
 		    (okAvatar?"":"Avatar non existant! ");
         	return new Token( false , action ) ;
-		}
-        else{
-        	return null;
-        	//dao.modifier(utilisateur);
+		}else{
+			// try modification
+			utilisateur.setDate();
+			utilisateur.setPasowrd(pPasword);
+			utilisateur.setAlias(pAlias);
+			utilisateur.setAvatar(pIdAvatar);
+			Utilisateur utilRetour = dao.modifier(utilisateur);
+			// test if modification ok
+			if ( !utilRetour.getPasowrd().equals(pPasword)		|| 
+		        	 !utilRetour.getAlias().equals(pAlias)		|| 
+		        	  utilRetour.getAvatar() != pIdAvatar   ) {
+	        	Token token2 = new Token(false, "erreur modification utilisateur dans DB");
+	        	LOGGER.info("DAOUtilisateur->modifier() ERROR : "+token2.getAction()  );
+	        	return token2;
+			}
+			return new Token( true , "modifier OK" ) ;
         }
     }
     
