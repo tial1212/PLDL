@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+
+  <meta charset="UTF-8" />
+  <title>Page de Test pour les Services</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <link href="styles/reset.css" type="text/css" rel="stylesheet" />
+  <link href="styles/main.css" type="text/css" rel="stylesheet" />
+
+  <script type="text/javascript">
+    
+    let serverPath = 'localhost:8080';
+    let serviceCommonPath = 'service';
+    let servicePathGroups = { user : 'user' };
+    
+    window.onload = function onload() {
+      createServiceTester('servicesTesterPlaceHolder', 'Login', 'login',
+        servicePathGroups.user, [ 'Identifiant:username', 'Mot de Passe:password' ]);
+    }
+    
+    /// <summary>
+    /// Creates a <section> tag containing everything to test a service and puts it in the specified placeholder <div>
+    ///
+    /// Author: Michel Bussiere
+    /// </summary>
+    /// <param name="placeholder">The placeholder in which the element will be placed in</param>
+    /// <param name="title">The title that will appear above the service</param>
+    /// <param name="serviceName">The name of the service</param>
+    function createServiceTester(placeholder, title, serviceName, servicePathGroup, parameters) {
+      let service = new Object();
+      service.serviceName = serviceName;
+      service.servicePathGroup = servicePathGroup;
+      service.parameters = parameters;
+      
+      if (typeof placeholder === 'string')
+        placeholder = document.getElementById(placeholder);
+      
+      let section = document.createElement('section');
+      
+      let h2 = document.createElement('h2');
+      h2.innerHTML = title;
+      section.appendChild(h2);
+
+      if (parameters.length > 0) {
+        let lblTextAndParamName;
+        
+        let divLblInput;
+        let lblParam
+        let inputParam;
+
+        for (let i = 0; i < parameters.length; i++) {
+          lblTextAndParamName = parameters[i].split(':');
+          
+          divLblInput = document.createElement('div');
+          divLblInput.className = 'lbl-input';
+
+          lblParam = document.createElement('label');
+          lblParam.setAttribute('for', lblTextAndParamName[1]);
+          lblParam.innerHTML = lblTextAndParamName[0] + ' :';
+          divLblInput.appendChild(lblParam);
+          
+          inputParam = document.createElement('input');
+          inputParam.type = 'text';
+          inputParam.id = service.serviceName + '_' + lblTextAndParamName[1];
+          inputParam.placeholder = parameters[i];
+          divLblInput.appendChild(inputParam);
+
+          section.appendChild(divLblInput);
+        }
+      }
+      
+      let divButtonGroup = document.createElement('div');
+      divButtonGroup.className = 'button-group';
+      section.appendChild(divButtonGroup);
+      
+      let btnPreviewQuerry = document.createElement('input');
+      btnPreviewQuerry.type = 'button';
+      btnPreviewQuerry.id = serviceName + '_previewQuerry';
+      btnPreviewQuerry.value = 'Aperçu';
+      btnPreviewQuerry.onclick = function() { previewQuerry(service); };
+      divButtonGroup.appendChild(btnPreviewQuerry);
+      
+      let btnSubmitQuerry = document.createElement('input');
+      btnSubmitQuerry.type = 'button';
+      btnSubmitQuerry.id = serviceName + '_submitQuerry';
+      btnSubmitQuerry.value = 'Envoyer';
+      btnSubmitQuerry.onclick = '';
+      divButtonGroup.appendChild(btnSubmitQuerry);
+
+      let divPreviewQuerryResult = document.createElement('div');
+      divPreviewQuerryResult.id = serviceName + '_previewQuerryResult';
+      divPreviewQuerryResult.className = 'previewQuerryResult no-display';
+      section.appendChild(divPreviewQuerryResult);
+
+      placeholder.appendChild(section);
+    }
+
+    function buildQuerry(service) {
+      let servicePathWithParam = serviceCommonPath + '/' + service.servicePathGroup
+        + '/' + service.serviceName;
+      let parameters = service.parameters;
+
+      for (let i = 0; i < parameters.length; i++) {
+        if (i == 0)
+          servicePathWithParam += '?';
+        else
+          servicePathWithParam += '&';
+
+        let lblTextAndParamName = parameters[i].split(':');
+        
+        inputParam = document.getElementById(service.serviceName + '_' + lblTextAndParamName[1]);
+
+        servicePathWithParam += lblTextAndParamName[1] + '='
+            + (inputParam.value != '' ? inputParam.value : lblTextAndParamName[0].toUpperCase());
+      }
+
+      return servicePathWithParam;
+    }
+    
+    function previewQuerry(service) {
+      servicePathWithParam = buildQuerry(service);
+      
+      divResult = document.getElementById(service.serviceName + '_previewQuerryResult');
+      divResult.innerHTML = servicePathWithParam;
+  
+      divResult.className =
+          divResult.className.replace(new RegExp('(?:^|\\s)'+ 'no-display' + '(?:\\s|$)'), ' ');
+    }
+
+    function submitQuerry(service) {
+      servicePathWithParam = buildQuerry(service);
+
+      
+    }
+    
+  </script>
+
+</head>
+<body class="standard-flex-display">
+
+  <header>
+    <h1>Test des Services</h1>
+  </header>
+
+  <form id="formTest">
+    <div id="servicesTesterPlaceHolder"></div>
+  </form>
+
+</body>
+</html>
