@@ -94,7 +94,7 @@ public class ServiceUtilisateur {
 	    return token;
 	}
     
-    @Path("/modifier/{id}")
+    @Path("/modifier")
     @POST
     public Token modifier(
     		           @PathParam( "idToken")     long   pIdToken,
@@ -107,7 +107,8 @@ public class ServiceUtilisateur {
     	LOGGER.info("ServiceToken->modifier("+ pIdToken + ","+ pKey + ","+ pIdUser + ","+ pEMaill + ","+ pPasword + ","+ pAlias + ","+ pAvatar +")" );
     	Token token = daoToken.confirmCanDoAction(pIdToken, pKey );
     	if ( token.getEtat()  ){
-    		Utilisateur util =  daoUtil.modifier(pIdUser, pEMaill, pPasword, pAlias, pAvatar);
+    		Token token2 =  daoUtil.modifier(pIdUser, pPasword, pAlias, pAvatar);
+    		Utilisateur util = daoUtil.rechercher(pIdUser);
     		if (util.getId() == pIdUser && 
     			util.getAlias().equals(pAlias) &&
     			util.getAvatar() == pAvatar &&
@@ -115,11 +116,12 @@ public class ServiceUtilisateur {
     			util.getPasowrd().equals(pPasword) ) {
 				return new Token(true, "Modification utilisateur ok");
 			}
+    		
 		}
     	return token;
     }
     
-    @Path("/effacer/{id}")
+    @Path("/effacer")
     @DELETE
     public Token effacer(
     				@PathParam("idToken")     long   pIdToken,

@@ -47,14 +47,14 @@ public class DAOListesdelectureMusiques {
      * @return
      */
     public ListesDeLecture rechercher(long id) {
-        return dao.rechercher(ListesDeLecture.class, id);
+        return dao.find(ListesDeLecture.class, id);
     }
     
     /**
      * @param id
      */
     public void effacer(long id) {
-        dao.effacer(ListesDeLecture.class, id);
+        dao.remove(ListesDeLecture.class, id);
     }
 
     
@@ -66,7 +66,7 @@ public class DAOListesdelectureMusiques {
      * @return
      */
     public ListesDeLecture modifier(int pOwner, String pName, boolean pIsPublic, boolean pIsActive ) {
-    	 ListesDeLecture playlist = dao.rechercher(ListesDeLecture.class, pOwner);
+    	 ListesDeLecture playlist = dao.find(ListesDeLecture.class, pOwner);
         if (playlist == null) {
             throw new IllegalArgumentException("MAJ id " + pOwner + " n\'existe pas!");
         }
