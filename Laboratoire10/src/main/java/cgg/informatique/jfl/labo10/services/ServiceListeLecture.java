@@ -130,14 +130,9 @@ public class ServiceListeLecture {
     public Token setPlaylistPublic(
     		           @PathParam( "idToken")		int		pIdToken,
                        @QueryParam("cle")			String	pKey,
-<<<<<<< Updated upstream
-                       @QueryParam("publique")		String	pIsPublic) {
-    	LOGGER.info("ServiceListeLecture->modifier("+ pIdToken + ","+ pKey + ","+ pIsPublic + ")" );
-=======
                        @PathParam( "idPlaylist")	int		pIdPlaylist,
                        @QueryParam("publique")		boolean	pIsPublic) {
-    	LOGGER.info("ServiceListeLecture->modifier("+ pIdToken+","+pKey+","+pIsPublic +","+pIsPublic+")" );
->>>>>>> Stashed changes
+    	LOGGER.info("ServiceListeLecture->modifier("+ pIdToken+","+pKey+","+pIsPublic +")" );
     	Token token = daoToken.confirmCanDoAction(pIdToken, pKey );
     	if ( token.getEtat()  ){
     		return daoPlaylist.modify(pIdToken,pIdPlaylist,null, null,pIsPublic);
@@ -184,7 +179,7 @@ public class ServiceListeLecture {
     	LOGGER.info("ServiceListeLecture->getMyPlaylists("+pIdToken+","+pKey+","+pFirst+","+pLast+")" );
     	Token token = daoToken.confirmCanDoAction(pIdToken, pKey );
     	if ( token.getEtat()  ){
-    		daoPlaylist.getMyPlaylists(pFirst, pLast);
+    		daoPlaylist.getMyPlaylists(pIdToken ,pFirst, pLast);
 		}
     	return null;
     }
