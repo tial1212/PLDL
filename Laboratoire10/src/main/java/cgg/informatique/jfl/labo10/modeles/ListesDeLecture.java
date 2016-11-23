@@ -55,20 +55,20 @@ public class ListesDeLecture extends ModeleDate{
     /**
      * Use this constructor instead. X params
      * 
-     * @param pOwner The owner
+     * @param pIDOwner ID of the owner
      * @param pName The name
      * @param pIsPublic If the playlist is public
      * @param pIsActive If the playlist is active.
      */
-    public ListesDeLecture(int pOwner ,  String pName , boolean pIsPublic , boolean pIsActive ){
+    public ListesDeLecture(int pIDOwner ,  String pName , boolean pIsPublic , boolean pIsActive ){
 		if( validateName(pName) ){ // TODO real validation
-			this.owner = pOwner ;
+			this.owner = pIDOwner ;
 			this.name    = pName;
 			this.isPublic = pIsPublic;
 			this.isActive = pIsActive;
 		}
 		else{
-    		System.err.println("ListesDeLecture.constructor("+pOwner+""+pName+""+pIsPublic +""+pIsActive+") -> INVALIDE");
+    		System.err.println("ListesDeLecture.constructor("+pIDOwner+""+pName+""+pIsPublic +""+pIsActive+") -> INVALIDE");
     	}
 		
 	}

@@ -92,6 +92,7 @@ public class DAOMusique {
         	 !musique.getCoverArt().equals(pCoverArt)||
         	  musique.isPublic() != pIsPublic  		 ||
         	  musique.isActive() !=pIsActive         ) {
+        	dao.remove(Musique.class , musique.getId() );
         	Token token2 = new Token(false, "erreur création musique dans DB");
         	LOGGER.info("DAOMusique->create() ERROR : "+token2.getAction()  );
         	return token2;

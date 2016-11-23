@@ -59,30 +59,17 @@ public class DAOListesdelectureMusiques {
 
     
     /**
+     * 
+     * 
      * @param pOwner  (Utilisateur.id)
      * @param pName
      * @param pIsPublic
      * @param pIsActive
      * @return
      */
-    public ListesDeLecture modifier(int pOwner, String pName, boolean pIsPublic, boolean pIsActive ) {
-    	 ListesDeLecture playlist = dao.find(ListesDeLecture.class, pOwner);
-        if (playlist == null) {
-            throw new IllegalArgumentException("MAJ id " + pOwner + " n\'existe pas!");
-        }
-         
-        playlist.setOwner(pOwner);
-        playlist.setName(pName);
-        playlist.setPublic(pIsPublic);
-        playlist.setActive(pIsActive);
-        return dao.modifier(playlist);
+    
+    public void modifier(int pIdToken , String pName, Boolean pIsPublic, Boolean pIsActive ) {
+    	//FIXME
     }
-    /**
-    private String eMaill;
-    private String pasword;
-    private String alias;
-    private int avatar;
-    private boolean active;
-    **/
     
 }
