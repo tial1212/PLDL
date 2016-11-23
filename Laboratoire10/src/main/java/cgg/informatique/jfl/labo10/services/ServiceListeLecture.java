@@ -34,7 +34,7 @@ import javax.ws.rs.QueryParam;
 import java.util.logging.Logger;
 
 
-@Path("/service/utilisateur")
+@Path("/service/listeLecture")
 @Produces({"text/xml", "application/json"})
 public class ServiceListeLecture {
 
@@ -123,9 +123,7 @@ public class ServiceListeLecture {
     public Token setPlaylistPublic(
     		           @PathParam( "idToken")		int		pIdToken,
                        @QueryParam("cle")			String	pKey,
-                       @QueryParam("nom")			String	pName,
-                       @QueryParam("publique")		String	pIsPublic,
-                       @QueryParam("active")		int		pIsActive ) {
+                       @QueryParam("publique")		String	pIsPublic) {
     	LOGGER.info("ServiceListeLecture->modifier("+ pIdToken + ","+ pKey + ","+ pName + ","+ pIsPublic + ","+ pIsPublic +")" );
     	Token token = daoToken.confirmCanDoAction(pIdToken, pKey );
     	if ( token.getEtat()  ){
