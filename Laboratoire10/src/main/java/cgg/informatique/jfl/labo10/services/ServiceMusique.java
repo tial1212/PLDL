@@ -19,15 +19,11 @@ package cgg.informatique.jfl.labo10.services;
 import cgg.informatique.jfl.labo10.dao.DAO;
 import cgg.informatique.jfl.labo10.dao.DAOMusique;
 import cgg.informatique.jfl.labo10.dao.DAOToken;
-import cgg.informatique.jfl.labo10.dao.DAOUtilisateur;
 import cgg.informatique.jfl.labo10.demarrage.Demarrage;
 import cgg.informatique.jfl.labo10.modeles.Musique;
 import cgg.informatique.jfl.labo10.modeles.Token;
-import cgg.informatique.jfl.labo10.modeles.Utilisateur;
 
 import javax.ejb.EJB;
-import javax.ws.rs.DELETE;
-import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -55,7 +51,7 @@ public class ServiceMusique {
     
 	@Path("/createSong")
     @PUT
-    public Token createSong(@PathParam("idToken")    long    pIdToken,
+    public Token createSong(@PathParam("idToken")     int	  pIdToken,
 				            @QueryParam("cle") 	      String  pKey,
 				    		@QueryParam("idOwner") 	  int     pIdOwner,
                        		@QueryParam("titre")      String  pTitle,
@@ -70,33 +66,52 @@ public class ServiceMusique {
     	LOGGER.info("ServiceMusique->createSong("+ pIdToken + "," + pKey + "," + pIdOwner+ "," + pTitle+ "," + pArtist+ "," + pMusic+ "," + pIsPublic+ "," + pIsActive+")" ); 
     	Token token = daoToken.confirmCanDoAction(pIdToken, pKey );
     	if ( token.getEtat()  ){
-    		return daoMusique.createSong(pIdOwner, pTitle, pArtist, pMusic, pCoverArt, pIsPublic, pIsActive);
+    		return daoMusique.create(pIdOwner, pTitle, pArtist, pMusic, pCoverArt, pIsPublic, pIsActive);
 		}
     	return token;
     }
     
-    @Path("/getSong")
+    @Path("/getPrivateSong")
 	@PUT
-	public Musique getSong(@PathParam("idToken")    long   pIdToken,
-            			   @QueryParam("cle") 	    String pKey ,  
-            			   @QueryParam("idSong") 	int    pIdSong ) {
-		LOGGER.info("ServiceMusique->getSong(" + pIdToken + "," +pKey+ "," +pIdSong+")" );
+	public Musique getPrivateSong(@PathParam("idToken")	int		pIdToken,
+            					  @QueryParam("cle") 	String  pKey ,  
+            					  @QueryParam("idSong") int		pIdSong ) {
+		LOGGER.info("ServiceMusique->getPrivateSong(" + pIdToken + "," +pKey+ "," +pIdSong+")" );
     	if ( !daoToken.confirmCanDoAction(pIdToken, pKey ).getEtat()  ){
     		return null;
 		}
-    	return daoMusique.find(pIdSong);
+    	return daoMusique.getPrivateSong(pIdToken,  pIdSong);
+	}
+    
+    @Path("/getPublicSong")
+	@PUT
+	public Musique getPublicSong(@PathParam("idToken")    int   pIdToken,
+								 @QueryParam("cle") 	    String pKey ,  
+            			   		 @QueryParam("idSong") 	int    pIdSong ) {
+		LOGGER.info("ServiceMusique->getPublicSong("+pKey+ "," +pIdSong+")" );
+    	if ( !daoToken.confirmCanDoAction(pIdToken, pKey ).getEtat()  ){
+    		return null;
+		}
+    	return daoMusique.getPublicSong(pIdSong);
 	}
     
     @Path("/modify")
 	@PUT
-	public Musique modify(@PathParam("idToken")    long   pIdToken,
-            			   @QueryParam("cle") 	    String pKey ,  
-            			   @QueryParam("idSong") 	int    pIdSong ) {
-		LOGGER.info("ServiceMusique->getSong(" + pIdToken + "," +pKey+ "," +pIdSong+")" );
-    	if ( !daoToken.confirmCanDoAction(pIdToken, pKey ).getEtat()  ){
-    		return null;
+	public Token modify(  @PathParam("idToken")		int	pIdToken,
+            			  @QueryParam("cle")		String	pKey,  
+            			  @QueryParam("idSong")		int		pIdSong, 
+	 					  @QueryParam("idUtilisateur")int 	pIdOwner ,
+	 					  @QueryParam("titre")		String	pTitle , 
+	 					  @QueryParam("artiste")	String	pArtist , 
+	 					  @QueryParam("vignette")	String	pCoverArt ,
+	 					  @QueryParam("publique")	boolean	pIsPublic ,
+	 					  @QueryParam("active")		boolean	pIsActive) {
+		LOGGER.info("ServiceMusique->modify(" + pIdToken + "," +pKey+ "," +pIdSong+ "," +pIdOwner+ "," +pTitle+ "," +pArtist+  "," +pCoverArt+ "," +pIsPublic+ "," +pIsActive+")" );
+		Token token = daoToken.confirmCanDoAction(pIdToken, pKey );
+    	if ( token.getEtat()  ){
+    		return daoMusique.modify(pIdSong, pIdOwner, pTitle, pArtist, pCoverArt, pIsPublic, pIsActive);
 		}
-    	return daoMusique.find(pIdSong);
+    	return token;
 	}
     
     
@@ -111,5 +126,18 @@ public class ServiceMusique {
     		return null;  //TODO check what it create as json
 		}
     	return daoMusique.setActive(pIdSong, pIdToken, pActive);
+	}
+    
+    @Path("/setPublic")
+	@PUT
+	public Token setPublic(@PathParam("idToken")    int     pIdToken,
+            			   @QueryParam("cle") 	    String  pKey ,  
+            			   @QueryParam("idSong") 	int     pIdSong ,
+            			   @QueryParam("public") 	boolean pIsPublic   ) {
+		LOGGER.info("ServiceMusique->setActive(" + pIdToken + "," +pKey+ "," +pIdSong+"," +pIsPublic +")" );
+    	if ( !daoToken.confirmCanDoAction(pIdToken, pKey ).getEtat()  ){
+    		return null;  //TODO check what it create as json
+		}
+    	return daoMusique.setPublic(pIdSong, pIdToken, pIsPublic );
 	}
 }

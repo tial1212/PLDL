@@ -28,7 +28,7 @@ public class Musique extends ModeleDate  {
 	private String title;
 	
 	/**
-	 * The song artist
+	 * The song's artist.
 	 */
 	@Column(name = "Artiste" )
 	private String artist;  
@@ -54,7 +54,7 @@ public class Musique extends ModeleDate  {
 	private boolean isPublic;
 	
 	/**
-	 * If the song is curently activated
+	 * If the song is curently activated.
 	 */
 	@Column(name = "Active" , columnDefinition   ="TINYINT(1)" )
 	private boolean isActive;
@@ -71,17 +71,17 @@ public class Musique extends ModeleDate  {
 	/**
 	 * Use this constructor instead. 7 params
      * 
-	 * @param pOwner
-	 * @param pTitle
-	 * @param pArtist
-	 * @param pMusic
-	 * @param pCoverArt
-	 * @param pPublic
-	 * @param pActive
+	 * @param pIdOwner The id of the owner of this song.
+	 * @param pTitle The title of the song.
+	 * @param pArtist The song'S artist
+	 * @param pMusic The song itself ( Base64 )
+	 * @param pCoverArt The cover art data ( Base64 )
+	 * @param pIsPublic If the song is available for all
+	 * @param pIsActive If the song is curently activated
 	 */
-	public Musique( int pOwner ,String pTitle ,String pArtist ,String pMusic ,String pCoverArt ,boolean pIsPublic ,boolean pIsActive ){
+	public Musique( int pIdOwner ,String pTitle ,String pArtist ,String pMusic ,String pCoverArt ,boolean pIsPublic ,boolean pIsActive ){
 		if(validateTitle(pTitle) && validateArtist(pArtist) ){
-			this.owner = pOwner;
+			this.owner = pIdOwner;
 			this.title = pTitle;
 			this.artist = pArtist;
 			this.music = pMusic;
@@ -89,7 +89,7 @@ public class Musique extends ModeleDate  {
 			this.isActive = pIsActive;
 		}
 		else{
-    		System.err.println("Musique.constructor("+pOwner+""+pTitle+""+pArtist +""+pMusic+""+pCoverArt +""+pIsPublic+""+pIsActive +") -> INVALIDE");
+    		System.err.println("Musique.constructor("+pIdOwner+""+pTitle+""+pArtist +""+pMusic+""+pCoverArt +""+pIsPublic+""+pIsActive +") -> INVALIDE");
     	}
 	
 	}
@@ -104,6 +104,8 @@ public class Musique extends ModeleDate  {
 	
 	/**
 	 * Set the owner's ID for the song.
+	 * 
+	 * @param pOwner The owner to be set.
 	 */
 	public void setOwner(int pOwner) {
 		this.owner = pOwner;
@@ -189,7 +191,7 @@ public class Musique extends ModeleDate  {
 
 	/**
 	 * Get the song data itself ( Base64 )
-	 * @return
+	 * @return music The song data itself.
 	 */
 	public String getMusic() {
 		return music;
@@ -197,7 +199,7 @@ public class Musique extends ModeleDate  {
 	
 	/**
 	 * Set the song data itself ( Base64 )
-	 * @param music
+	 * @param music The song data itself.
 	 */
 	public void setMusic(String music) {
 		this.music = music;
@@ -214,7 +216,7 @@ public class Musique extends ModeleDate  {
 	
 	/**
 	 * Get the song's CoverArt ( Base64 )
-	 * @param pCoverArt
+	 * @param pCoverArt The data of the Cover Art.
 	 */
 	public void setCoverArt(String pCoverArt) {
 		this.coverArt = pCoverArt;
@@ -223,7 +225,7 @@ public class Musique extends ModeleDate  {
 	
 	/**
 	 * Get if the song is public (for anyone )
-	 * @return
+	 * @return isPublic If the song is public.
 	 */
 	public boolean isPublic() {
 		return isPublic;
@@ -231,7 +233,7 @@ public class Musique extends ModeleDate  {
 	
 	/**
 	 * Set if everybody can see the song.
-	 * @param pIsPublic
+	 * @param pIsPublic If the song should be public.
 	 */
 	public void setPublic(boolean pIsPublic) {
 		this.isPublic = pIsPublic;
@@ -239,7 +241,7 @@ public class Musique extends ModeleDate  {
 	
 	/**
 	 * Get if the song is active.
-	 * @return
+	 * @return isActive If the song is curently activated
 	 */
 	public boolean isActive() {
 		return isActive;
@@ -247,7 +249,7 @@ public class Musique extends ModeleDate  {
 	
 	/**
 	 * Set if the song is active.
-	 * @param pIsActive
+	 * @param pIsActive If the song should be activate
 	 */
 	public void setActive(boolean pIsActive) {
 		this.isActive = pIsActive;

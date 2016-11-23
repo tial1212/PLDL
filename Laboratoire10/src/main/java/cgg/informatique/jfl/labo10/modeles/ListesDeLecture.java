@@ -55,8 +55,10 @@ public class ListesDeLecture extends ModeleDate{
     /**
      * Use this constructor instead. X params
      * 
-     * @param pNom, A description for the avatar 
-     * @param pAvatar,  The avatar image in Base64
+     * @param pOwner The owner
+     * @param pName The name
+     * @param pIsPublic If the playlist is public
+     * @param pIsActive If the playlist is active.
      */
     public ListesDeLecture(int pOwner ,  String pName , boolean pIsPublic , boolean pIsActive ){
 		if( validateName(pName) ){ // TODO real validation

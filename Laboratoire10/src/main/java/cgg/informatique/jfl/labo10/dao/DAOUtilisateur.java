@@ -36,8 +36,6 @@ public class DAOUtilisateur {
     @Inject
     private DAOToken daoToken;
     
-    @Inject
-    private DAOUtilisateur daoUtil;
     
     static Logger LOGGER = Logger.getLogger(Demarrage.class.getName()); 
     
@@ -51,17 +49,16 @@ public class DAOUtilisateur {
      * 	<li>User must be activated</li>
      * 	<li>pswd must match</li>
      * </ul>
-     * @param pCourriel
-     * @param pMotDePasse
+     * @param pCourriel  The email
+     * @param pMotDePasse The pasword (MD5 )
      * @return ok 
      */
     public Token login(String pCourriel, String pMotDePasse) {
     	LOGGER.info("DAOUtilisateur->login( "+pCourriel+","+pMotDePasse+")");
-		
-    	Utilisateur utilisateur = dao.querrySingle(""); //FIXME
+    	Utilisateur utilisateur = dao.querrySingle("Select u FROM Utilisateur u WHERE u.Courriel = "+pCourriel+" AND u.MotDePasse = "+pMotDePasse); //FIXME
 	    if (utilisateur != null) {
 	    	if (utilisateur.isActive() ) {
-	    		if (utilisateur.getPasword().equals(pMotDePasse) ) {
+	    		if (utilisateur.getPasowrd().equals(pMotDePasse) ) {
 		    		Token token = new Token(true, "login succeed");
 			    	LOGGER.info("DAOUtilisateur->login() OK : "+token.getAction() );
 			    	return token;
@@ -110,11 +107,11 @@ public class DAOUtilisateur {
      *  <li>Avatar must exist</li>
      * </ul>
      * 
-     * @param pAlias
-     * @param pCourriel
-     * @param pPasword
-     * @param pIdAvatar
-     * @return
+     * @param pAlias The displayed name of the user (NickName)
+     * @param pCourriel The E-mail of the user
+     * @param pPasword The pasword (MD5 encrypted ) of the user.
+     * @param pIdAvatar The ID of the selected Avatar.
+     * @return token
      */
     public Token createUser(String pAlias, String pCourriel, String pPasword , int pIdAvatar) {
     	LOGGER.info("DAOUtilisateur->creerUtilisateur("+pAlias+","+ pCourriel+","+pPasword+","+pIdAvatar+")"  );
@@ -165,12 +162,11 @@ public class DAOUtilisateur {
      * Activate an user 
      * <ul><li>Token and User must exist</li>
      * <li>captcha must match.</li></ul>
-     * @param pIdToken
-     * @param pCaptcha
-     * @param pCourriel
-     * @return
+     * @param pIdToken The ID of the token that requested action
+     * @param pCaptcha The value of the captcha.
+     * @return token
      */
-    public Token activateUser(long pIdToken , String pCaptcha ) {
+    public Token activateUser(int pIdToken , String pCaptcha ) {
     	LOGGER.info("DAOUtilisateur->activerUser("+pIdToken+","+pCaptcha+")");
     	
     	Token token = daoToken.rechercher(pIdToken);
@@ -198,12 +194,12 @@ public class DAOUtilisateur {
 	}
 
 
-    public static  Utilisateur rechercher(long pId) {
+    public static  Utilisateur rechercher(int pId) {
     	LOGGER.info("DAOUtilisateur->rechercher("+pId+")");
     	return dao.find(Utilisateur.class, pId);
     }
 
-    public void effacer(long pId) {
+    public void effacer(int pId) {
     	LOGGER.info("DAOUtilisateur->effacer("+pId+")");
     	dao.remove(Utilisateur.class, pId);
     }
@@ -218,13 +214,13 @@ public class DAOUtilisateur {
      * 	<li>Song must belong to the user</li>
      * </ul>
      * 
-     * @param pIdUser
-     * @param pPasword
-     * @param pAlias
-     * @param pIdAvatar
-     * @return
+     * @param pIdUser ID of the user
+     * @param pPasword The new pasoerd
+     * @param pAlias The new alias
+     * @param pIdAvatar ID of the new avatar
+     * @return token
      */
-    public Token modifier(long pIdUser,  String pPasword, String pAlias , int pIdAvatar) {
+    public Token modifier(int pIdUser,  String pPasword, String pAlias , int pIdAvatar) {
     	LOGGER.info("DAOUtilisateur->modifier("+pIdUser+","+pPasword+","+pAlias+","+pIdAvatar+")");
     	Utilisateur utilisateur = dao.find(Utilisateur.class, pIdUser);
         boolean okUserExist  = DAOUtilisateur.rechercher(pIdUser) != null ;
@@ -259,7 +255,7 @@ public class DAOUtilisateur {
     
     /**
      * Check if user is existing from an User Email,
-     * @param pEMaill
+     * @param pEMaill The Email to verify
      * @return ok
      */
     public static boolean isUserExisting(String pEMaill){
@@ -273,7 +269,7 @@ public class DAOUtilisateur {
     
     /**
      * Check if user is existing from an User ID,
-     * @param pIdUser
+     * @param pIdUser The ID of the user to verify
      * @return ok
      */
     public static boolean isUserExisting(int pIdUser){
@@ -285,7 +281,7 @@ public class DAOUtilisateur {
     
     /**
      * Check if user is activated from an User Email,
-     * @param pEMaill
+     * @param pEMaill The Email to verify
      * @return ok
      */
     public static boolean isUserActivated(String pEMaill){
@@ -303,7 +299,7 @@ public class DAOUtilisateur {
     
     /**
      * Check if user is activated from an User ID,
-     * @param pIdUser
+     * @param pIdUser The ID of the user to verify
      * @return ok
      */
     public static boolean isUserActivated(int pIdUser){
@@ -321,7 +317,7 @@ public class DAOUtilisateur {
     /**
      * Get the User.id for an EMail.
      * <br> !!!MIGTH!!!<br> return -1 if user doesn't exist
-     * @param pEMaill
+     * @param pEMaill The Email to verify
      * @return id
      */
     public static int getIdForUser(String pEMaill){

@@ -97,21 +97,21 @@ public class ServiceUtilisateur {
     @Path("/modifier")
     @POST
     public Token modifier(
-    		           @PathParam( "idToken")     long   pIdToken,
+    		           @PathParam( "idToken")     int   pIdToken,
                        @QueryParam("cle") 	      String pKey,
-                       @PathParam( "idUtil")      Long   pIdUser,
+                       @PathParam( "idUtil")      int   pIdUser,
                        @QueryParam("courriel") 	  String pEMaill,
                        @QueryParam("motDePasse")  String pPasword,
                        @QueryParam("alias")       String pAlias,
-                       @QueryParam("avatar")      int    pAvatar) {
-    	LOGGER.info("ServiceToken->modifier("+ pIdToken + ","+ pKey + ","+ pIdUser + ","+ pEMaill + ","+ pPasword + ","+ pAlias + ","+ pAvatar +")" );
+                       @QueryParam("avatar")      int    pIdAvatar) {
+    	LOGGER.info("ServiceToken->modifier("+ pIdToken + ","+ pKey + ","+ pIdUser + ","+ pEMaill + ","+ pPasword + ","+ pAlias + ","+ pIdAvatar +")" );
     	Token token = daoToken.confirmCanDoAction(pIdToken, pKey );
     	if ( token.getEtat()  ){
-    		Token token2 =  daoUtil.modifier(pIdUser, pPasword, pAlias, pAvatar);
+    		Token token2 =  daoUtil.modifier (pIdUser, pPasword, pAlias, pIdAvatar);
     		Utilisateur util = daoUtil.rechercher(pIdUser);
     		if (util.getId() == pIdUser && 
     			util.getAlias().equals(pAlias) &&
-    			util.getAvatar() == pAvatar &&
+    			util.getAvatar() == pIdAvatar &&
     			util.getEMaill().equals(pEMaill) &&
     			util.getPasowrd().equals(pPasword) ) {
 				return new Token(true, "Modification utilisateur ok");

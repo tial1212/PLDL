@@ -9,7 +9,7 @@ import javax.ws.rs.Path;
 
 import cgg.informatique.jfl.labo10.utilitaires.Captcha;
 
-public class serviceCaptcha {
+public class ServiceCaptcha {
 	
 	/**
 	 * An array of random captcha

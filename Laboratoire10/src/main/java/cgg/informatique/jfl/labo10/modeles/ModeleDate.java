@@ -67,6 +67,7 @@ public abstract class ModeleDate extends Modele {
 	/**
 	 * Set the last modification date to the desired date.
 	 * @param pDate The desired date.
+	 * @return ok
 	 */
 	public boolean setDate(Date pDate) {
 		boolean ok = validateDate(pDate);

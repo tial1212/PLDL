@@ -25,10 +25,7 @@ public class Listesdelecture_musiques extends ModeleDate {
      * @see Musique#id
      */
     @Column(name = "Musique", length=11)
-    private int song;
-   
-   
-	   
+    private int song; 
 	   
 	   
 	   /**
@@ -40,10 +37,10 @@ public class Listesdelecture_musiques extends ModeleDate {
 	    
 	    
 	    /**
-	     * Use this constructor instead. X params
+	     * Use this constructor instead. 2 params
 	     * 
-	     * @param pNom, A description for the avatar 
-	     * @param pAvatar,  The avatar image in Base64
+	     * @param pPlaylist ID of the playlist
+	     * @param pSong  ID of the song
 	     */
 	    public Listesdelecture_musiques(int pPlaylist ,  int pSong ){
 			this.song = pSong ;

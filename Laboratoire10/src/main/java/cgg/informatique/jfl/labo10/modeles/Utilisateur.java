@@ -32,7 +32,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement(name = "utilisateur")
 public class Utilisateur extends ModeleDate {
 	/**
-     * The E-mail of the user.
+     * The E-mail of the user. 
      */
     @Column(name = "Courriel", length=50 , nullable = false , unique=true )
     private String eMaill;
@@ -40,7 +40,7 @@ public class Utilisateur extends ModeleDate {
     /**
      * The pasword (MD5 encrypted ) of the user.
      */
-    @Column(name = "MotDePasse", columnDefinition = "text")
+    @Column(name = "MotDePasse", columnDefinition = "text") 
     private String pasword;
     
     /**
@@ -50,7 +50,7 @@ public class Utilisateur extends ModeleDate {
     private String alias;
     
     /**
-     * The ID of the selected Avatar.
+     * The ID of the selected Avatar. 
      * @see Avatar#id
      */
     @Column(name = "Avatar", length=11)
@@ -74,10 +74,10 @@ public class Utilisateur extends ModeleDate {
 	/**
 	 * Create an unactivated user.
 	 * 
-	 * @param pAlias
-	 * @param pEMaill
-	 * @param pPasword
-	 * @param pAvatar
+	 * @param pAlias The displayed name of the user (NickName)
+	 * @param pEMaill The E-mail of the user. 
+	 * @param pPasword The pasword (MD5 encrypted ) of the user.
+	 * @param pAvatar The alias The ID of the selected Avatar. 
 	 */
     public Utilisateur(String pAlias , String pEMaill, String pPasword , int pAvatar ) {
     	super();
@@ -229,7 +229,7 @@ public class Utilisateur extends ModeleDate {
 	
 	/**
 	 * Set if the user is activated
-	 * @param pActive
+	 * @param pActive If active
 	 */
 	public void setActive(boolean pActive) {
 		this.active = pActive;
@@ -250,7 +250,7 @@ public class Utilisateur extends ModeleDate {
 	/**
 	 * Set the avatar id.
 	 * 
-	 * @param pIdAvatar
+	 * @param pIdAvatar ID of avatar to set.
 	 * @see Avatar#id
 	 */
 	public void setAvatar(int pIdAvatar) {

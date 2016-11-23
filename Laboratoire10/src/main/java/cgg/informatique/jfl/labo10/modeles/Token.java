@@ -25,7 +25,7 @@ import javax.persistence.NamedQuery;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import org.apache.commons.lang.RandomStringUtils;
-import cgg.informatique.jfl.labo10.services.serviceCaptcha;
+import cgg.informatique.jfl.labo10.services.ServiceCaptcha;
 import cgg.informatique.jfl.labo10.utilitaires.MD5Digest;
 
 @Entity
@@ -84,9 +84,9 @@ public class Token extends Modele {
 	
 	/**
 	 * 2 param constructor. (Succes/Error Token) <br> 
-	 * Create a token with : etat & action
-	 * @param pEtat
-	 * @param pAction
+	 * Create a token with : etat , action
+	 * @param pEtat The succes state
+	 * @param pAction The description of the occuring action
 	 */
 	public Token( boolean pEtat , String pAction) {
 		if ( validateAction(pAction) ) {
@@ -100,10 +100,10 @@ public class Token extends Modele {
 	
 	/**
 	 * 3 param constructor. (Action Token)<br>
-	 * Create a token with : etat , action & salt
-	 * @param pEtat
-	 * @param pAction
-	 * @param pSalt
+	 * Create a token with : etat , action , salt
+	 * @param pEtat The succes state
+	 * @param pAction The action
+	 * @param pSalt The salt
 	 */
 	public Token( boolean pEtat , String pAction, String pSalt) {
 		if ( validateAction(pAction) && validateSalt(pSalt) ) {
@@ -132,12 +132,12 @@ public class Token extends Modele {
 	
 	/**
 	 *  Generate a confirmation token used for an user activation.
-	 * @param pEmail
+	 * @param pEMail The email of the requesting user
 	 * @return token
 	 */
 	public static Token generateConfirmUserToken(String pEMail) {
 		Token token = new Token();
-		token.setCaptchaStr(serviceCaptcha.getRdmCaptchaStr() );
+		token.setCaptchaStr(ServiceCaptcha.getRdmCaptchaStr() );
 		token.setEMail(pEMail);
 		token.setAction(txtConfirmToken);
 		token.setEtat(true);
@@ -146,7 +146,7 @@ public class Token extends Modele {
 	
 	/**
 	 *  Generate an action token. Used to confirm any action.
-	 * @param pEMail
+	 * @param pEMail The email of the requesting user
 	 * @return Token
 	 */
 	public static Token generateActionToken(String pEMail) {
@@ -169,8 +169,8 @@ public class Token extends Modele {
 	
 	/**
 	 * Set the e-mail of the user requesting the action.
-	 * @param pEMaill,   The e-mail to be set
-	 * @return ok if email has been changed.
+	 * @param  pEMail   The e-mail to be set
+	 * @return ok If email has been changed.
 	 */
 	public boolean setEMail(String pEMail) {
 		boolean ok = Utilisateur.validateEMaill(pEMail);
@@ -234,7 +234,7 @@ public class Token extends Modele {
 	/**
 	 * Get the string captcha<br>
 	 * To get a Base 64 img call "serviceCaptcha"
-	 * @see serviceCaptcha#getCaptcha64
+	 * @see ServiceCaptcha#getCaptcha64
 	 * @return captchaStr
 	 */
 	public String getCaptchaStr() {
@@ -243,9 +243,10 @@ public class Token extends Modele {
 	
 	/**
 	 * Set the string captcha 
-	 * @see serviceCaptcha#getCaptcha64()
+	 * 
 	 * @param pCaptchaStr The captcha to be set.
 	 * @return ok
+	 * @see ServiceCaptcha#getCaptcha64
 	 */
 	public boolean setCaptchaStr(String pCaptchaStr) {
 		boolean ok = validateCaptchaStr(pCaptchaStr);
@@ -322,9 +323,10 @@ public class Token extends Modele {
 
 	/**
 	 * Set the token's action state (succes/faillure)
+	 * @param pEtat The token succes state
 	 */
-	public void setEtat(Boolean etat) {
-		this.etat = etat;
+	public void setEtat(Boolean pEtat) {
+		this.etat = pEtat;
 	}
 	
 	@Override

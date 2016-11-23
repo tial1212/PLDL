@@ -18,8 +18,6 @@ package cgg.informatique.jfl.labo10.dao;
 
 import cgg.informatique.jfl.labo10.demarrage.Demarrage;
 import cgg.informatique.jfl.labo10.modeles.Token;
-import cgg.informatique.jfl.labo10.modeles.Utilisateur;
-import cgg.informatique.jfl.labo10.services.serviceCaptcha;
 
 import java.util.List;
 import java.util.logging.Logger;
