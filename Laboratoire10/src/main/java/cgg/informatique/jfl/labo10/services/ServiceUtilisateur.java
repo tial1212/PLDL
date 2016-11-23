@@ -94,9 +94,9 @@ public class ServiceUtilisateur {
 	    return token;
 	}
     
-    @Path("/modifier")
+    @Path("/modify")
     @POST
-    public Token modifier(
+    public Token modify(
     		           @PathParam( "idToken")     int   pIdToken,
                        @QueryParam("cle") 	      String pKey,
                        @PathParam( "idUtil")      int   pIdUser,

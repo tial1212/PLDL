@@ -318,7 +318,7 @@ public class DAOUtilisateur {
      * Get the User.id for an EMail.
      * <br> !!!MIGTH!!!<br> return -1 if user doesn't exist
      * @param pEMaill The Email to verify
-     * @return id
+     * @return id OR -1
      */
     public static int getIdForUser(String pEMaill){
     	Utilisateur utilisateurRequested = dao.querrySingle("SELECT u FROM Utilisateur u WHERE u.Courriel = "+pEMaill );

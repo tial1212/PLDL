@@ -31,6 +31,10 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
+
+import org.bouncycastle.asn1.pkcs.Pfx;
+
+import java.util.List;
 import java.util.logging.Logger;
 
 
@@ -75,14 +79,15 @@ public class ServiceListeLecture {
     @POST
     public Token modify(
     		           @PathParam( "idToken")		int		pIdToken,
-                       @QueryParam("cle")			String	pKey,
+    		           @QueryParam("cle")			String	pKey,
+    		           @PathParam( "idPlaylist")	int		pIdPlaylist,
                        @QueryParam("nom")			String	pName,
-                       @QueryParam("publique")		String	pIsPublic,
-                       @QueryParam("active")		int		pIsActive ) {
+                       @QueryParam("publique")		boolean	pIsPublic,
+                       @QueryParam("active")		boolean		pIsActive ) {
     	LOGGER.info("ServiceListeLecture->modifier("+ pIdToken + ","+ pKey + ","+ pName + ","+ pIsPublic + ","+ pIsPublic +")" );
     	Token token = daoToken.confirmCanDoAction(pIdToken, pKey );
     	if ( token.getEtat()  ){
-    		
+    		return daoPlaylist.modify(pIdToken,pIdPlaylist , pName, pIsPublic, pIsActive);
 		}
     	return token;
     }
@@ -93,11 +98,12 @@ public class ServiceListeLecture {
     public Token setPlaylistName(
     		           @PathParam( "idToken")		int		pIdToken,
                        @QueryParam("cle")			String	pKey,
-                       @QueryParam("nom")			int		pName ) {
-    	LOGGER.info("ServiceListeLecture->modifier("+ pIdToken + ","+ pKey+","+pName+")" );
+                       @PathParam( "idPlaylist")	int		pIdPlaylist,
+                       @QueryParam("nom")			String	pName ) {
+    	LOGGER.info("ServiceListeLecture->modifier("+ pIdToken + ","+ pKey+","+pIdPlaylist+","+pName+")" );
     	Token token = daoToken.confirmCanDoAction(pIdToken, pKey );
     	if ( token.getEtat()  ){
-    		
+    		return daoPlaylist.modify(pIdToken, pIdPlaylist , pName, null, null);
 		}
     	return token;
     }
@@ -108,11 +114,12 @@ public class ServiceListeLecture {
     public Token setPlaylistActive(
     		           @PathParam( "idToken")		int		pIdToken,
                        @QueryParam("cle")			String	pKey,
-                       @QueryParam("active")		int		pIsActive ) {
-    	LOGGER.info("ServiceListeLecture->modifier("+ pIdToken +","+pKey +","+pIsActive+")" );
+                       @PathParam( "idPlaylist")	int		pIdPlaylist,
+                       @QueryParam("active")		boolean		pIsActive ) {
+    	LOGGER.info("ServiceListeLecture->setPlaylistActive("+ pIdToken +","+pKey +","+pIdPlaylist+","+pIsActive+")" );
     	Token token = daoToken.confirmCanDoAction(pIdToken, pKey );
     	if ( token.getEtat()  ){
-    		
+    		return daoPlaylist.modify(pIdToken,pIdPlaylist,null,pIsActive,null);
 		}
     	return token;
     }
@@ -123,11 +130,17 @@ public class ServiceListeLecture {
     public Token setPlaylistPublic(
     		           @PathParam( "idToken")		int		pIdToken,
                        @QueryParam("cle")			String	pKey,
+<<<<<<< Updated upstream
                        @QueryParam("publique")		String	pIsPublic) {
     	LOGGER.info("ServiceListeLecture->modifier("+ pIdToken + ","+ pKey + ","+ pIsPublic + ")" );
+=======
+                       @PathParam( "idPlaylist")	int		pIdPlaylist,
+                       @QueryParam("publique")		boolean	pIsPublic) {
+    	LOGGER.info("ServiceListeLecture->modifier("+ pIdToken+","+pKey+","+pIsPublic +","+pIsPublic+")" );
+>>>>>>> Stashed changes
     	Token token = daoToken.confirmCanDoAction(pIdToken, pKey );
     	if ( token.getEtat()  ){
-    		
+    		return daoPlaylist.modify(pIdToken,pIdPlaylist,null, null,pIsPublic);
 		}
     	return token;
     }
@@ -161,6 +174,36 @@ public class ServiceListeLecture {
     	return token;
     }
     
+    @Path("/getPrivatePlaylist")
+    @POST
+    public List<ListesDeLecture> getMyPlaylists(
+		    		@PathParam( "idToken")	int		pIdToken,
+		            @QueryParam("cle")		String	pKey,
+		            @QueryParam("premier")	int		pFirst,
+		            @QueryParam("dernier")	int		pLast){
+    	LOGGER.info("ServiceListeLecture->getMyPlaylists("+pIdToken+","+pKey+","+pFirst+","+pLast+")" );
+    	Token token = daoToken.confirmCanDoAction(pIdToken, pKey );
+    	if ( token.getEtat()  ){
+    		daoPlaylist.getMyPlaylists(pFirst, pLast);
+		}
+    	return null;
+    }
+    
+    @Path("/getPublicPlaylistList")
+    @POST
+    public List<ListesDeLecture> getPublicPlaylistList(
+		    		@PathParam( "idToken")	int		pIdToken,
+		            @QueryParam("cle")		String	pKey,
+		            @QueryParam("premier")	int		pFirst,
+		            @QueryParam("dernier")	int		pLast) {
+    	LOGGER.info("ServiceListeLecture->getPublicPlaylistList("+pIdToken+","+pKey+","+pFirst+","+pLast+")" );
+    	Token token = daoToken.confirmCanDoAction(pIdToken, pKey );
+    	if ( token.getEtat()  ){
+    		daoPlaylist.getPublicPlaylistList(pFirst, pLast);
+		}
+    	return null;
+    }
+    
     
     
     @Path("/effacer")
@@ -168,11 +211,11 @@ public class ServiceListeLecture {
     public Token effacer(
     				@PathParam("idToken")	  int	 pIdToken,
     				@QueryParam("cle")		  String pKey , 
-    				@QueryParam("cle")		  int	 pIdPlaylist ) {
+    				@QueryParam("idPlaylist") int	 pIdPlaylist ) {
     	LOGGER.info("ServiceListeLecture->effacer("+ pIdToken + "," + pKey+ "," + pIdPlaylist+")" );
     	Token token = daoToken.confirmCanDoAction(pIdToken, pKey );
     	if ( token.getEtat()  ){
-    		
+    		//TODO
 		}
     	return token;
     }

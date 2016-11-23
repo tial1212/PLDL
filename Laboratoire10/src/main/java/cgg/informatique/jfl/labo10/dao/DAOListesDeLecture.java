@@ -24,7 +24,6 @@ import javax.ejb.LockType;
 import javax.ejb.Singleton;
 import javax.inject.Inject;
 
-
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -38,6 +37,7 @@ public class DAOListesDeLecture {
     @Inject
     private DAOToken daoToken;
     
+    
     Logger LOGGER = Logger.getLogger(Demarrage.class.getName()); 
     
     
@@ -48,6 +48,7 @@ public class DAOListesDeLecture {
      * @param pName Name of the playlist.
      * @param pIsPublic If playlist is public.
      * @param pIsActive If playlist is active.
+     * 
      * @return token
      */
     public Token create(int pIdToken, String pName, boolean pIsPublic, boolean pIsActive) {
@@ -103,35 +104,114 @@ public class DAOListesDeLecture {
     }
     
     /**
+     * Modify a playlist
+     * <ul>
+     * 	<li>Playlist must exist</li>
+     *  <li>Playlist's name must be public</li>
+     *  <li>Playlist must belong to user</li>
+     * </ul>
      * 
-     * @param pOwner
-     * @param pName
-     * @param pIsPublic
-     * @param pIsActive
-     * @return
+     * @param pIdToken ID of token requesting action
+     * @param pIdPlaylist ID of playlist to modify
+     * @param pName Name of the playlist.
+     * @param pIsPublic If playlist is public.
+     * @param pIsActive If playlist is active.
+     * 
+     * @return token
      */
-	public ListesDeLecture modifier(int pOwner, String pName, boolean pIsPublic, boolean pIsActive ) {
-		LOGGER.info("DAOListesDeLecture->modifier("+pOwner+","+pName+","+ pIsPublic+","+ pIsActive+")");
+	public Token modify(int pIdToken, int pIdPlaylist, String pName, Boolean pIsPublic, Boolean pIsActive ) {
+		LOGGER.info("DAOListesDeLecture->modify("+pIdToken+","+pName+","+ pIsPublic+","+ pIsActive+")");
 	    
-		ListesDeLecture playlist = dao.find(ListesDeLecture.class, pOwner);
-	    if (playlist == null) {
-	        throw new IllegalArgumentException("MAJ id " + pOwner + " n\'existe pas!");
-	    }
-	     
-	    playlist.setOwner(pOwner);
-	    playlist.setName(pName);
-	    playlist.setPublic(pIsPublic);
-	    playlist.setActive(pIsActive);
-	    return dao.modifier(playlist);
+		boolean nullName =  pName == null;
+		boolean nullPublic = pIsPublic == null;
+		boolean nullActive = pIsActive == null;
+		//determine action
+		boolean actionModify = !nullName && !nullPublic && !nullActive;
+		boolean actionName = !nullName && !nullPublic && !nullActive;
+		boolean actionPublic = nullName && !nullPublic && nullActive;
+		boolean actionActive = nullName && nullPublic && !nullActive;
+		if (actionModify || actionName || actionPublic || actionActive ) {
+			
+			
+			
+			// token exist & valid
+			Token token = daoToken.rechercher(pIdToken);
+	    	boolean tokenExist		 = token != null; 
+	    	boolean tokenIsAction	 = tokenExist && token.getAction().equals( Token.txtActionToken );
+	    	if (!tokenExist || !tokenIsAction) {
+	    		Token token2 = new Token(false, (tokenExist?"Token pas ActionToken":"Token inexistant") );
+	        	LOGGER.info("DAOListesDeLecture->modify() ERROR : "+token2.getAction()  );
+	        	return token2;
+			}
+	    	//owner exist &&  active 
+	    	boolean userExist	= DAOUtilisateur.getIdForUser(token.getEMail() ) != -1 ;
+	    	int idUser			= DAOUtilisateur.getIdForUser(token.getEMail() );
+	    	boolean userActive	= DAOUtilisateur.isUserActivated(idUser);
+	    	if (!userExist || !userActive ) {
+	    		Token token3 = new Token(false, (userExist?"Utilisateur non actif":"Utilisateur inexistant") );
+	        	LOGGER.info("DAOListesDeLecture->modify() ERROR : "+token3.getAction()  );
+	        	return token3;
+	    	}
+			//playlist exist belong to owner 
+	    	ListesDeLecture playlist	= dao.find(ListesDeLecture.class, pIdPlaylist);
+	    	boolean playlistExist		= playlist != null;
+	    	boolean playlistBelongUser	= playlistExist && playlist.getOwner() == idUser;
+	    	if (!playlistExist || !playlistBelongUser ) {
+	    		Token token4 = new Token(false, (playlistExist?"Playlist inexistant":"Playlist n'appartient pas a l'utilisateur") );
+	        	LOGGER.info("DAOListesDeLecture->modify() ERROR : "+token4.getAction()  );
+	        	return token4;
+	    	}
+	    	//name ok if given
+	    	boolean okName = (  actionModify ||actionName ?   ListesDeLecture.validateName(pName) : true );
+	    	if (!okName) {
+	    		Token token5 = new Token(false, "Nom incorrect" );
+	        	LOGGER.info("DAOListesDeLecture->modify() ERROR : "+token5.getAction() );
+	        	return token5;
+	    	}
+	    	//OK yay...
+	    	playlist.setDate();
+	    	if ( actionModify) { // modify
+				playlist.setName(pName);
+			    playlist.setPublic(pIsPublic);
+			    playlist.setActive(pIsActive);
+			}
+			else if(actionName ) { // setPlaylistName
+				playlist.setName(pName);
+			}
+			else if( actionPublic ) { // setPlaylistPublic
+				playlist.setPublic(pIsPublic);
+			}
+			else { // setPlaylistActive
+				playlist.setActive(pIsActive);
+			}
+	    	ListesDeLecture playlistRetour = dao.modifier(playlist);
+	    	String nomRetour = playlistRetour.getName();
+	    	boolean publicRetour = playlistRetour.isPublic();
+	    	boolean activeRetour = playlistRetour.isActive();
+	    	// test if modification ok
+			if (!nomRetour.equals( (actionModify || actionName ? pName : nomRetour ) )			|| 
+				publicRetour != ( (actionModify || actionName ? pIsPublic : publicRetour ) )	||
+				activeRetour !=  (actionModify || actionName ? pIsActive : activeRetour )		) {
+	        	Token token6 = new Token(false, "erreur modification utilisateur dans DB");
+	        	LOGGER.info("DAOListesDeLecture->modify() ERROR : "+token6.getAction()  );
+	        	return token6;
+			}
+		}
+		else {
+			return new Token(false, "modification impossible mauvais parametres");
+		}
+		
+		return new Token();
 	}
 
 	/**
 	 * Erase a playlist.
-     * @param pId ID of playlist to errase
+     * @param pIdPlaylist ID of playlist to errase
      */
-    public void effacer(int pId) {
-    	LOGGER.info("DAOListesDeLecture->effacer("+pId+")");
-	    dao.remove(ListesDeLecture.class, pId);
+    public void effacer(int pIdPlaylist) {
+    	// TODO return token w/ validation
+    	LOGGER.info("DAOListesDeLecture->effacer("+pIdPlaylist+")");
+	    dao.remove(ListesDeLecture.class, pIdPlaylist);
     }
 
     
@@ -139,45 +219,95 @@ public class DAOListesDeLecture {
      * Get a public playlist
      * <ul>
      * 	<li>Playlist must exist</li>
-     *  <li>Playlist must belong to user requesting it</li>
+     *  <li>Playlist must be public</li>
      * </ul>
-	 * @param id ID of desired playlist
+	 * @param pIdPlaylist ID of desired playlist
 	 * @return playlist OR null
 	 */
-	public ListesDeLecture getPublicPlaylist(int pId) {
-		LOGGER.info("DAOListesDeLecture->getPublicPlaylist("+pId+")");
-	    return dao.find(ListesDeLecture.class, pId);
+	public ListesDeLecture getPublicPlaylist(int pIdPlaylist) {
+		LOGGER.info("DAOListesDeLecture->getPublicPlaylist("+pIdPlaylist+")");
+		
+    	//playlist exist 
+    	ListesDeLecture playlist	= dao.find(ListesDeLecture.class, pIdPlaylist);
+    	boolean playlistExist		= playlist != null;
+    	if (!playlistExist ) {
+        	LOGGER.info("DAOListesDeLecture->getPrivatePlaylist() ERROR : "+ (playlistExist?"Playlist inexistant":"Playlist n'appartient pas a l'utilisateur") );
+    	}
+		return playlist;
 	}
 	
 	/**
-	 * Get a public playlist
+	 * Get a private playlist
 	 * 
 	 * <ul>
      * 	<li>Playlist must exist</li>
-     *  <li>Playlist must be public</li>
+     *  <li>Related user exist</li>
+     *  <li>Related user activated</li>
+     *  <li>Playlist must belong to user requesting it</li>
      * </ul>
-	 * @param id ID of desired playlist
+     * 
+	 * @param pIdToken ID of token requesting action
+	 * @param pIdPlaylist ID of playlist requested
 	 * @return playlist OR null
 	 */
 	public ListesDeLecture getPrivatePlaylist(int pIdToken, int pIdPlaylist) {
 		LOGGER.info("DAOListesDeLecture->getPrivatePlaylist("+pIdToken+","+pIdPlaylist+")" );
-		//TODO validation
-	    return dao.find(ListesDeLecture.class, pIdPlaylist);
+		
+		Token token = daoToken.rechercher(pIdToken);
+		boolean tokenExist		 = token != null; 
+    	boolean tokenIsAction	 = tokenExist && token.getAction().equals( Token.txtActionToken );
+    	if (!tokenExist || !tokenIsAction) {
+    		LOGGER.info("DAOListesDeLecture->getPrivatePlaylist() ERROR : "+ (tokenExist?"Token pas ActionToken":"Token inexistant") );
+        	return null;
+		}
+    	
+    	//owner exist &&  active 
+    	boolean userExist	= DAOUtilisateur.getIdForUser(token.getEMail() ) != -1 ;
+    	int idUser			= DAOUtilisateur.getIdForUser(token.getEMail() );
+    	boolean userActive	= DAOUtilisateur.isUserActivated(idUser);
+    	if (!userExist || !userActive ) {
+        	LOGGER.info("DAOListesDeLecture->getPrivatePlaylist() ERROR : "+(userExist?"Utilisateur non actif":"Utilisateur inexistant") );
+        	return null;
+    	}
+		
+    	//playlist exist belong to owner 
+    	ListesDeLecture playlist	= dao.find(ListesDeLecture.class, pIdPlaylist);
+    	boolean playlistExist		= playlist != null;
+    	boolean playlistBelongUser	= playlistExist && playlist.getOwner() == idUser;
+    	if (!playlistExist || !playlistBelongUser ) {
+        	LOGGER.info("DAOListesDeLecture->getPrivatePlaylist() ERROR : "+ (playlistExist?"Playlist inexistant":"Playlist n'appartient pas a l'utilisateur") );
+    	}
+    	
+		//ok 
+		return dao.find(ListesDeLecture.class, pIdPlaylist);
 	}
-
-
-	//TODO restaure in other class where needed
+	
 	/**
 	 * Get a list of public playlist<br>
-	 * allow to select an interval of result
+	 * from a select an interval of result
 	 * 
 	 * @param pFirst First result interval
 	 * @param pLast  Last result interval
-	 * @return
+	 * @return ListOfPlaylist
 	 */
-	public List<ListesDeLecture> getPublicPlaylistList( int pFirst, int pLast ) {
-		LOGGER.info("DAOListesDeLecture->afficherListe("+pFirst+","+pLast+")");
-	    return dao.rechercheParRequete(ListesDeLecture.class, "utilisateur.list", pFirst, pLast);
+	public List<ListesDeLecture> getPublicPlaylistList(int pFirst, int pLast ) {
+		LOGGER.info("DAOListesDeLecture->getPublicPlaylistList("+pFirst+","+pLast+")");
+		//TODO 
+	    return dao.rechercheParRequete(ListesDeLecture.class, "listesdelecture.list", pFirst, pLast);
+	}
+	
+	/**
+	 * Get a list of public playlist<br>
+	 * from a select an interval of result
+	 * 
+	 * @param pFirst First result interval
+	 * @param pLast  Last result interval
+	 * @return ListOfPlaylist
+	 */
+	public List<ListesDeLecture> getMyPlaylists(int pIdToken , int pFirst, int pLast ) {
+		LOGGER.info("DAOListesDeLecture->getMyPlaylists("+pFirst+","+pLast+")");
+		//TODO 
+		return dao.rechercheParRequete(ListesDeLecture.class, "listesdelecture.list", pFirst, pLast);
 	}
     
 }
