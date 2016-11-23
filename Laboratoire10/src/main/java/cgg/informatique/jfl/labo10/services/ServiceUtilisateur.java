@@ -63,7 +63,7 @@ public class ServiceUtilisateur {
     
     @Path("/confirmCreateUser")
 	@PUT
-	public Token confirmCreateUser(@QueryParam("idToken")    Long pIdToken,
+	public Token confirmCreateUser(@QueryParam("idToken")    int pIdToken,
 	                               @QueryParam("captchaVal") String pCaptchaVal) {
 		LOGGER.info("ServiceUtilisateur->confirmCreateUser(" + pIdToken + "," +pCaptchaVal+")" );
 		return daoUtil.activateUser(pIdToken, pCaptchaVal);
@@ -80,7 +80,7 @@ public class ServiceUtilisateur {
     
     @Path("/logoff")
 	@PUT
-	public Token logoff(@PathParam( "idToken")      long   pIdToken,
+	public Token logoff(@PathParam( "idToken")      int   pIdToken,
             			@QueryParam("cle") 	      String pKey,
             			@QueryParam("courriel")   String pCourriel) {
     		LOGGER.info("ServiceUtilisateur->logoff("+pIdToken+","+pKey+","+pCourriel+")" );
@@ -124,7 +124,7 @@ public class ServiceUtilisateur {
     @Path("/effacer")
     @DELETE
     public Token effacer(
-    				@PathParam("idToken")     long   pIdToken,
+    				@PathParam("idToken")     int   pIdToken,
     				@QueryParam("cle") 	      String pKey,
     				@PathParam("idUser") 	  long pIdUser) {
     	LOGGER.info("ServiceToken->effacer("+ pIdToken + "," + pKey+ "," + pIdUser+")" );

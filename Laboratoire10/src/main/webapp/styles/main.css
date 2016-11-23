@@ -98,8 +98,8 @@ section {
   display: none;
 }
 
-.previewQuerryResult {
-  
+.querryResult {
+  word-wrap: break-word;
 }
 
 .standard-flex-display {

@@ -124,7 +124,7 @@ public class ServiceListeLecture {
     		           @PathParam( "idToken")		int		pIdToken,
                        @QueryParam("cle")			String	pKey,
                        @QueryParam("publique")		String	pIsPublic) {
-    	LOGGER.info("ServiceListeLecture->modifier("+ pIdToken + ","+ pKey + ","+ pName + ","+ pIsPublic + ","+ pIsPublic +")" );
+    	LOGGER.info("ServiceListeLecture->modifier("+ pIdToken + ","+ pKey + ","+ pIsPublic + ")" );
     	Token token = daoToken.confirmCanDoAction(pIdToken, pKey );
     	if ( token.getEtat()  ){
     		
