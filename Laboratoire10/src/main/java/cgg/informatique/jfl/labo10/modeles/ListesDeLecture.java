@@ -61,7 +61,7 @@ public class ListesDeLecture extends ModeleDate{
      * @param pIsActive If the playlist is active.
      */
     public ListesDeLecture(int pIDOwner ,  String pName , boolean pIsPublic , boolean pIsActive ){
-		if( validateName(pName) ){ // TODO real validation
+		if( validateName(pName) ){ 
 			this.owner = pIDOwner ;
 			this.name    = pName;
 			this.isPublic = pIsPublic;

@@ -184,8 +184,8 @@ public class DAOMusique {
     	boolean tokenExist		 = token != null; 
     	boolean tokenIsAction	 = tokenExist && token.getAction().equals( Token.txtActionToken );
     	int     idUser			 = DAOUtilisateur.getIdForUser(token.getEMail() ) ;
-    	boolean userExist		 = tokenIsAction && DAOUtilisateur.rechercher(idUser) != null;
-    	boolean userActive		 = tokenIsAction && DAOUtilisateur.rechercher(idUser) != null;
+    	boolean userExist		 = tokenIsAction && DAOUtilisateur.isUserExisting(idUser);
+    	boolean userActive		 = tokenIsAction && DAOUtilisateur.isUserActivated(idUser);
     	Musique song			 = find(pIdSong);
     	boolean songExist 	  	 = userExist && song != null ;
     	boolean songBelongToUser = songExist && song.getOwner() == idUser ;
