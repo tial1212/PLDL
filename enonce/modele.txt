@@ -1,8 +1,7 @@
 
-FIX  all column name & specs must match 
 TODO String vs Text
 TODO DAOMusique , DAOListesdelecture_musiques , DAOListesDeLecture 
-TODO isUserActive??
+
 
 avatar
     Id      int
