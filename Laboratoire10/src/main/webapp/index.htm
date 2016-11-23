@@ -17,8 +17,69 @@
     let servicePathGroups = { user : 'user' };
     
     window.onload = function onload() {
-      createServiceTester('servicesTesterPlaceHolder', 'Login', 'login',
-        servicePathGroups.user, [ 'Identifiant:username', 'Mot de Passe:password' ]);
+      createServiceTester('servicesTesterPlaceHolder', 'A1', 'getActionToken',
+        servicePathGroups.user, false, [ 'Courriel:courriel' ]);
+
+      createServiceTester('servicesTesterPlaceHolder', 'A2', 'login',
+        servicePathGroups.user, false, [ 'Courriel:courriel', 'Mot de Passe:motDePasse' ]);
+
+      createServiceTester('servicesTesterPlaceHolder', 'A3', 'logoff',
+        servicePathGroups.user, true, null);
+
+      createServiceTester('servicesTesterPlaceHolder', 'P1', 'createUser',
+        servicePathGroups.user, false, [ 'Alias:alias', 'Mot de passe:motDePasse', 'Courriel:courriel',
+        'Avatar:avatar' ]);
+
+      createServiceTester('servicesTesterPlaceHolder', 'P3-P4', 'getPublicSong',
+        servicePathGroups.user, true, [ 'Active?:active' ]);
+
+      createServiceTester('servicesTesterPlaceHolder', 'U1', 'modifier',
+        servicePathGroups.user, true, [ 'Courriel:courriel', 'Mot de passe:motDePasse', 'Alias:alias',
+        'Avatar:avatar' ]);
+      
+      createServiceTester('servicesTesterPlaceHolder', 'U2', 'confirmCreate',
+        servicePathGroups.user, true, [ 'Captcha:captcha' ]);
+
+      createServiceTester('servicesTesterPlaceHolder', 'U3', 'createPlaylist',
+        servicePathGroups.user, true, [ 'Nom de liste:name', 'Publique?:isPublic', 'Active?:isActive' ]);
+
+      createServiceTester('servicesTesterPlaceHolder', '??', 'getMyPlaylists',
+        servicePathGroups.user, true, null);
+
+      createServiceTester('servicesTesterPlaceHolder', 'U4', 'getSpecificPlaylist',
+        servicePathGroups.user, true, [ 'ID de liste:idPlaylist' ]);
+
+      createServiceTester('servicesTesterPlaceHolder', 'U5', 'setPlaylistName',
+        servicePathGroups.user, true, [ 'Nouveau nom:name' ]);
+
+      createServiceTester('servicesTesterPlaceHolder', 'U6', 'setPlaylistActive',
+        servicePathGroups.user, true, [ 'Active?:active' ]);
+
+      createServiceTester('servicesTesterPlaceHolder', 'U7', 'setPlaylistPublic',
+        servicePathGroups.user, true, [ 'Public?:public' ]);
+
+      createServiceTester('servicesTesterPlaceHolder', 'U8', 'createSong',
+        servicePathGroups.user, true, [ 'Titre:title', 'Artiste:artiste', 'Musique:musique',
+        'Couverture:coverArt', 'Public?:public', 'Active?:active' ]);
+
+      createServiceTester('servicesTesterPlaceHolder', 'U9-U10', 'getPrivateSong',
+        servicePathGroups.user, true, [ 'ID de chanson:idSong' ]);
+
+      createServiceTester('servicesTesterPlaceHolder', 'U11', 'modify',
+        servicePathGroups.user, true, [ 'ID de chanson:idSong', 'Titre:titre', 'Artiste:artiste',
+        'Vignette:vignette', 'Publique?:publique', 'Active?:active' ]);
+
+      createServiceTester('servicesTesterPlaceHolder', 'U12', 'setActive',
+        servicePathGroups.user, true, [ 'ID de chanson:idSong', 'Active?:active' ]);
+
+      createServiceTester('servicesTesterPlaceHolder', 'U13', 'setPublic',
+        servicePathGroups.user, true, [ 'ID de chanson:idSong', 'Publique?:publique' ]);
+
+      createServiceTester('servicesTesterPlaceHolder', 'U14', 'addSongToPlaylist',
+        servicePathGroups.user, true, [ 'ID de liste:idPlaylist', 'ID de chanson:idSong' ]);
+
+      createServiceTester('servicesTesterPlaceHolder', 'U15', 'removeSongToPlaylist',
+        servicePathGroups.user, true, [ 'ID de liste:idPlaylist', 'ID de chanson:idSong' ]);
     }
     
     /// <summary>
@@ -27,24 +88,26 @@
     /// Author: Michel Bussiere
     /// </summary>
     /// <param name="placeholder">The placeholder in which the element will be placed in</param>
-    /// <param name="title">The title that will appear above the service</param>
+    /// <param name="title">The code that identifies the service</param>
     /// <param name="serviceName">The name of the service</param>
-    function createServiceTester(placeholder, title, serviceName, servicePathGroup, parameters) {
+    function createServiceTester(placeholder, code, serviceName, servicePathGroup, useToken, parameters) {
       let service = new Object();
       service.serviceName = serviceName;
       service.servicePathGroup = servicePathGroup;
+      service.useToken = useToken;
       service.parameters = parameters;
       
       if (typeof placeholder === 'string')
         placeholder = document.getElementById(placeholder);
       
       let section = document.createElement('section');
+      placeholder.appendChild(section);
       
       let h2 = document.createElement('h2');
-      h2.innerHTML = title;
+      h2.innerHTML = code + ' - ' + serviceName;
       section.appendChild(h2);
 
-      if (parameters.length > 0) {
+      if (parameters != null ? parameters.length > 0 : false) {
         let lblTextAndParamName;
         
         let divLblInput;
@@ -65,7 +128,7 @@
           inputParam = document.createElement('input');
           inputParam.type = 'text';
           inputParam.id = service.serviceName + '_' + lblTextAndParamName[1];
-          inputParam.placeholder = parameters[i];
+          inputParam.placeholder = lblTextAndParamName[0];
           divLblInput.appendChild(inputParam);
 
           section.appendChild(divLblInput);
@@ -90,31 +153,47 @@
       btnSubmitQuerry.onclick = '';
       divButtonGroup.appendChild(btnSubmitQuerry);
 
+      let h3Requete = document.createElement('h3');
+      h3Requete.innerHTML = 'Requête';
+      section.appendChild(h3Requete);
+
       let divPreviewQuerryResult = document.createElement('div');
       divPreviewQuerryResult.id = serviceName + '_previewQuerryResult';
       divPreviewQuerryResult.className = 'previewQuerryResult no-display';
       section.appendChild(divPreviewQuerryResult);
 
-      placeholder.appendChild(section);
+      let h3Retour = document.createElement('h3');
+      h3Retour.innerHTML = 'Retour';
+      section.appendChild(h3Retour);
+
+      let divSubmitQuerryResult = document.createElement('div');
+      divSubmitQuerryResult.id = serviceName + '_previewQuerryResult';
+      divSubmitQuerryResult.className = 'previewQuerryResult no-display';
+      section.appendChild(divSubmitQuerryResult);
     }
 
     function buildQuerry(service) {
       let servicePathWithParam = serviceCommonPath + '/' + service.servicePathGroup
         + '/' + service.serviceName;
-      let parameters = service.parameters;
 
-      for (let i = 0; i < parameters.length; i++) {
-        if (i == 0)
-          servicePathWithParam += '?';
-        else
+      let idToken = 'IDTOKEN';
+      let cle = 'CLE';
+
+      if (service.useToken)
+        servicePathWithParam += '?idToken=' + idToken + '&cle=' + cle;
+      else
+        servicePathWithParam += '?';
+
+      for (let i = 0; i < (service.parameters != null ? service.parameters.length : 0); i++) {
+        if (i != 0 || service.useToken)
           servicePathWithParam += '&';
 
-        let lblTextAndParamName = parameters[i].split(':');
+        let lblTextAndParamName = service.parameters[i].split(':');
         
         inputParam = document.getElementById(service.serviceName + '_' + lblTextAndParamName[1]);
 
         servicePathWithParam += lblTextAndParamName[1] + '='
-            + (inputParam.value != '' ? inputParam.value : lblTextAndParamName[0].toUpperCase());
+            + (inputParam.value != '' ? inputParam.value : lblTextAndParamName[1].toUpperCase());
       }
 
       return servicePathWithParam;
