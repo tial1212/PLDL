@@ -1,13 +1,23 @@
-C:\Users\biz667\workspaceTOMEE\rest-example\src\main\java\org\superbiz\rest\model\Model.java
-C:\Users\biz667\workspaceTOMEE\rest-example\src\main\java\org\superbiz\rest\model\User.java
-C:\Users\biz667\workspaceTOMEE\rest-example\src\main\java\org\superbiz\rest\batcher\SampleDataManager.java
-C:\Users\biz667\workspaceTOMEE\rest-example\src\main\java\org\superbiz\rest\dao\UserDAO.java
-C:\Users\biz667\workspaceTOMEE\rest-example\src\main\java\org\superbiz\rest\service\UserService.java
-C:\Users\biz667\workspaceTOMEE\rest-example\src\main\java\org\superbiz\rest\model\Post.java
-C:\Users\biz667\workspaceTOMEE\rest-example\src\main\java\org\superbiz\rest\model\DatedModel.java
-C:\Users\biz667\workspaceTOMEE\rest-example\src\main\java\org\superbiz\rest\dao\DAO.java
-C:\Users\biz667\workspaceTOMEE\rest-example\src\main\java\org\superbiz\rest\dao\PostDAO.java
-C:\Users\biz667\workspaceTOMEE\rest-example\src\main\java\org\superbiz\rest\dao\CommentDAO.java
-C:\Users\biz667\workspaceTOMEE\rest-example\src\main\java\org\superbiz\rest\service\CommentService.java
-C:\Users\biz667\workspaceTOMEE\rest-example\src\main\java\org\superbiz\rest\service\PostService.java
-C:\Users\biz667\workspaceTOMEE\rest-example\src\main\java\org\superbiz\rest\model\Comment.java
+D:\Cegep\Session 5\Dev Application Mobile\PLDL\Laboratoire10\src\main\java\cgg\informatique\jfl\labo10\modeles\Utilisateur.java
+D:\Cegep\Session 5\Dev Application Mobile\PLDL\Laboratoire10\src\main\java\cgg\informatique\jfl\labo10\services\ServiceUtilisateur.java
+D:\Cegep\Session 5\Dev Application Mobile\PLDL\Laboratoire10\src\main\java\cgg\informatique\jfl\labo10\dao\DAOListesdelectureMusiques.java
+D:\Cegep\Session 5\Dev Application Mobile\PLDL\Laboratoire10\src\main\java\cgg\informatique\jfl\labo10\services\ServiceCaptcha.java
+D:\Cegep\Session 5\Dev Application Mobile\PLDL\Laboratoire10\src\main\java\cgg\informatique\jfl\labo10\modeles\Avatar.java
+D:\Cegep\Session 5\Dev Application Mobile\PLDL\Laboratoire10\src\main\java\cgg\informatique\jfl\labo10\services\ServiceMusique.java
+D:\Cegep\Session 5\Dev Application Mobile\PLDL\Laboratoire10\src\main\java\cgg\informatique\jfl\labo10\dao\DAOListesDeLecture.java
+D:\Cegep\Session 5\Dev Application Mobile\PLDL\Laboratoire10\src\main\java\cgg\informatique\jfl\labo10\dao\DAOMusique.java
+D:\Cegep\Session 5\Dev Application Mobile\PLDL\Laboratoire10\src\main\java\cgg\informatique\jfl\labo10\demarrage\Demarrage.java
+D:\Cegep\Session 5\Dev Application Mobile\PLDL\Laboratoire10\src\main\java\cgg\informatique\jfl\labo10\dao\DAOUtilisateur.java
+D:\Cegep\Session 5\Dev Application Mobile\PLDL\Laboratoire10\src\main\java\cgg\informatique\jfl\labo10\dao\DAO.java
+D:\Cegep\Session 5\Dev Application Mobile\PLDL\Laboratoire10\src\main\java\cgg\informatique\jfl\labo10\modeles\Modele.java
+D:\Cegep\Session 5\Dev Application Mobile\PLDL\Laboratoire10\src\main\java\cgg\informatique\jfl\labo10\utilitaires\Captcha.java
+D:\Cegep\Session 5\Dev Application Mobile\PLDL\Laboratoire10\src\main\java\cgg\informatique\jfl\labo10\dao\DAOToken.java
+D:\Cegep\Session 5\Dev Application Mobile\PLDL\Laboratoire10\src\main\java\cgg\informatique\jfl\labo10\modeles\ListesDeLecture.java
+D:\Cegep\Session 5\Dev Application Mobile\PLDL\Laboratoire10\src\main\java\cgg\informatique\jfl\labo10\services\ServiceListeLecture.java
+D:\Cegep\Session 5\Dev Application Mobile\PLDL\Laboratoire10\src\main\java\cgg\informatique\jfl\labo10\modeles\Listesdelecture_musiques.java
+D:\Cegep\Session 5\Dev Application Mobile\PLDL\Laboratoire10\src\main\java\cgg\informatique\jfl\labo10\utilitaires\MD5Digest.java
+D:\Cegep\Session 5\Dev Application Mobile\PLDL\Laboratoire10\src\main\java\cgg\informatique\jfl\labo10\modeles\Musique.java
+D:\Cegep\Session 5\Dev Application Mobile\PLDL\Laboratoire10\src\main\java\cgg\informatique\jfl\labo10\modeles\ModeleDate.java
+D:\Cegep\Session 5\Dev Application Mobile\PLDL\Laboratoire10\src\main\java\cgg\informatique\jfl\labo10\services\ServiceToken.java
+D:\Cegep\Session 5\Dev Application Mobile\PLDL\Laboratoire10\src\main\java\cgg\informatique\jfl\labo10\dao\DAOAvatar.java
+D:\Cegep\Session 5\Dev Application Mobile\PLDL\Laboratoire10\src\main\java\cgg\informatique\jfl\labo10\modeles\Token.java

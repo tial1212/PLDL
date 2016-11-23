@@ -25,7 +25,6 @@
     <jta-data-source>jdbc/LABO10</jta-data-source>
     <non-jta-data-source>jdbc/LABO10-unmanaged</non-jta-data-source>
     <class>cgg.informatique.jfl.labo10.modeles.Utilisateur</class>
-    <class>cgg.informatique.jfl.labo10.modeles.Film</class>
     <class>cgg.informatique.jfl.labo10.modeles.Avatar</class>
     <properties>
       <property name="openjpa.jdbc.SynchronizeMappings" value="buildSchema(ForeignKeys=true)"/>

@@ -16,20 +16,32 @@
     limitations under the License.
 -->
 <resources>
-  <Resource id="jdbc/blog" type="javax.sql.DataSource">
-    JdbcDriver = org.hsqldb.jdbcDriver
-    JdbcUrl = jdbc:hsqldb:mem:blog
-    UserName = SA
-    Password =
+
+  <Resource   
+    id="jdbc/LABO10"  type="javax.sql.DataSource">
+    name= jdbc/LABO10 
+	auth = Container 
+	 
+    driverClassName = com.mysql.jdbc.Driver
+    url = jdbc:mysql://207.162.80.103:3306/web4?useSSL=false
+    UserName = web4
+    Password = 5PA123
     JtaManaged = true
-  </Resource>
-
-
-  <Resource id="jdbc/blog-unmanaged" type="javax.sql.DataSource">
-    JdbcDriver = org.hsqldb.jdbcDriver
-    JdbcUrl = jdbc:hsqldb:mem:blog
-    UserName = SA
-    Password =
+    maxActive = 15 
+    maxIdle = 10
+ </Resource>
+ <Resource     
+    id="jdbc/LABO10-unmanaged"  type="javax.sql.DataSource">
+    name = jdbc/LABO10-unmanaged
+	auth =  Container
+	 
+    driverClassName = com.mysql.jdbc.Driver
+    url = jdbc:mysql://207.162.80.103:3306/web4?useSSL=false
+    UserName = web4
+    Password = 5PA123
     JtaManaged = false
-  </Resource>
+    maxActive = 15 
+    maxIdle = 10
+    
+ </Resource>
 </resources>
