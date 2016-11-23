@@ -166,7 +166,7 @@ public class DAOUtilisateur {
      * @param pCaptcha The value of the captcha.
      * @return token
      */
-    public Token activateUser(int pIdToken , String pCaptcha ) {
+    public Token activateUser(long pIdToken , String pCaptcha ) {
     	LOGGER.info("DAOUtilisateur->activerUser("+pIdToken+","+pCaptcha+")");
     	
     	Token token = daoToken.rechercher(pIdToken);
