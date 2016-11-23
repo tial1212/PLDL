@@ -208,7 +208,7 @@ public class DAOListesDeLecture {
 	 * Erase a playlist.
      * @param pIdPlaylist ID of playlist to errase
      */
-    public void effacer(int pIdPlaylist) {
+    public void errase(int pIdPlaylist) {
     	// TODO return token w/ validation
     	LOGGER.info("DAOListesDeLecture->effacer("+pIdPlaylist+")");
 	    dao.remove(ListesDeLecture.class, pIdPlaylist);

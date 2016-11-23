@@ -6,14 +6,18 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.xml.bind.annotation.XmlRootElement;
 
+/**
+ * A playlist 
+ * (no song inside )
+ * @see ListesDelectureMusiques
+ * @author alexandrearsenault
+ */
 @Entity
 @NamedQueries({
    @NamedQuery(name = "listesdelecture.list", query = "select l from ListesDeLecture l")
               })
 @XmlRootElement(name = "listesdelecture")
 public class ListesDeLecture extends ModeleDate{
-	
-	
 	
 	/**
 	 * The id of the owner of this song.
@@ -50,7 +54,6 @@ public class ListesDeLecture extends ModeleDate{
      */
     public ListesDeLecture(){
     }
-    
     
     /**
      * Use this constructor instead. X params

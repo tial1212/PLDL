@@ -55,7 +55,7 @@ public class DAOUtilisateur {
      */
     public Token login(String pCourriel, String pMotDePasse) {
     	LOGGER.info("DAOUtilisateur->login( "+pCourriel+","+pMotDePasse+")");
-    	Utilisateur utilisateur = dao.querrySingle("Select u FROM Utilisateur u WHERE u.Courriel = "+pCourriel+" AND u.MotDePasse = "+pMotDePasse); //FIXME
+    	Utilisateur utilisateur = dao.querrySingle("Select u FROM Utilisateur u WHERE u.Courriel = "+pCourriel+" AND u.MotDePasse = "+pMotDePasse); 
 	    if (utilisateur != null) {
 	    	if (utilisateur.isActive() ) {
 	    		if (utilisateur.getPasowrd().equals(pMotDePasse) ) {

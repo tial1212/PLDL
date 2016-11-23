@@ -2,6 +2,7 @@ package cgg.informatique.jfl.labo10.modeles;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.Lob;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -36,6 +37,7 @@ public class Musique extends ModeleDate  {
 	/**
 	 * The song itself ( Base64 )
 	 */
+	@Lob
 	@Column(name = "Musique" )
 	private String music; 
 	
@@ -43,6 +45,7 @@ public class Musique extends ModeleDate  {
 	 * The cover art for the song ( Base64 )
 	 * A square image, usually the album's Artwork.
 	 */
+	@Lob
 	@Column(name = "Vignette" )
 	private String coverArt;
 	

@@ -18,6 +18,7 @@ package cgg.informatique.jfl.labo10.dao;
 
 import cgg.informatique.jfl.labo10.demarrage.Demarrage;
 import cgg.informatique.jfl.labo10.modeles.Token;
+import cgg.informatique.jfl.labo10.modeles.Utilisateur;
 
 import java.util.List;
 import java.util.logging.Logger;
@@ -64,19 +65,13 @@ public class DAOToken {
     		LOGGER.info("DAOToken->effacer("+pId+")");
         dao.remove(Token.class, pId);
     }
-
+    
+    //TODO  is it realy usefull
     public Token modifier(int pIdUser, String pParam) {
     		LOGGER.info("DAOToken->modifier("+pIdUser+","+pParam+")");
     		Token token = dao.find(Token.class, pIdUser);
     		
     		//validation
-    		
-    		//token.setParam(param);    TODO 
-    		
-    		
-    		
-    		
-    		
     	return dao.modifier(token);
     }
     
@@ -126,10 +121,11 @@ public class DAOToken {
      * @param pKey
      * @return
      */
-    // FIXME return type
-    public JPanel getUserForToken(org.apache.taglibs.standard.lang.jstl.parser.Token pIdToken) {
+    
+    public Utilisateur getUserForToken(org.apache.taglibs.standard.lang.jstl.parser.Token pIdToken) {
     	LOGGER.info("DAOToken->getUserForToken("+pIdToken.toString()+")");
-		//FIXME
-		return new JPanel();
+    	// FIXME 
+    	LOGGER.info("DAOToken->getUserForToken() NOT PROGRAMMED YET");
+		return new Utilisateur();
     }
 }

@@ -32,14 +32,12 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 
-import org.bouncycastle.asn1.pkcs.Pfx;
-
 import java.util.List;
 import java.util.logging.Logger;
 
 
 @Path("/service/listeLecture")
-@Produces({"text/xml", "application/json"})
+@Produces({"application/json","text/xml"})
 public class ServiceListeLecture {
 
     @EJB // FIXME inject ???? 
@@ -52,11 +50,7 @@ public class ServiceListeLecture {
     private DAO dao;
     
     private Logger LOGGER = Logger.getLogger(Demarrage.class.getName());
-
-	private DAOListesDeLecture daoUtil;
     
-     // TOKEN =  owner name isPublic isActive  TODO remove when done
-	
     
 	@Path("/createPlaylist")
     @PUT
@@ -210,7 +204,7 @@ public class ServiceListeLecture {
     	LOGGER.info("ServiceListeLecture->effacer("+ pIdToken + "," + pKey+ "," + pIdPlaylist+")" );
     	Token token = daoToken.confirmCanDoAction(pIdToken, pKey );
     	if ( token.getEtat()  ){
-    		//TODO
+    		daoPlaylist.errase(pIdPlaylist);
 		}
     	return token;
     }

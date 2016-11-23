@@ -2,6 +2,7 @@ package cgg.informatique.jfl.labo10.modeles;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.Lob;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -22,6 +23,7 @@ public class Avatar extends Modele {
 	/**
 	 *  The avatar image in Base64
 	 */
+	@Lob
     @Column(name = "Avatar")
     private String avatar;
 	

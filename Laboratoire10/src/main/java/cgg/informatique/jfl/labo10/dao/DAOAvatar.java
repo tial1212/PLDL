@@ -56,7 +56,7 @@ public class DAOAvatar {
         dao.remove(Avatar.class, pId);
     }
     
-    public Avatar modifier(long pId, String pNom , String pAvatar ) {
+    public Avatar modiffy(int pId, String pNom , String pAvatar ) {
     	LOGGER.info("DAOAvatar->modifier("+pId+","+pNom+","+pAvatar+")" );
     	Avatar avatar = dao.find(Avatar.class, pId);
         if (avatar == null) {

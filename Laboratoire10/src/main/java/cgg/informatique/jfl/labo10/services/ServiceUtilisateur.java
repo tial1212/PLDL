@@ -35,7 +35,7 @@ import java.util.logging.Logger;
 
 
 @Path("/service/utilisateur")
-@Produces({"text/xml", "application/json"})
+@Produces({"application/json","text/xml"})
 public class ServiceUtilisateur {
 
     @EJB

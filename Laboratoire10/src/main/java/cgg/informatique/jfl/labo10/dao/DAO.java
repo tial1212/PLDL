@@ -65,7 +65,7 @@ public class DAO {
      * @param clazz The class of desired object
      * @param pId
      */
-    public <E> void remove(Class<E> clazz, long pId) {
+    public <E> void remove(Class<E> clazz, int pId) {
     	LOGGER.info("DAO->remove("+clazz+","+pId+")" );
         em.remove(em.find(clazz, pId));
     }
@@ -76,7 +76,7 @@ public class DAO {
      * @param id 
      * @return
      */
-    public <E> E find(Class<E> clazz, long id) {
+    public <E> E find(Class<E> clazz, int id) {
     	LOGGER.info("DAO->find("+clazz+","+id+")" );
         return em.find(clazz, id);
     }

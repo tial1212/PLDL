@@ -23,7 +23,6 @@ import javax.ejb.LockType;
 import javax.ejb.Singleton;
 import javax.inject.Inject;
 
-import java.util.List;
 import java.util.logging.Logger;
 
 @Singleton
@@ -36,40 +35,22 @@ public class DAOListesdelectureMusiques {
     Logger LOGGER = Logger.getLogger(Demarrage.class.getName()); 
     
     
-    
-    public List<ListesDeLecture> afficherListe( int pPremier, int pDernier ) {
-    	LOGGER.info("DAOUtilisateur->afficherListe("+pPremier+","+pDernier+")");
-        return dao.rechercheParRequete(ListesDeLecture.class, "utilisateur.list", pPremier, pDernier);
-    }
-    
+    //TODO lots of methods
+    // find song in playlist
     /**
      * @param id
      * @return
      */
-    public ListesDeLecture rechercher(long id) {
+    public ListesDeLecture rechercher(int id) {
         return dao.find(ListesDeLecture.class, id);
     }
     
     /**
      * @param id
      */
-    public void effacer(long id) {
+    public void effacer(int id) {
         dao.remove(ListesDeLecture.class, id);
     }
-
     
-    /**
-     * 
-     * 
-     * @param pOwner  (Utilisateur.id)
-     * @param pName
-     * @param pIsPublic
-     * @param pIsActive
-     * @return
-     */
-    
-    public void modifier(int pIdToken , String pName, Boolean pIsPublic, Boolean pIsActive ) {
-    	//FIXME
-    }
     
 }

@@ -17,12 +17,6 @@ import cgg.informatique.jfl.labo10.modeles.Token;
 @Lock(LockType.READ)
 public class DAOMusique {
 	
-	//TODO erase me when done
-	// SONG ATTRIBUTE = 
-	 // int owner,String title, String artist, String music, String coverArt,
-	 // boolean isPublic , boolean isActive;
-	 
-	
 	 @Inject
     private DAO dao;
 	 
