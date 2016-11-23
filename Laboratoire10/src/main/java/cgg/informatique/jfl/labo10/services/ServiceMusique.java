@@ -48,7 +48,6 @@ public class ServiceMusique {
     private Logger LOGGER = Logger.getLogger(Demarrage.class.getName());
     
     
-    
 	@Path("/createSong")
     @PUT
     public Token createSong(@PathParam("idToken")     int	  pIdToken,
@@ -106,7 +105,7 @@ public class ServiceMusique {
 	 					  @QueryParam("vignette")	String	pCoverArt ,
 	 					  @QueryParam("publique")	boolean	pIsPublic ,
 	 					  @QueryParam("active")		boolean	pIsActive) {
-		LOGGER.info("ServiceMusique->modify(" + pIdToken + "," +pKey+ "," +pIdSong+ "," +pIdOwner+ "," +pTitle+ "," +pArtist+  "," +pCoverArt+ "," +pIsPublic+ "," +pIsActive+")" );
+		LOGGER.info("ServiceMusique->modify("+pIdToken+","+pKey+","+pIdSong+","+pIdOwner+","+pTitle+","+pArtist+","+pCoverArt+","+pIsPublic+","+pIsActive+")" );
 		Token token = daoToken.confirmCanDoAction(pIdToken, pKey );
     	if ( token.getEtat()  ){
     		return daoMusique.modify(pIdSong, pIdOwner, pTitle, pArtist, pCoverArt, pIsPublic, pIsActive);
@@ -122,10 +121,11 @@ public class ServiceMusique {
             			   @QueryParam("idSong") 	int     pIdSong ,
             			   @QueryParam("active") 	boolean pActive  ) {
 		LOGGER.info("ServiceMusique->setActive(" + pIdToken + "," +pKey+ "," +pIdSong+"," +pActive+")" );
-    	if ( !daoToken.confirmCanDoAction(pIdToken, pKey ).getEtat()  ){
-    		return null;  //TODO check what it create as json
+    	Token token = daoToken.confirmCanDoAction(pIdToken, pKey );
+		if ( token.getEtat() ){
+			return daoMusique.setActive(pIdSong, pIdToken, pActive);
 		}
-    	return daoMusique.setActive(pIdSong, pIdToken, pActive);
+    	return token;
 	}
     
     @Path("/setPublic")
@@ -135,9 +135,10 @@ public class ServiceMusique {
             			   @QueryParam("idSong") 	int     pIdSong ,
             			   @QueryParam("public") 	boolean pIsPublic   ) {
 		LOGGER.info("ServiceMusique->setActive(" + pIdToken + "," +pKey+ "," +pIdSong+"," +pIsPublic +")" );
-    	if ( !daoToken.confirmCanDoAction(pIdToken, pKey ).getEtat()  ){
-    		return null;  //TODO check what it create as json
+    	Token token = daoToken.confirmCanDoAction(pIdToken, pKey );
+		if ( token.getEtat() ){
+    		return daoMusique.setPublic(pIdSong, pIdToken, pIsPublic );
 		}
-    	return daoMusique.setPublic(pIdSong, pIdToken, pIsPublic );
+    	return token;
 	}
 }

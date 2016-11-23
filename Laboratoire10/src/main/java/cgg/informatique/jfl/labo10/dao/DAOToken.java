@@ -25,6 +25,7 @@ import javax.ejb.Lock;
 import javax.ejb.LockType;
 import javax.ejb.Singleton;
 import javax.inject.Inject;
+import javax.swing.JPanel;
 
 @Singleton
 @Lock(LockType.READ)
@@ -54,21 +55,28 @@ public class DAOToken {
         return dao.persist(pToken);
     }
     
-    
-    public Token rechercher(long pIdUser) {
+    public Token rechercher(int pIdUser) {
     		LOGGER.info("DAOToken->rechercher("+pIdUser+")");
         return dao.find(Token.class, pIdUser);
     }
 
-    public void effacer(long pId) {
+    public void effacer(int pId) {
     		LOGGER.info("DAOToken->effacer("+pId+")");
         dao.remove(Token.class, pId);
     }
 
-    public Token modifier(long pIdUser, String pParam) {
+    public Token modifier(int pIdUser, String pParam) {
     		LOGGER.info("DAOToken->modifier("+pIdUser+","+pParam+")");
     		Token token = dao.find(Token.class, pIdUser);
+    		
+    		//validation
+    		
     		//token.setParam(param);    TODO 
+    		
+    		
+    		
+    		
+    		
     	return dao.modifier(token);
     }
     
@@ -85,7 +93,7 @@ public class DAOToken {
      * @param pKey
      * @return
      */
-    public Token confirmCanDoAction(long pIdToken, String pKey) {
+    public Token confirmCanDoAction(int pIdToken, String pKey) {
     	LOGGER.info("DAOToken->confirmCanDoAction("+pIdToken+","+pKey+")");
 		Token token = dao.querrySingle("SELECT t FROM Token WHERE t.id ="+pIdToken);
 		if (token != null) {
@@ -113,14 +121,15 @@ public class DAOToken {
     }
     
     /**
-     * 
+     * Get an user ID from a Token ?????
      * @param pIdToken
      * @param pKey
      * @return
      */
-    public int getUserForToken(org.apache.taglibs.standard.lang.jstl.parser.Token pIdToken) {
+    // FIXME return type
+    public JPanel getUserForToken(org.apache.taglibs.standard.lang.jstl.parser.Token pIdToken) {
     	LOGGER.info("DAOToken->getUserForToken("+pIdToken.toString()+")");
 		//FIXME
-		return -1;
+		return new JPanel();
     }
 }
