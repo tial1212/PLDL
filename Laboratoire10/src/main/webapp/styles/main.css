@@ -21,6 +21,7 @@ html {
 body {
   background-color: #dadada;
   height: 100%;
+  font: 14px "Trebuchet MS", Helvetica, sans-serif;
 }
 
 h1 {
@@ -40,9 +41,9 @@ h2 {
 }
 
 h3 {
-  font: 16px "Trebuchet MS", Helvetica, sans-serif;
+  font: bold 16px "Trebuchet MS", Helvetica, sans-serif;
   color: #2f2f2f;
-  margin-bottom: 0.5em;
+  margin-bottom: 1em;
 }
 
 header {
@@ -51,29 +52,33 @@ header {
 
 section {
   display: flex;
-  flex-direction: column;
-  width: 32em;
-  padding: 4%;
+  flex-wrap: wrap;
+  width: 100%;
+  padding: 2% 4%;
+  margin: 0 auto;
+  border-bottom: 1px solid #afafaf;
+}
+
+section:last-child {
+  border: none;
+}
+
+#formTest, #servicesTesterPlaceholder {
+  width: 100%
+}
+
+#servicesTesterPlaceholder {
+  display: flex;
+  flex-wrap: wrap;
+  padding: 0 4%;
   margin: 0 auto;
   border: 1px solid #afafaf;
   border-width: 1px 0;
 }
 
-  section div {
-    margin-bottom: 1em;
-  }
-
-  section > div:last-of-type {
-    margin-bottom: 0;
-  }
-
-  section input {
-    display: inline;
-    align-self: flex-end;
-  }
-
 .button-group {
   align-self: flex-end;
+  margin: 0.5em;
 }
 
   .button-group input {
@@ -81,25 +86,35 @@ section {
     margin-left: 1em;
   }
 
-.hidden {
-  display: none;
+.data-display {
+  word-wrap: break-word;
 }
 
 .lbl-input {
   display: flex;
-  font: 14px "Trebuchet MS", Helvetica, sans-serif;
+  margin: 0.5em;
 }
+
+  .lbl-input input {
+    display: inline;
+    align-self: flex-end;
+  }
 
   .lbl-input label {
     width: 12em;
   }
 
-.no-display {
-  display: none;
+.service-panel {
+  display: flex;
+  flex-direction: column;
+  width: 33%;
+  padding: 1% 4%;
+  margin: 0 auto;
+  border-right: 1px solid #afafaf;
 }
 
-.querryResult {
-  word-wrap: break-word;
+.service-panel:last-child {
+  border: none;
 }
 
 .standard-flex-display {
