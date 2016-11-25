@@ -10,9 +10,11 @@
   <link href="styles/reset.css" type="text/css" rel="stylesheet" />
   <link href="styles/main.css" type="text/css" rel="stylesheet" />
 
-  <script type="text/javascript">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+
+  <script>
     
-    let serverPath = 'localhost:8080';
+    let serverPath = 'http://localhost:8080';
     let appName = '/rest-example';
     let serviceCommonPath = '/service';
     let servicePathGroups = { token : '/token', utilisateur : '/utilisateur',
@@ -22,79 +24,89 @@
       // Loads the placeholder
       let placeholder = document.getElementById('servicesTesterPlaceholder');
       
-      // Other
-      createServiceTester(placeholder, 'A1', 'getActionToken',
-        servicePathGroups.token, false, [ 'Courriel:courriel' ]);
+      // listeLecture
+      createServiceTester(placeholder, 'DELETE', '??', 'effacer',
+        servicePathGroups.token, true, [ 'ID de liste:idPlaylist' ]);
 
-      createServiceTester(placeholder, 'A2', 'login',
-        servicePathGroups.utilisateur, false, [ 'Courriel:courriel', 'Mot de Passe:motDePasse' ]);
-
-      createServiceTester(placeholder, 'A3', 'logoff',
-        servicePathGroups.utilisateur, true, null);
-
-      // Public
-      createServiceTester(placeholder, 'P1', 'createUser',
-        servicePathGroups.utilisateur, false, [ 'Alias:alias', 'Mot de passe:motDePasse', 'Courriel:courriel',
-        'Avatar:avatar' ]);
-
-      createServiceTester(placeholder, 'P2', 'getPublicPlaylist',
-        servicePathGroups.listeLecture, true, [ 'ID de liste:idPlaylist' ]);
-      
-      createServiceTester(placeholder, 'P3-P4', 'getPublicSong',
-        servicePathGroups.musique, true, [ 'ID de chanson:idSong' ]);
-
-      // Private (User)
-      createServiceTester(placeholder, 'U1', 'modify',
-        servicePathGroups.utilisateur, true, [ 'Courriel:courriel', 'Mot de passe:motDePasse', 'Alias:alias',
-        'Avatar:avatar' ]);
-      
-      createServiceTester(placeholder, 'U2', 'confirmCreate',
-        servicePathGroups.utilisateur, true, [ 'Captcha:captcha' ]);
-
-      createServiceTester(placeholder, 'U3', 'createPlaylist',
-        servicePathGroups.listeLecture, true, [ 'Nom de liste:name', 'Publique?:isPublic', 'Active?:isActive' ]);
-
-      createServiceTester(placeholder, '??', 'getMyPlaylists',
-        servicePathGroups.utilisateur, true, null);
-
-      createServiceTester(placeholder, 'U4', 'getPrivatePlaylist',
+      createServiceTester(placeholder, 'POST', 'U4', 'getPrivatePlaylist',
         servicePathGroups.listeLecture, true, [ 'ID de liste:idPlaylist' ]);
 
-      createServiceTester(placeholder, 'U5', 'modify',
+      createServiceTester(placeholder, 'POST', 'P2', 'getPublicPlaylist',
+        servicePathGroups.listeLecture, true, [ 'ID de liste:idPlaylist' ]);
+
+      createServiceTester(placeholder, 'POST', 'P2', 'getPublicPlaylistList',
+        servicePathGroups.listeLecture, true, [ 'Premier:premier', 'Dernier:dernier' ]);
+
+      createServiceTester(placeholder, 'POST', 'U5', 'modify',
         servicePathGroups.listeLecture, true, [ 'ID de liste:idPlaylist', 'Nouveau nom:name',
         'Public?:public', 'Active?:active' ]);
-      
-      createServiceTester(placeholder, 'U5.1', 'setPlaylistName',
-        servicePathGroups.listeLecture, true, [ 'ID de liste:idPlaylist', 'Nouveau nom:name' ]);
 
-      createServiceTester(placeholder, 'U6', 'setPlaylistActive',
+      createServiceTester(placeholder, 'POST', 'U6', 'setPlaylistActive',
         servicePathGroups.listeLecture, true, [ 'ID de liste:idPlaylist', 'Active?:active' ]);
 
-      createServiceTester(placeholder, 'U7', 'setPlaylistPublic',
+      createServiceTester(placeholder, 'POST', 'U5.1', 'setPlaylistName',
+        servicePathGroups.listeLecture, true, [ 'ID de liste:idPlaylist', 'Nouveau nom:name' ]);
+
+      createServiceTester(placeholder, 'POST', 'U7', 'setPlaylistPublic',
         servicePathGroups.listeLecture, true, [ 'ID de liste:idPlaylist', 'Public?:public' ]);
 
-      createServiceTester(placeholder, 'U8', 'createSong',
+      createServiceTester(placeholder, 'PUT', 'U3', 'createPlaylist',
+        servicePathGroups.listeLecture, true, [ 'Nom de liste:name', 'Publique?:isPublic', 'Active?:isActive' ]);
+      
+      // musique
+      createServiceTester(placeholder, 'PUT', 'U8', 'createSong',
         servicePathGroups.musique, true, [ 'Titre:title', 'Artiste:artiste', 'Musique:musique',
         'Couverture:coverArt', 'Public?:public', 'Active?:active' ]);
 
-      createServiceTester(placeholder, 'U9-U10', 'getPrivateSong',
+      createServiceTester(placeholder, 'POST', 'U9-U10', 'getPrivateSong',
         servicePathGroups.musique, true, [ 'ID de chanson:idSong' ]);
 
-      createServiceTester(placeholder, 'U11', 'modify',
+      createServiceTester(placeholder, 'PUT', 'P3-P4', 'getPublicSong',
+        servicePathGroups.musique, true, [ 'ID de chanson:idSong' ]);
+
+      createServiceTester(placeholder, 'PUT', 'U11', 'modify',
         servicePathGroups.musique, true, [ 'ID de chanson:idSong', 'Titre:titre', 'Artiste:artiste',
         'Vignette:vignette', 'Publique?:publique', 'Active?:active' ]);
 
-      createServiceTester(placeholder, 'U12', 'setActive',
+       createServiceTester(placeholder, 'POST', 'U12', 'setActive',
         servicePathGroups.musique, true, [ 'ID de chanson:idSong', 'Active?:active' ]);
 
-      createServiceTester(placeholder, 'U13', 'setPublic',
+      createServiceTester(placeholder, 'POST', 'U13', 'setPublic',
         servicePathGroups.musique, true, [ 'ID de chanson:idSong', 'Publique?:publique' ]);
 
-      createServiceTester(placeholder, 'U14', 'addSongToPlaylist',
+      // token
+      createServiceTester(placeholder, 'PUT', 'A1', 'getActionToken',
+        servicePathGroups.token, false, [ 'Courriel:courriel' ]);
+
+      // utilisateur
+      createServiceTester(placeholder, 'DELETE', 'A2', 'effacer',
+        servicePathGroups.utilisateur, true, [ 'ID de l\'utilisateur:idUser' ]);
+
+      createServiceTester(placeholder, 'POST', 'U1', 'modify',
+        servicePathGroups.utilisateur, true, [ 'Courriel:courriel', 'Mot de passe:motDePasse', 'Alias:alias',
+        'Avatar:avatar' ]);
+      
+      createServiceTester(placeholder, 'PUT', 'U2', 'confirmCreateUser',
+        servicePathGroups.utilisateur, true, [ 'Captcha:captcha' ]);
+
+      createServiceTester(placeholder, 'PUT', 'P1', 'createUser',
+        servicePathGroups.utilisateur, false, [ 'Alias:alias', 'Mot de passe:motDePasse', 'Courriel:courriel',
+        'Avatar:avatar' ]);
+
+      createServiceTester(placeholder, 'PUT', 'A2', 'login',
+        servicePathGroups.utilisateur, false, [ 'Courriel:courriel', 'Mot de Passe:motDePasse' ]);
+
+      createServiceTester(placeholder, 'PUT', 'A3', 'logoff',
+        servicePathGroups.utilisateur, true, null);
+
+      /*createServiceTester(placeholder, 'POST', '??', 'getMyPlaylists',
+        servicePathGroups.utilisateur, true, null);
+
+      createServiceTester(placeholder, 'PUT', 'U14', 'addSongToPlaylist',
         servicePathGroups.musique, true, [ 'ID de liste:idPlaylist', 'ID de chanson:idSong' ]);
 
-      createServiceTester(placeholder, 'U15', 'removeSongToPlaylist',
-        servicePathGroups.musique, true, [ 'ID de liste:idPlaylist', 'ID de chanson:idSong' ]);
+      createServiceTester(placeholder, 'PUT', 'U15', 'removeSongToPlaylist',
+        servicePathGroups.musique, true, [ 'ID de liste:idPlaylist', 'ID de chanson:idSong' ]);*/
     }
     
     /// <summary>
@@ -105,10 +117,11 @@
     /// <param name="placeholder">The placeholder in which the element will be placed in</param>
     /// <param name="title">The code that identifies the service</param>
     /// <param name="serviceName">The name of the service</param>
-    function createServiceTester(placeholder, code, serviceName, servicePathGroup, useToken, parameters) {
+    function createServiceTester(placeholder, serviceType, code, serviceName, servicePathGroup, useToken, parameters) {
       let service = new Object();
-      service.Name = serviceName;
-      service.PathGroup = servicePathGroup;
+      service.type = serviceType;
+      service.name = serviceName;
+      service.pathGroup = servicePathGroup;
       service.useToken = useToken;
       service.parameters = parameters;
       
@@ -166,7 +179,7 @@
           
           inputParam = document.createElement('input');
           inputParam.type = 'text';
-          inputParam.id = service.PathGroup + '_' + service.Name + '_' + lblTextAndParamName[1];
+          inputParam.id = servicePathGroup + '_' + serviceName + '_' + lblTextAndParamName[1];
           inputParam.placeholder = lblTextAndParamName[0];
           divLblInput.appendChild(inputParam);
 
@@ -184,16 +197,16 @@
       
       let btnPreviewQuerry = document.createElement('input');
       btnPreviewQuerry.type = 'button';
-      btnPreviewQuerry.id = service.PathGroup + '_' + serviceName + '_previewQuerry';
+      btnPreviewQuerry.id = servicePathGroup + '_' + serviceName + '_previewQuerry';
       btnPreviewQuerry.value = 'Aperçu';
       btnPreviewQuerry.onclick = function() { previewQuerry(service); };
       divButtonGroup.appendChild(btnPreviewQuerry);
       
       let btnSubmitQuerry = document.createElement('input');
       btnSubmitQuerry.type = 'button';
-      btnSubmitQuerry.id = service.PathGroup + '_' + serviceName + '_submitQuerry';
+      btnSubmitQuerry.id = servicePathGroup + '_' + serviceName + '_submitQuerry';
       btnSubmitQuerry.value = 'Envoyer';
-      btnSubmitQuerry.onclick = '';
+      btnSubmitQuerry.onclick = function() { submitQuerry(service); };
       divButtonGroup.appendChild(btnSubmitQuerry);
 
       let h3Querry = document.createElement('h3');
@@ -201,7 +214,7 @@
       divServiceInputs.appendChild(h3Querry);
 
       let divPreviewQuerryResult = document.createElement('div');
-      divPreviewQuerryResult.id = service.PathGroup + '_' + serviceName + '_previewQuerryResult';
+      divPreviewQuerryResult.id = servicePathGroup + '_' + serviceName + '_previewQuerryResult';
       divPreviewQuerryResult.className = 'data-display';
       divServiceInputs.appendChild(divPreviewQuerryResult);
 
@@ -215,14 +228,14 @@
       divResults.appendChild(h3Results);
 
       let divSubmitQuerryResult = document.createElement('div');
-      divSubmitQuerryResult.id = service.PathGroup + '_' + serviceName + '_submitQuerryResult';
+      divSubmitQuerryResult.id = servicePathGroup + '_' + serviceName + '_submitQuerryResult';
       divSubmitQuerryResult.className = 'data-display';
       divResults.appendChild(divSubmitQuerryResult);
     }
 
     function buildQuerry(service) {
-      let servicePathWithParam = serverPath + appName + serviceCommonPath + service.PathGroup
-        + '/' + service.Name;
+      let servicePathWithParam = serverPath + appName + serviceCommonPath + service.pathGroup
+        + '/' + service.name;
 
       let idToken = 'IDTOKEN';
       let cle = 'CLE';
@@ -239,7 +252,7 @@
         let lblTextAndParamName = service.parameters[i].split(':');
         
         inputParam =
-          document.getElementById(service.PathGroup + '_' + service.Name + '_' + lblTextAndParamName[1]);
+          document.getElementById(service.pathGroup + '_' + service.name + '_' + lblTextAndParamName[1]);
 
         servicePathWithParam += lblTextAndParamName[1] + '='
             + (inputParam.value != '' ? inputParam.value : lblTextAndParamName[1].toUpperCase());
@@ -251,7 +264,7 @@
     function previewQuerry(service) {
       servicePathWithParam = buildQuerry(service);
       
-      divResult = document.getElementById(service.PathGroup + '_' + service.Name + '_previewQuerryResult');
+      divResult = document.getElementById(service.pathGroup + '_' + service.name + '_previewQuerryResult');
       divResult.innerHTML = servicePathWithParam;
   
       divResult.className =
@@ -261,7 +274,15 @@
     function submitQuerry(service) {
       servicePathWithParam = buildQuerry(service);
 
-      $('#' + service.PathGroup + '_' + serviceName + '_submitQuerryResult').load(servicePathWithParam)
+      //$('#' + service.PathGroup + '_' + serviceName + '_submitQuerryResult').load(servicePathWithParam);
+
+      $.ajax({
+        url: servicePathWithParam,
+        type: service.type,
+        success: function(response) {
+          document.getElementById(service.pathGroup + '_' + service.name + '_submitQuerryResult').innerHTML = response;
+        }
+      });
     }
     
   </script>
