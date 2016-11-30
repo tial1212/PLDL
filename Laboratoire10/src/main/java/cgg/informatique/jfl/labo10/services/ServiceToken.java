@@ -8,6 +8,7 @@ import cgg.informatique.jfl.labo10.modeles.Token;
 import cgg.informatique.jfl.labo10.modeles.Utilisateur;
 
 import javax.inject.Inject;
+import javax.persistence.EntityManager;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -26,6 +27,8 @@ public class ServiceToken {
 	 private DAO dao;
 	
     Logger LOGGER = Logger.getLogger(Demarrage.class.getName());
+
+	private EntityManager em;
     
     
     @Path("/getActionToken")
@@ -34,7 +37,9 @@ public class ServiceToken {
 		LOGGER.info("ServiceToken->getActionToken(" + pEMail +")" );
 		
 		//TODO querry user exist && isActive
-		Utilisateur util = dao.querrySingle("SELECT u FROM Utilisateur u WHERE u.Courriel = "+pEMail );
+		Utilisateur util = (Utilisateur) em.createQuery("SELECT u FROM utilisateur u WHERE u.Courriel LIKE :UserEmail " ).
+				setParameter("UserEmail", pEMail)
+		        .getResultList();
 		
 		String message = "getActionToken";
 		if (util == null || !util.isActive()) {
