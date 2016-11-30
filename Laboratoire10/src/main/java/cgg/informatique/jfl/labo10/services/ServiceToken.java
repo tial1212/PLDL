@@ -17,7 +17,7 @@ import java.util.logging.Logger;
 
 
 @Path("/service/token")
-@Produces({ "application/json" , "text/xml",})
+@Produces("application/json")
 public class ServiceToken {
 
 	@Inject
@@ -40,15 +40,16 @@ public class ServiceToken {
 		Utilisateur util = (Utilisateur) em.createQuery("SELECT u FROM utilisateur u WHERE u.Courriel LIKE :UserEmail " ).
 				setParameter("UserEmail", pEMail)
 		        .getResultList();
+
 		
 		String message = "getActionToken";
 		if (util == null || !util.isActive()) {
 			message = ( !util.isActive() ?"Utilisateur non actif":"Utilisateur non existant");
 			return new Token(false, message);
-		}else {
+		} else {
 			 Token token = Token.generateActionToken(pEMail);
 			 daoToken.persistToken( token );
-			 return daoToken.persistToken(token);
+			 return token;
 		}
 	}
 }

@@ -88,6 +88,7 @@ public class Musique extends ModeleDate  {
 			this.title = pTitle;
 			this.artist = pArtist;
 			this.music = pMusic;
+                        this.coverArt = pCoverArt;
 			this.isPublic = pIsPublic;
 			this.isActive = pIsActive;
 		}

@@ -17,7 +17,7 @@ import java.util.logging.Logger;
 
 
 @Path("/service/musique")
-@Produces({"application/json" , "text/xml"})
+@Produces("application/json")
 public class ServiceMusique {
 
     @EJB
@@ -34,7 +34,7 @@ public class ServiceMusique {
     
 	@Path("/createSong")
     @PUT
-    public Token createSong(@PathParam("idToken")     int	  pIdToken,
+    public Token createSong(@QueryParam("idToken")     int	  pIdToken,
 				            @QueryParam("cle") 	      String  pKey,
 				    		@QueryParam("idOwner") 	  int     pIdOwner,
                        		@QueryParam("titre")      String  pTitle,
@@ -56,7 +56,7 @@ public class ServiceMusique {
     
     @Path("/getPrivateSong")
 	@PUT
-	public Musique getPrivateSong(@PathParam("idToken")	int		pIdToken,
+	public Musique getPrivateSong(@QueryParam("idToken")	int		pIdToken,
             					  @QueryParam("cle") 	String  pKey ,  
             					  @QueryParam("idSong") int		pIdSong ) {
 		LOGGER.info("ServiceMusique->getPrivateSong(" + pIdToken + "," +pKey+ "," +pIdSong+")" );
@@ -68,7 +68,7 @@ public class ServiceMusique {
     
     @Path("/getPublicSong")
 	@PUT
-	public Musique getPublicSong(@PathParam("idToken")    int   pIdToken,
+	public Musique getPublicSong(@QueryParam("idToken")    int   pIdToken,
 								 @QueryParam("cle") 	    String pKey ,  
             			   		 @QueryParam("idSong") 	int    pIdSong ) {
 		LOGGER.info("ServiceMusique->getPublicSong("+pKey+ "," +pIdSong+")" );
@@ -80,15 +80,15 @@ public class ServiceMusique {
     
     @Path("/modify")
 	@PUT
-	public Token modify(  @PathParam("idToken")		int	pIdToken,
-            			  @QueryParam("cle")		String	pKey,  
-            			  @QueryParam("idSong")		int		pIdSong, 
-	 					  @QueryParam("idUtilisateur")int 	pIdOwner ,
-	 					  @QueryParam("titre")		String	pTitle , 
-	 					  @QueryParam("artiste")	String	pArtist , 
-	 					  @QueryParam("vignette")	String	pCoverArt ,
-	 					  @QueryParam("publique")	boolean	pIsPublic ,
-	 					  @QueryParam("active")		boolean	pIsActive) {
+	public Token modify(@QueryParam("idToken")		int	pIdToken,
+            			@QueryParam("cle")		String	pKey,  
+            			@QueryParam("idSong")		int		pIdSong, 
+                                    @QueryParam("idUtilisateur")  int 	pIdOwner ,
+                                    @QueryParam("titre")          String	pTitle , 
+                                    @QueryParam("artiste")	String	pArtist , 
+                                    @QueryParam("vignette")	String	pCoverArt ,
+                                    @QueryParam("publique")	boolean	pIsPublic ,
+                                    @QueryParam("active") 	boolean	pIsActive) {
 		LOGGER.info("ServiceMusique->modify("+pIdToken+","+pKey+","+pIdSong+","+pIdOwner+","+pTitle+","+pArtist+","+pCoverArt+","+pIsPublic+","+pIsActive+")" );
 		Token token = daoToken.confirmCanDoAction(pIdToken, pKey );
     	if ( token.getEtat()  ){
@@ -100,7 +100,7 @@ public class ServiceMusique {
     
     @Path("/setActive")
 	@PUT
-	public Token setActive(@PathParam("idToken")    int     pIdToken,
+	public Token setActive(@QueryParam("idToken")    int     pIdToken,
             			   @QueryParam("cle") 	    String  pKey ,  
             			   @QueryParam("idSong") 	int     pIdSong ,
             			   @QueryParam("active") 	boolean pActive  ) {
@@ -114,10 +114,10 @@ public class ServiceMusique {
     
     @Path("/setPublic")
 	@PUT
-	public Token setPublic(@PathParam("idToken")    int     pIdToken,
+	public Token setPublic(@QueryParam("idToken")    int     pIdToken,
             			   @QueryParam("cle") 	    String  pKey ,  
             			   @QueryParam("idSong") 	int     pIdSong ,
-            			   @QueryParam("public") 	boolean pIsPublic   ) {
+            			   @QueryParam("publique") 	boolean pIsPublic   ) {
 		LOGGER.info("ServiceMusique->setActive(" + pIdToken + "," +pKey+ "," +pIdSong+"," +pIsPublic +")" );
     	Token token = daoToken.confirmCanDoAction(pIdToken, pKey );
 		if ( token.getEtat() ){

@@ -85,10 +85,11 @@ public class Utilisateur extends ModeleDate {
     		this.alias = pAlias;
     		this.eMaill = pEMaill;
     		this.pasword = pPasword;
+                this.avatar = pAvatar;
     		this.active = false;
 		}
     	else{
-    		System.err.println("Utilisateur.constructor("+pAlias+""+pEMaill+""+pPasword +") -> INVALIDE");
+    		System.err.println("Utilisateur.constructor("+pAlias+","+pEMaill+","+pPasword +") -> INVALIDE");
     	}
 	}
     

@@ -35,7 +35,7 @@ import java.util.logging.Logger;
 
 
 @Path("/service/utilisateur")
-@Produces({"application/json","text/xml"})
+@Produces("application/json")
 public class ServiceUtilisateur {
 
     @EJB
@@ -80,7 +80,7 @@ public class ServiceUtilisateur {
     
     @Path("/logoff")
 	@PUT
-	public Token logoff(@PathParam( "idToken")      int   pIdToken,
+	public Token logoff(@QueryParam( "idToken")      int   pIdToken,
             			@QueryParam("cle") 	      String pKey,
             			@QueryParam("courriel")   String pCourriel) {
     		LOGGER.info("ServiceUtilisateur->logoff("+pIdToken+","+pKey+","+pCourriel+")" );
@@ -97,9 +97,9 @@ public class ServiceUtilisateur {
     @Path("/modify")
     @POST
     public Token modify(
-    		           @PathParam( "idToken")     int   pIdToken,
+    		           @QueryParam( "idToken")     int   pIdToken,
                        @QueryParam("cle") 	      String pKey,
-                       @PathParam( "idUtil")      int   pIdUser,
+                       @QueryParam( "idUtil")      int   pIdUser,
                        @QueryParam("courriel") 	  String pEMaill,
                        @QueryParam("motDePasse")  String pPasword,
                        @QueryParam("alias")       String pAlias,
@@ -107,7 +107,7 @@ public class ServiceUtilisateur {
     	LOGGER.info("ServiceToken->modifier("+ pIdToken + ","+ pKey + ","+ pIdUser + ","+ pEMaill + ","+ pPasword + ","+ pAlias + ","+ pIdAvatar +")" );
     	Token token = daoToken.confirmCanDoAction(pIdToken, pKey );
     	if ( token.getEtat()  ){
-    		Token token2 =  daoUtil.modifier (pIdUser, pPasword, pAlias, pIdAvatar);
+    		Token token2 =  daoUtil.modifier (pIdUser, pAlias, pPasword, pEMaill, pIdAvatar);
     		Utilisateur util = daoUtil.rechercher(pIdUser);
     		if (util.getId() == pIdUser && 
     			util.getAlias().equals(pAlias) &&
@@ -124,13 +124,13 @@ public class ServiceUtilisateur {
     @Path("/effacer")
     @DELETE
     public Token effacer(
-    				@PathParam("idToken")     int   pIdToken,
+    				@QueryParam("idToken")     int   pIdToken,
     				@QueryParam("cle") 	      String pKey,
-    				@PathParam("idUser") 	  long pIdUser) {
+    				@QueryParam("idUser") 	  int pIdUser) {
     	LOGGER.info("ServiceToken->effacer("+ pIdToken + "," + pKey+ "," + pIdUser+")" );
     	Token token = daoToken.confirmCanDoAction(pIdToken, pKey );
     	if ( token.getEtat()  ){
-    		Utilisateur utilisateurRequested = dao.querrySingle("SELECT u FROM Utilisateur u WHERE u.Courriel = "+token.getEMail() );
+    		Utilisateur utilisateurRequested = dao.querrySingle("SELECT u FROM Utilisateur u WHERE u.id = :id", "id", pIdUser);
             if (utilisateurRequested != null) {
             	daoUtil.effacer(utilisateurRequested.getId() );
             	return new Token(true, "supression utilisateur réussie");
