@@ -90,7 +90,7 @@ public class DAOToken {
      */
     public Token confirmCanDoAction(int pIdToken, String pKey) {
     	LOGGER.info("DAOToken->confirmCanDoAction("+pIdToken+","+pKey+")");
-		Token token = dao.querrySingle("SELECT t FROM Token WHERE t.id ="+pIdToken);
+		Token token = dao.querrySingle("SELECT t FROM Token t WHERE t.id = :id", "id", pIdToken);
 		if (token != null) {
 			if ( !token.getAction().equals(Token.txtActionToken ) ) { 
 				Token token2 = new Token(false, "Token is not an action token");
@@ -99,7 +99,7 @@ public class DAOToken {
 			}
 			
 			if (token.getSalt().equals(pKey) ) { //FIXME
-				Token token3 = new Token(false, "Token can do action");
+				Token token3 = new Token(true, "Token can do action");
 				LOGGER.info("DAOToken->confirmCanDoAction() SUCCESS");
 				return token3;
 			}

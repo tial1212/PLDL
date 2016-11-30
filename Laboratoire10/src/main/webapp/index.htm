@@ -14,19 +14,83 @@
 
   <script>
     
-    let serverPath = 'http://localhost:8080';
+    // Constants
+    let serverPath = 'http://424t.cgodin.qc.ca:8480/';
     let appName = '/rest-example';
     let serviceCommonPath = '/service';
     let servicePathGroups = { token : '/token', utilisateur : '/utilisateur',
-      musique : '/musique', listeLecture : '/listeLecture' };
+      musique : '/musique', listeLecture : '/listeLecture',
+      listeLecture_Musique : '/listeLecture_Musique' };
+
+    // Variables for token
+    let idToken = '0';
+    let cle = 'ceb20772e0c9d240c75eb26b0e37abee';
     
     window.onload = function onload() {
       // Loads the placeholder
       let placeholder = document.getElementById('servicesTesterPlaceholder');
+
+      // token
+      createServiceTester(placeholder, 'PUT', 'A1', 'getActionToken',
+        servicePathGroups.token, false, [ 'Courriel:courriel' ]);
+
+      // utilisateur
+      let h1Utilisateur = document.createElement('h1');
+      h1Utilisateur.innerHTML = 'Utilisateur';
+      placeholder.appendChild(h1Utilisateur);
+
+      createServiceTester(placeholder, 'DELETE', 'A2', 'effacer',
+        servicePathGroups.utilisateur, true, [ 'ID de l\'utilisateur:idUser' ]);
+
+      createServiceTester(placeholder, 'POST', 'U1', 'modify',
+        servicePathGroups.utilisateur, true, [ 'ID de l\'utilisateur:idUtil', 'Courriel:courriel', 'Mot de passe:motDePasse', 'Alias:alias',
+        'Avatar:avatar' ]);
+      
+      createServiceTester(placeholder, 'PUT', 'U2', 'confirmCreateUser',
+        servicePathGroups.utilisateur, false, [ 'ID du token:idToken', 'Captcha:captchaVal' ]);
+
+      createServiceTester(placeholder, 'PUT', 'P1', 'createUser',
+        servicePathGroups.utilisateur, false, [ 'Alias:alias', 'Mot de passe:motDePasse', 'Courriel:courriel',
+        'Avatar:avatar' ]);
+
+      createServiceTester(placeholder, 'PUT', 'A2', 'login',
+        servicePathGroups.utilisateur, false, [ 'Courriel:courriel', 'Mot de Passe:motDePasse' ]);
+
+      createServiceTester(placeholder, 'PUT', 'A3', 'logoff',
+        servicePathGroups.utilisateur, true, [ 'Courriel:courriel' ]);
+        
+      // musique
+      let h1Musique = document.createElement('h1');
+      h1Musique.innerHTML = 'Musique';
+      placeholder.appendChild(h1Musique);
+
+      createServiceTester(placeholder, 'PUT', 'U8', 'createSong',
+        servicePathGroups.musique, true, [ 'ID du owner:idOwner', 'Titre:titre', 'Artiste:artiste',
+        'Musique:musique', 'Couverture:coverArt', 'Public?:public', 'Active?:active' ]);
+
+      createServiceTester(placeholder, 'PUT', 'U9-U10', 'getPrivateSong',
+        servicePathGroups.musique, true, [ 'ID de chanson:idSong' ]);
+
+      createServiceTester(placeholder, 'PUT', 'P3-P4', 'getPublicSong',
+        servicePathGroups.musique, true, [ 'ID de chanson:idSong' ]);
+
+      createServiceTester(placeholder, 'PUT', 'U11', 'modify',
+        servicePathGroups.musique, true, [ 'ID de chanson:idSong', 'ID du proprio:idUtilisateur',
+        'Titre:titre', 'Artiste:artiste', 'Vignette:vignette', 'Publique?:publique', 'Active?:active' ]);
+
+       createServiceTester(placeholder, 'PUT', 'U12', 'setActive',
+        servicePathGroups.musique, true, [ 'ID de chanson:idSong', 'Active?:active' ]);
+
+      createServiceTester(placeholder, 'PUT', 'U13', 'setPublic',
+        servicePathGroups.musique, true, [ 'ID de chanson:idSong', 'Publique?:publique' ]);
       
       // listeLecture
+      let h1ListeLecture = document.createElement('h1');
+      h1ListeLecture.innerHTML = 'Liste de lecture';
+      placeholder.appendChild(h1ListeLecture);
+
       createServiceTester(placeholder, 'DELETE', '??', 'effacer',
-        servicePathGroups.token, true, [ 'ID de liste:idPlaylist' ]);
+        servicePathGroups.listeLecture, true, [ 'ID de liste:idPlaylist' ]);
 
       createServiceTester(placeholder, 'POST', 'U4', 'getPrivatePlaylist',
         servicePathGroups.listeLecture, true, [ 'ID de liste:idPlaylist' ]);
@@ -38,75 +102,34 @@
         servicePathGroups.listeLecture, true, [ 'Premier:premier', 'Dernier:dernier' ]);
 
       createServiceTester(placeholder, 'POST', 'U5', 'modify',
-        servicePathGroups.listeLecture, true, [ 'ID de liste:idPlaylist', 'Nouveau nom:name',
-        'Public?:public', 'Active?:active' ]);
+        servicePathGroups.listeLecture, true, [ 'ID de liste:idPlaylist', 'Nouveau nom:nom',
+        'Public?:publique', 'Active?:active' ]);
 
       createServiceTester(placeholder, 'POST', 'U6', 'setPlaylistActive',
         servicePathGroups.listeLecture, true, [ 'ID de liste:idPlaylist', 'Active?:active' ]);
 
       createServiceTester(placeholder, 'POST', 'U5.1', 'setPlaylistName',
-        servicePathGroups.listeLecture, true, [ 'ID de liste:idPlaylist', 'Nouveau nom:name' ]);
+        servicePathGroups.listeLecture, true, [ 'ID de liste:idPlaylist', 'Nouveau nom:nom' ]);
 
       createServiceTester(placeholder, 'POST', 'U7', 'setPlaylistPublic',
-        servicePathGroups.listeLecture, true, [ 'ID de liste:idPlaylist', 'Public?:public' ]);
+        servicePathGroups.listeLecture, true, [ 'ID de liste:idPlaylist', 'Public?:publique' ]);
 
       createServiceTester(placeholder, 'PUT', 'U3', 'createPlaylist',
-        servicePathGroups.listeLecture, true, [ 'Nom de liste:name', 'Publique?:isPublic', 'Active?:isActive' ]);
-      
-      // musique
-      createServiceTester(placeholder, 'PUT', 'U8', 'createSong',
-        servicePathGroups.musique, true, [ 'Titre:title', 'Artiste:artiste', 'Musique:musique',
-        'Couverture:coverArt', 'Public?:public', 'Active?:active' ]);
-
-      createServiceTester(placeholder, 'POST', 'U9-U10', 'getPrivateSong',
-        servicePathGroups.musique, true, [ 'ID de chanson:idSong' ]);
-
-      createServiceTester(placeholder, 'PUT', 'P3-P4', 'getPublicSong',
-        servicePathGroups.musique, true, [ 'ID de chanson:idSong' ]);
-
-      createServiceTester(placeholder, 'PUT', 'U11', 'modify',
-        servicePathGroups.musique, true, [ 'ID de chanson:idSong', 'Titre:titre', 'Artiste:artiste',
-        'Vignette:vignette', 'Publique?:publique', 'Active?:active' ]);
-
-       createServiceTester(placeholder, 'POST', 'U12', 'setActive',
-        servicePathGroups.musique, true, [ 'ID de chanson:idSong', 'Active?:active' ]);
-
-      createServiceTester(placeholder, 'POST', 'U13', 'setPublic',
-        servicePathGroups.musique, true, [ 'ID de chanson:idSong', 'Publique?:publique' ]);
-
-      // token
-      createServiceTester(placeholder, 'PUT', 'A1', 'getActionToken',
-        servicePathGroups.token, false, [ 'Courriel:courriel' ]);
-
-      // utilisateur
-      createServiceTester(placeholder, 'DELETE', 'A2', 'effacer',
-        servicePathGroups.utilisateur, true, [ 'ID de l\'utilisateur:idUser' ]);
-
-      createServiceTester(placeholder, 'POST', 'U1', 'modify',
-        servicePathGroups.utilisateur, true, [ 'Courriel:courriel', 'Mot de passe:motDePasse', 'Alias:alias',
-        'Avatar:avatar' ]);
-      
-      createServiceTester(placeholder, 'PUT', 'U2', 'confirmCreateUser',
-        servicePathGroups.utilisateur, true, [ 'Captcha:captcha' ]);
-
-      createServiceTester(placeholder, 'PUT', 'P1', 'createUser',
-        servicePathGroups.utilisateur, false, [ 'Alias:alias', 'Mot de passe:motDePasse', 'Courriel:courriel',
-        'Avatar:avatar' ]);
-
-      createServiceTester(placeholder, 'PUT', 'A2', 'login',
-        servicePathGroups.utilisateur, false, [ 'Courriel:courriel', 'Mot de Passe:motDePasse' ]);
-
-      createServiceTester(placeholder, 'PUT', 'A3', 'logoff',
-        servicePathGroups.utilisateur, true, null);
+        servicePathGroups.listeLecture, true, [ 'Nom de liste:nom', 'Publique?:publique', 'Active?:active' ]);
 
       /*createServiceTester(placeholder, 'POST', '??', 'getMyPlaylists',
-        servicePathGroups.utilisateur, true, null);
+        servicePathGroups.utilisateur, true, null);*/
+
+      // listeLecture_Musique
+      let h1listeLecture_Musique = document.createElement('h1');
+      h1listeLecture_Musique.innerHTML = 'Musiques en liste de lecture';
+      placeholder.appendChild(h1listeLecture_Musique);
 
       createServiceTester(placeholder, 'PUT', 'U14', 'addSongToPlaylist',
-        servicePathGroups.musique, true, [ 'ID de liste:idPlaylist', 'ID de chanson:idSong' ]);
+        servicePathGroups.listeLecture_Musique, true, [ 'ID de liste:idPlaylist', 'ID de chanson:idSong' ]);
 
-      createServiceTester(placeholder, 'PUT', 'U15', 'removeSongToPlaylist',
-        servicePathGroups.musique, true, [ 'ID de liste:idPlaylist', 'ID de chanson:idSong' ]);*/
+      createServiceTester(placeholder, 'DELETE', 'U15', 'removeSongToPlaylist',
+        servicePathGroups.listeLecture_Musique, true, [ 'ID de liste:idPlaylist', 'ID de chanson:idSong' ]);
     }
     
     /// <summary>
@@ -237,9 +260,6 @@
       let servicePathWithParam = serverPath + appName + serviceCommonPath + service.pathGroup
         + '/' + service.name;
 
-      let idToken = 'IDTOKEN';
-      let cle = 'CLE';
-
       if (service.useToken)
         servicePathWithParam += '?idToken=' + idToken + '&cle=' + cle;
       else
@@ -279,7 +299,13 @@
       $.ajax({
         url: servicePathWithParam,
         type: service.type,
+        dataType: 'text',
         success: function(response) {
+          let jsonObject = JSON.parse(response);
+          if (jsonObject.salt != null) {
+            idToken = jsonObject.id;
+            cle = jsonObject.salt;
+          }
           document.getElementById(service.pathGroup + '_' + service.name + '_submitQuerryResult').innerHTML = response;
         }
       });

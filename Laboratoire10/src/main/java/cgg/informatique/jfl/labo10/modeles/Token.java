@@ -331,11 +331,11 @@ public class Token extends Modele {
 	
 	@Override
 	public String toString() {
-		String captchaStr = (this.captchaStr != null?"captcha = "+this.captchaStr+" ":"");
-		String action = (this.action != null?"action = "+this.action+" ":"");
-		String salt = (this.salt != null?"salt = "+this.salt+" ":"");
-		String etat = (this.captchaStr != null?"etat = "+this.etat.toString()+" ":"");
-		return "Token #"+this.id+" "+captchaStr+action+salt+etat;
+		String captchaStr = (this.captchaStr != null?", captcha = "+this.captchaStr+"":"");
+		String action = (this.action != null?", action = "+this.action+" ":"");
+		String salt = (this.salt != null?", salt = "+this.salt+" ":"");
+		String etat = (this.captchaStr != null?", etat = "+this.etat.toString()+" ":"");
+		return "Token #" + this.id + captchaStr + action + salt + etat;
 	}
     
 }

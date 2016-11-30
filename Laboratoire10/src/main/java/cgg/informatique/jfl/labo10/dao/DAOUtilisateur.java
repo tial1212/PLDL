@@ -55,7 +55,9 @@ public class DAOUtilisateur {
      */
     public Token login(String pCourriel, String pMotDePasse) {
     	LOGGER.info("DAOUtilisateur->login( "+pCourriel+","+pMotDePasse+")");
-    	Utilisateur utilisateur = dao.querrySingle("Select u FROM Utilisateur u WHERE u.Courriel = "+pCourriel+" AND u.MotDePasse = "+pMotDePasse); 
+        String[] arrParams = new String[]{ "email", "password" };
+        String[] arrParamValues = new String[]{ pCourriel, pMotDePasse };
+    	Utilisateur utilisateur = dao.querrySingle("Select u FROM Utilisateur u WHERE u.eMaill = :email AND u.pasword = :password", arrParams, arrParamValues); 
 	    if (utilisateur != null) {
 	    	if (utilisateur.isActive() ) {
 	    		if (utilisateur.getPasowrd().equals(pMotDePasse) ) {
@@ -80,19 +82,19 @@ public class DAOUtilisateur {
     public Token logoff(String pCourriel) {
     	LOGGER.info("DAOUtilisateur->logoff( "+pCourriel+")");
 		
-    	Utilisateur utilisateur = dao.querrySingle("SELECT u FROM Utilisateur u WHERE u.Courriel = "+pCourriel );
+    	Utilisateur utilisateur = dao.querrySingle("SELECT u FROM Utilisateur u WHERE u.eMaill = :email", "email", pCourriel);
 	    if (utilisateur != null) {
 	    	if (utilisateur.isActive() ) {
-	    		dao.querry("DELETE t FROM Token t WHERE t.Courriel = "+pCourriel );
-		    	Token token = new Token(false, "login failled");
-		    	LOGGER.info("DAOUtilisateur->logoff() ECHEC : user exist, wrong pswd" );
+	    		dao.querry("DELETE FROM Token t WHERE t.eMail = :email", "email", pCourriel, true);
+		    	Token token = new Token(true, "logoff success");
+		    	LOGGER.info("DAOUtilisateur->logoff() Success" );
 		    	return token;
 			}
 	    	Token token2 = new Token(false, "user not activated");
 	    	LOGGER.info("DAOUtilisateur->logoff() ECHEC : user exist, but not activated" );
 	    	return token2;
 		}
-	    Token token3 = new Token(false, "login failled");
+	    Token token3 = new Token(false, "user does not exist");
 	    LOGGER.info("DAOUtilisateur->logoff() ECHEC : non existing user" );
 	    return token3;
 	}
@@ -113,31 +115,31 @@ public class DAOUtilisateur {
      * @param pIdAvatar The ID of the selected Avatar.
      * @return token
      */
-    public Token createUser(String pAlias, String pCourriel, String pPasword , int pIdAvatar) {
-    	LOGGER.info("DAOUtilisateur->creerUtilisateur("+pAlias+","+ pCourriel+","+pPasword+","+pIdAvatar+")"  );
+    public Token createUser(String pAlias, String pPasword, String pCourriel,  int pIdAvatar) {
+    	LOGGER.info("DAOUtilisateur->creerUtilisateur("+pAlias+","+ pPasword+","+pCourriel+","+pIdAvatar+")"  );
         // does't respect policy
         if (!Utilisateur.validateAlias(pAlias) || !Utilisateur.validateEMaill(pCourriel) || !Utilisateur.validatePasowrd(pPasword) ) {
         	String alias = (!Utilisateur.validateAlias(pAlias)    ?"Alias non compliant w/ policy! " :"");
-        	String email = (!Utilisateur.validateEMaill(pCourriel)?"EMail non compliant w/ policy! " :"");
         	String pswd  = (!Utilisateur.validatePasowrd(pPasword)?"Pswd non compliant w/ policy! "  :"");
+                String email = (!Utilisateur.validateEMaill(pCourriel)?"EMail non compliant w/ policy! " :"");
         	Token token = new Token(false, email + alias + pswd);
-        	LOGGER.info("DAOUtilisateur->creerUtilisateur() ERROR : "+token.getAction()  );
+        	LOGGER.info("DAOUtilisateur->creerUtilisateur() ERROR : "+token.getAction() + " (Possible: Doesn't respect policy)");
        	 return token;
 		}
         // email &&|| alias already used  &&|| Avatar.id non-existing
-        boolean duplEmail  = (dao.querrySingle("SELECT u FROM Utilisateur u WHERE u.Courriel = "+pCourriel) != null);
-        boolean duplAlias  = (dao.querrySingle("SELECT u FROM Utilisateur u WHERE u.Alias = "   +pAlias   ) != null);
-        boolean AvatarExist = (dao.querrySingle("SELECT a FROM Avatar a WHERE a.id = "   +pIdAvatar   ) != null);
+        boolean duplEmail  = (dao.querrySingle("SELECT u FROM Utilisateur u WHERE u.eMaill = :email", "email", pCourriel) != null);
+        boolean duplAlias  = (dao.querrySingle("SELECT u FROM Utilisateur u WHERE u.alias = :alias", "alias", pAlias) != null);
+        boolean AvatarExist = (dao.querrySingle("SELECT a FROM Avatar a WHERE a.id = :avatar", "avatar", pIdAvatar) != null);
         if ( duplEmail || duplAlias || !AvatarExist) {
-        	 Token token = new Token(false, (duplEmail?"EMail already used!":"")+
-        			 						(duplAlias?"Alias already used!":"")+
-        			 						(AvatarExist?"Avatar does'nt exist":"") );
-        	 LOGGER.info("DAOUtilisateur->creerUtilisateur() ERROR : "+token.getAction()  );
+        	 Token token = new Token(false, (duplEmail ? "EMail already used!" : "")
+                                              + (duplAlias ? "Alias already used!" : "")
+                                              + (!AvatarExist ? "Avatar doesn't exist" : "") );
+        	 LOGGER.info("DAOUtilisateur->creerUtilisateur() ERROR : " + token.getAction() + " (Possible: Email and/or Alias already used or Avatar non-existing)");
         	 return token;
 		}
         // create objects
         Token  token = Token.generateConfirmUserToken(pCourriel );
-        Utilisateur utilisateur = new Utilisateur(pAlias, pCourriel, pPasword , pIdAvatar);
+        Utilisateur utilisateur = new Utilisateur(pAlias, pCourriel, pPasword, pIdAvatar);
         //persist objects
         Token  token2 = dao.persist(token);
         Utilisateur utilisateur2 = dao.persist(utilisateur);
@@ -145,7 +147,7 @@ public class DAOUtilisateur {
         
         //verify that created object (in DB) are correct
         // delete all if error 
-        if ( !token2.getEtat().equals(pCourriel) 		 || 
+        if ( token2.getEtat() != true 		 || 
         	 !utilisateur2.getEMaill().equals(pCourriel) || 
         	 utilisateur2.getAvatar() != pIdAvatar 		 ||
         	 !utilisateur2.getAlias().equals(pAlias )		 ||
@@ -173,7 +175,7 @@ public class DAOUtilisateur {
     	
     	if (token != null && token.getCaptchaStr().equals(pCaptcha) ) {
     		if (token.getEMail() != null) {
-    			Utilisateur utilisateurRequested = dao.querrySingle("SELECT u FROM Utilisateur u WHERE u.Courriel = "+token.getEMail() );
+    			Utilisateur utilisateurRequested = dao.querrySingle("SELECT u FROM Utilisateur u WHERE u.eMaill = :email", "email", token.getEMail());
                 if (utilisateurRequested != null) {
                 	utilisateurRequested.setActive(true);
                 	dao.modifier(utilisateurRequested);
@@ -220,36 +222,41 @@ public class DAOUtilisateur {
      * @param pIdAvatar ID of the new avatar
      * @return token
      */
-    public Token modifier(int pIdUser,  String pPasword, String pAlias , int pIdAvatar) {
-    	LOGGER.info("DAOUtilisateur->modifier("+pIdUser+","+pPasword+","+pAlias+","+pIdAvatar+")");
+    public Token modifier(int pIdUser, String pAlias, String pPasword, String pEmail, int pIdAvatar) {
+    	LOGGER.info("DAOUtilisateur->modifier(" + pIdUser + "," + pAlias + "," + pPasword + "," + pEmail + "," + pIdAvatar + ")");
     	Utilisateur utilisateur = dao.find(Utilisateur.class, pIdUser);
-        boolean okUserExist  = DAOUtilisateur.rechercher(pIdUser) != null ;
-        boolean okPswd  = Utilisateur.validatePasowrd(pPasword);
+        boolean okUserExist  = DAOUtilisateur.rechercher(pIdUser) != null;
         boolean okAlias = Utilisateur.validateAlias(pAlias);
-        boolean okAliasAvailable = dao.querry("SELECT u FROM Utilisateur u WHERE u.Alias").size() == 0;
-        boolean okAvatar = false;
+        boolean okPswd  = Utilisateur.validatePasowrd(pPasword);
+        boolean okEmail = Utilisateur.validateEMaill(pEmail);
+        boolean okAliasAvailable = dao.querry("SELECT u FROM Utilisateur u WHERE u.alias = :alias", "alias", pAlias) == null;
+        boolean okAvatar = true;
         
-        if ( !okUserExist || !okPswd || !okAlias || !okAliasAvailable || !okAvatar  ) {
-        	String action = (okUserExist?"":"Utilisateur inexistant! ")+(okPswd?"":"Pswd non conforme! ") + 
-		    (okAlias?"":"Alias non conforme! ")+(okAliasAvailable?"":"Alias déjà pris! ")+
-		    (okAvatar?"":"Avatar non existant! ");
-        	return new Token( false , action ) ;
-		}else{
-			// try modification
-			utilisateur.setDate();
-			utilisateur.setPasowrd(pPasword);
-			utilisateur.setAlias(pAlias);
-			utilisateur.setAvatar(pIdAvatar);
-			Utilisateur utilRetour = dao.modifier(utilisateur);
-			// test if modification ok
-			if ( !utilRetour.getPasowrd().equals(pPasword)		|| 
-		        	 !utilRetour.getAlias().equals(pAlias)		|| 
-		        	  utilRetour.getAvatar() != pIdAvatar   ) {
-	        	Token token2 = new Token(false, "erreur modification utilisateur dans DB");
-	        	LOGGER.info("DAOUtilisateur->modifier() ERROR : "+token2.getAction()  );
-	        	return token2;
-			}
-			return new Token( true , "modifier OK" ) ;
+        if ( !okUserExist || !okPswd || !okAlias || !okAliasAvailable || !okEmail || !okAvatar  ) {
+            String action = (okUserExist?"":"Utilisateur inexistant! ")+(okPswd?"":"Pswd non conforme! ") + 
+                (okAlias?"":"Alias non conforme! ")+(okAliasAvailable?"":"Alias déjà pris! ")+(okEmail?"":"Email non conforme! ")+
+                (okAvatar?"":"Avatar non existant! ");
+            LOGGER.info("DAOUtilisateur->modifier() ECHEC (Validation of fields : " + action + ")");
+            return new Token( false , action ) ;
+        } else {
+            // try modification
+            utilisateur.setDate();
+            utilisateur.setPasowrd(pPasword);
+            utilisateur.setAlias(pAlias);
+            utilisateur.setEMaill(pEmail);
+            utilisateur.setAvatar(pIdAvatar);
+            Utilisateur utilRetour = dao.modifier(utilisateur);
+            LOGGER.info("DAOUtilisateur->modifier() SUCCESS");
+            // test if modification ok
+            if ( !utilRetour.getPasowrd().equals(pPasword)		|| 
+                 !utilRetour.getAlias().equals(pAlias)		||
+                 !utilRetour.getEMaill().equals(pEmail) ||
+                 utilRetour.getAvatar() != pIdAvatar   ) {
+                Token token2 = new Token(false, "erreur modification utilisateur dans DB");
+                LOGGER.info("DAOUtilisateur->modifier() ERROR : "+token2.getAction()  );
+                return token2;
+            }
+            return new Token( true , "modifier OK" ) ;
         }
     }
     
@@ -260,7 +267,7 @@ public class DAOUtilisateur {
      */
     public static boolean isUserExisting(String pEMaill){
     	
-    	Utilisateur utilisateurRequested = dao.querrySingle("SELECT u FROM Utilisateur u WHERE u.Courriel = "+pEMaill );
+    	Utilisateur utilisateurRequested = dao.querrySingle("SELECT u FROM Utilisateur u WHERE u.eMaill = :email", "email", pEMaill);
     	boolean ok = (utilisateurRequested != null);
         LOGGER.info("DAOUtilisateur->isUserExisting("+pEMaill+") : "+(ok?"YES" : "NO" ) );
     	
@@ -290,7 +297,7 @@ public class DAOUtilisateur {
     		LOGGER.info("DAOUtilisateur->isUserActivated("+pEMaill+") : user DOESN'T exist" );
             return false;
 		}
-    	Utilisateur utilisateurRequested = dao.querrySingle("SELECT u FROM Utilisateur u WHERE u.Courriel = "+pEMaill );
+    	Utilisateur utilisateurRequested = dao.querrySingle("SELECT u FROM Utilisateur u WHERE u.eMaill = :email", "email", pEMaill);
     	boolean okActivated = utilisateurRequested.isActive();
         LOGGER.info("DAOUtilisateur->isUserActivated("+pEMaill+") : "+(okActivated?"YES" : "NO" ) );
         return okActivated;
@@ -321,10 +328,11 @@ public class DAOUtilisateur {
      * @return id OR -1
      */
     public static int getIdForUser(String pEMaill){
-    	Utilisateur utilisateurRequested = dao.querrySingle("SELECT u FROM Utilisateur u WHERE u.Courriel = "+pEMaill );
+    	Utilisateur utilisateurRequested = dao.querrySingle("SELECT u FROM Utilisateur u WHERE u.eMaill = :email", "email", pEMaill);
     	if (utilisateurRequested != null ) {
-    		utilisateurRequested.getId();
-		}
+            utilisateurRequested.getId();
+            return utilisateurRequested.getId();
+	}
     	return -1;
     	
         

@@ -126,14 +126,14 @@ public class DAOMusique {
         boolean okArtist  = Musique.validateArtist(pArtist);
 
         if ( !userExist || !userActivated || !songExist || !okArtist ) {
-        	 Token token = new Token(false, (userExist?"":"user doesn't exist! ")+
-        			 						(userActivated?"":"user not activated! ")+
-        			 						(songExist?"":"song doesn't exist! ")+
-        			 						(okTitle?"":"title not valid! ")+
-        			 						(okArtist?"":"artist not valid! ") );
-        	 LOGGER.info("DAOMusique->modify() ERROR : "+token.getAction()  );
-        	 return token;
-		}
+            Token token = new Token(false, (userExist?"":"user doesn't exist! ")+
+                                           (userActivated?"":"user not activated! ")+
+                                           (songExist?"":"song doesn't exist! ")+
+                                           (okTitle?"":"title not valid! ")+
+                                           (okArtist?"":"artist not valid! ") );
+            LOGGER.info("DAOMusique->modify() ERROR : "+token.getAction()  );
+            return token;
+        }
         
         song.setTitle(pTitle);
         song.setArtist(pArtist);
@@ -152,7 +152,7 @@ public class DAOMusique {
         	LOGGER.info("DAOMusique->modify() ERROR : "+token2.getAction()  );
         	return token2;
 		}
-        return new Token(true, "création musique ok");
+        return new Token(true, "modification musique ok");
     }
     
     /**
@@ -175,27 +175,42 @@ public class DAOMusique {
     public Token setActive(int pIdSong , int pIdToken , boolean pIsActive ) {
     	LOGGER.info("DAOMusique->setActive("+pIdSong+","+ pIdToken+","+ pIsActive+")");
     	Token token = daoToken.rechercher(pIdToken);
-    	boolean tokenExist		 = token != null; 
-    	boolean tokenIsAction	 = tokenExist && token.getAction().equals( Token.txtActionToken );
-    	int     idUser			 = DAOUtilisateur.getIdForUser(token.getEMail() ) ;
-    	boolean userExist		 = tokenIsAction && DAOUtilisateur.isUserExisting(idUser);
-    	boolean userActive		 = tokenIsAction && DAOUtilisateur.isUserActivated(idUser);
-    	Musique song			 = find(pIdSong);
-    	boolean songExist 	  	 = userExist && song != null ;
+    	boolean tokenExist = token != null; 
+    	boolean tokenIsAction = tokenExist && token.getAction().equals( Token.txtActionToken );
+    	int     idUser = DAOUtilisateur.getIdForUser(token.getEMail() ) ;
+    	boolean userExist = tokenIsAction && DAOUtilisateur.isUserExisting(idUser);
+    	boolean userActive = tokenIsAction && DAOUtilisateur.isUserActivated(idUser);
+    	Musique song = find(pIdSong);
+    	boolean songExist = userExist && song != null ;
     	boolean songBelongToUser = songExist && song.getOwner() == idUser ;
     	
-    	if (!tokenExist || !tokenIsAction) {
-    		Token token2 = new Token(false, (tokenExist?"Token pas ActionToken":"Token inexistant") );
+    	if (!tokenExist) {
+    		Token token2 = new Token(false, "Token inexistant");
         	LOGGER.info("DAOMusique->setActive() ERROR : "+token2.getAction()  );
         	return token2;
-		}
-    	if (!userExist || !songExist ) {
-    		Token token3 = new Token(false, (userExist?"Musique inexistante":"Utilisateur inexistant") );
+	}
+        if (!tokenIsAction) {
+    		Token token2 = new Token(false, "Token pas ActionToken");
+        	LOGGER.info("DAOMusique->setActive() ERROR : "+token2.getAction()  );
+        	return token2;
+	}
+    	if (!userExist) {
+    		Token token3 = new Token(false, "Utilisateur inexistant");
         	LOGGER.info("DAOMusique->setActive() ERROR : "+token3.getAction()  );
         	return token3;
     	}
-    	if (userActive || !songBelongToUser ) {
-    		Token token4 = new Token(false, (userActive?"Utilisateur non active":"La musique n'apartient pas au demandeur") );
+        if (!songExist ) {
+    		Token token3 = new Token(false, "Musique inexistante");
+        	LOGGER.info("DAOMusique->setActive() ERROR : "+token3.getAction()  );
+        	return token3;
+    	}
+    	if (!userActive ) {
+    		Token token4 = new Token(false, "Utilisateur non active");
+        	LOGGER.info("DAOMusique->setActive() ERROR : "+token4.getAction()  );
+        	return token4;
+    	}
+        if (!songBelongToUser ) {
+    		Token token4 = new Token(false, "La musique n\'apartient pas au demandeur");
         	LOGGER.info("DAOMusique->setActive() ERROR : "+token4.getAction()  );
         	return token4;
     	}
@@ -234,26 +249,41 @@ public class DAOMusique {
     	boolean songExist 	  	 = userExist && song != null ;
     	boolean songBelongToUser = songExist && song.getOwner() == idUser ;
     	
-    	if (!tokenExist || !tokenIsAction) {
-    		Token token2 = new Token(false, (tokenExist?"Token pas ActionToken":"Token inexistant") );
+    	if (!tokenExist) {
+    		Token token2 = new Token(false, "Token inexistant");
         	LOGGER.info("DAOMusique->setActive() ERROR : "+token2.getAction()  );
         	return token2;
-		}
-    	if (!userExist || !songExist ) {
-    		Token token3 = new Token(false, (userExist?"Musique inexistante":"Utilisateur inexistant") );
+	}
+        if (!tokenIsAction) {
+    		Token token2 = new Token(false, "Token pas ActionToken");
+        	LOGGER.info("DAOMusique->setActive() ERROR : "+token2.getAction()  );
+        	return token2;
+	}
+    	if (!userExist) {
+    		Token token3 = new Token(false, "Utilisateur inexistant");
         	LOGGER.info("DAOMusique->setActive() ERROR : "+token3.getAction()  );
         	return token3;
     	}
-    	if (userActive || !songBelongToUser ) {
-    		Token token4 = new Token(false, (userActive?"Utilisateur non active":"La musique n'apartient pas au demandeur") );
+        if (!songExist ) {
+    		Token token3 = new Token(false, "Musique inexistante");
+        	LOGGER.info("DAOMusique->setActive() ERROR : "+token3.getAction()  );
+        	return token3;
+    	}
+    	if (!userActive ) {
+    		Token token4 = new Token(false, "Utilisateur non active");
+        	LOGGER.info("DAOMusique->setActive() ERROR : "+token4.getAction()  );
+        	return token4;
+    	}
+        if (!songBelongToUser ) {
+    		Token token4 = new Token(false, "La musique n\'apartient pas au demandeur");
         	LOGGER.info("DAOMusique->setActive() ERROR : "+token4.getAction()  );
         	return token4;
     	}
     	
     	song.setPublic(pIsPublic);
-    	dao.persist(pIsPublic);
+    	dao.persist(song);
     	
-    	return new Token(true , "musique maintenant"+(pIsPublic?"publique": "privé") );
+    	return new Token(true , "musique maintenant "+(pIsPublic?"publique": "privé") );
     }
     /**
      * Get a public song
@@ -295,31 +325,32 @@ public class DAOMusique {
 		LOGGER.info("DAOMusique->getPrivateSong("+pIdToken+","+pIdSong+")" );
 		Token token = daoToken.rechercher(pIdToken);
 		Musique song = daoSong.find(pIdSong);
-		boolean tokenExist		 = token != null; 
-    	boolean tokenIsAction	 = tokenExist && token.getAction().equals( Token.txtActionToken );
-    	boolean tokenValid = tokenExist	&& tokenIsAction;
-    	
-    	if (!tokenExist || !tokenIsAction) {
-        	LOGGER.info("DAOMusique->setActive() ERROR : "+ (tokenExist?"Token pas ActionToken":"Token inexistant") );
-        	return null;
-		}
-    	
-    	int     idUser = DAOUtilisateur.getIdForUser(token.getEMail() ) ;
-		boolean userExist  = tokenValid && DAOUtilisateur.isUserExisting(idUser);
-        boolean userActivated = tokenValid && DAOUtilisateur.isUserActivated(idUser);
-        
-    	if (!userExist || !userActivated ) {
-        	LOGGER.info("DAOMusique->setActive() ERROR : "+(userExist?"Utilisateur non actif":"Utilisateur inexistant")   );
-        	return null;
-    	}
-    	
-    	boolean songExist = song != null;
-        boolean songBelongToUser = songExist && false;
-		
-    	if ( !songExist || !songBelongToUser ) {
-        	LOGGER.info("DAOMusique->setActive() ERROR : "+ (songBelongToUser?"Utilisateur non active":"La musique n'apartient pas au demandeur")  );
-        	return null;
-    	}
+		boolean tokenExist = token != null; 
+                boolean tokenIsAction = tokenExist && token.getAction().equals( Token.txtActionToken );
+                boolean tokenValid = tokenExist	&& tokenIsAction;
+
+                if ( !tokenExist || !tokenIsAction) {
+                    LOGGER.info("DAOMusique->setActive() ERROR : " + (tokenExist?"Token pas ActionToken":"Token inexistant") );
+                    return null;
+                }
+
+                int idUser = DAOUtilisateur.getIdForUser(token.getEMail() ) ;
+                boolean userExist  = tokenValid && DAOUtilisateur.isUserExisting(idUser);
+                boolean userActivated = tokenValid && DAOUtilisateur.isUserActivated(idUser);
+
+                if ( !userExist || !userActivated ) {
+                    LOGGER.info("DAOMusique->setActive() ERROR : " +(userExist?"Utilisateur non actif":"Utilisateur inexistant")   );
+                    return null;
+                }
+
+                boolean songExist = song != null;
+                boolean songBelongToUser = songExist && true;
+
+                if ( !songExist || !songBelongToUser ) {
+                    LOGGER.info("DAOMusique->setActive() ERROR : " + (songBelongToUser?"Utilisateur non active":"La musique n'apartient pas au demandeur")  );
+                    return null;
+                }
+                
 		return song;
 	}
 }

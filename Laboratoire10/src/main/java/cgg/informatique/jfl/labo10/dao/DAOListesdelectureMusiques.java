@@ -17,6 +17,8 @@
 package cgg.informatique.jfl.labo10.dao;
 import cgg.informatique.jfl.labo10.demarrage.Demarrage;
 import cgg.informatique.jfl.labo10.modeles.ListesDeLecture;
+import cgg.informatique.jfl.labo10.modeles.ListesDelectureMusiques;
+import cgg.informatique.jfl.labo10.modeles.Token;
 
 import javax.ejb.Lock;
 import javax.ejb.LockType;
@@ -37,6 +39,21 @@ public class DAOListesdelectureMusiques {
     
     //TODO lots of methods
     // find song in playlist
+    
+    public Token addSong(int idMusique, int idListeDeLecture) {
+        dao.persist(new ListesDelectureMusiques(idMusique, idListeDeLecture));
+        return new Token(true, "Ajout ok");
+    }
+    
+    public Token removeSong(int idMusique, int idListeDeLecture) {
+        String[] arrParams = new String[] { "liste", "musique" };
+        int[] arrParamValues = new int[] { idMusique, idListeDeLecture };
+        if (dao.querry("DELETE FROM ListesDelectureMusiques l WHERE l.song = :musique AND l.playList = :liste", arrParams, arrParamValues, true) == null)
+            return new Token(false, "Suppression problème");
+        else
+            return new Token(true, "Suppression ok");
+    }
+    
     /**
      * @param id
      * @return

@@ -121,8 +121,66 @@ public class DAO {
      */
     public <E> List<E> querry(String pQuerry) {
     	LOGGER.info("DAO->querry("+pQuerry+")" );
-    	Query query = em.createQuery("SELECT c FROM Country c");
+    	Query query = em.createQuery(pQuerry);
     	List<E> results = query.getResultList();
+    	return results;
+    }
+    
+    public <E> E querry(String pQuerry, String pParam, String pParamValue) {
+    	LOGGER.info("DAO->querry("+pQuerry+")" );
+    	Query query = em.createQuery(pQuerry).setParameter(pParam, pParamValue);
+    	E results = null;
+        try {
+          results = (E) ( query.getResultList().isEmpty() ? null : query.getResultList() );
+        } catch (Exception e) {
+          LOGGER.info("DAO->getResultList() found nothing");
+        }
+    	return results;
+    }
+    
+    public <E> E querry(String pQuerry, String pParam, String pParamValue, boolean doUpdate) {
+    	LOGGER.info("DAO->querry("+pQuerry+")" );
+    	Query query = em.createQuery(pQuerry).setParameter(pParam, pParamValue);
+    	E results = null;
+        try {
+          if (doUpdate)
+            results = (E) ( query.executeUpdate() == 0 ? null : query.executeUpdate() );
+          else
+            results = (E) ( query.getResultList().isEmpty() ? null : query.getResultList() );
+        } catch (Exception e) {
+          LOGGER.info("DAO->getResultList() found nothing");
+        }
+    	return results;
+    }
+    
+    public <E> E querry(String pQuerry, String pParam, int pParamValue) {
+    	LOGGER.info("DAO->querry("+pQuerry+")" );
+    	Query query = em.createQuery(pQuerry).setParameter(pParam, pParamValue);
+        E results = null;
+        try {
+          results = (E) ( query.getResultList().isEmpty() ? null : query.getResultList() );
+        } catch (Exception e) {
+          LOGGER.info("DAO->getResultList() found nothing");
+        }
+    	return results;
+    }
+    
+    public <E> E querry(String pQuerry, String[] pParams, int[] pParamValues, boolean doUpdate) {
+    	LOGGER.info("DAO->querry("+pQuerry+")" );
+    	Query query = em.createQuery(pQuerry);
+        for (int i = 0; i < pParams.length && i < pParamValues.length; i++) {
+            query.setParameter(pParams[i], pParamValues[i]);
+            LOGGER.info("DAO->querry() Parameter " + pParams[i] + " : " + pParamValues[i]);
+        }
+    	E results = null;
+        try {
+          if (doUpdate)
+            results = (E) ( query.executeUpdate() == 0 ? null : query.executeUpdate() );
+          else
+            results = (E) ( query.getResultList().isEmpty() ? null : query.getResultList() );
+        } catch (Exception e) {
+          LOGGER.info("DAO->getSingleResult() found nothing");
+        }
     	return results;
     }
     
@@ -138,8 +196,62 @@ public class DAO {
      */
     public <E> E querrySingle(String pQuerry) {
     	LOGGER.info("DAO->querry("+pQuerry+")" );
-    	Query query = em.createNamedQuery(pQuerry);
+    	Query query = em.createQuery(pQuerry);
     	E results = (E) query.getSingleResult();
+    	return results;
+    }
+    
+    public <E> E querrySingle(String pQuerry, String pParam, String pParamValue) {
+    	LOGGER.info("DAO->querry("+pQuerry+")" + "[" + pParam + ", " + pParamValue + "]" );
+    	Query query = em.createQuery(pQuerry).setParameter(pParam, pParamValue);
+    	E results = null;
+        try {
+          results = (E) ( query.getResultList().isEmpty() ? null : query.getSingleResult() );
+        } catch (Exception e) {
+          LOGGER.info("DAO->getSingleResult() found nothing");
+        }
+    	return results;
+    }
+    
+    public <E> E querrySingle(String pQuerry, String[] pParams, String[] pParamValues) {
+    	LOGGER.info("DAO->querry("+pQuerry+")" );
+    	Query query = em.createQuery(pQuerry);
+        for (int i = 0; i < pParams.length && i < pParamValues.length; i++)
+            query.setParameter(pParams[i], pParamValues[i]);
+    	E results = null;
+        try {
+          results = (E) ( query.getResultList().isEmpty() ? null : query.getSingleResult() );
+        } catch (Exception e) {
+          LOGGER.info("DAO->getSingleResult() found nothing");
+        }
+    	return results;
+    }
+    
+    public <E> E querrySingle(String pQuerry, String pParam, int pParamValue) {
+    	LOGGER.info("DAO->querry("+pQuerry+")" + "[" + pParam + ", " + pParamValue + "]" );
+    	Query query = em.createQuery(pQuerry).setParameter(pParam, pParamValue);
+        E results = null;
+        try {
+          results = (E) ( query.getResultList().isEmpty() ? null : query.getSingleResult() );
+        } catch (Exception e) {
+          LOGGER.info("DAO->getSingleResult() found nothing");
+        }
+    	return results;
+    }
+    
+    public <E> E querrySingle(String pQuerry, String[] pParams, int[] pParamValues) {
+    	LOGGER.info("DAO->querry("+pQuerry+")" );
+    	Query query = em.createQuery(pQuerry);
+        for (int i = 0; i < pParams.length && i < pParamValues.length; i++) {
+            query.setParameter(pParams[i], pParamValues[i]);
+            LOGGER.info("DAO->querrySingle() Parameter " + pParams[i] + " : " + pParamValues[i]);
+        }
+    	E results = null;
+        try {
+          results = (E) ( query.getResultList().isEmpty() ? null : query.getSingleResult() );
+        } catch (Exception e) {
+          LOGGER.info("DAO->getSingleResult() found nothing");
+        }
     	return results;
     }
 }
