@@ -1,5 +1,6 @@
 package cgg.informatique.jfl.labo10.dao;
 
+import java.util.List;
 import java.util.logging.Logger;
 
 import javax.ejb.Lock;
@@ -8,6 +9,7 @@ import javax.ejb.Singleton;
 import javax.inject.Inject;
 
 import cgg.informatique.jfl.labo10.demarrage.Demarrage;
+import cgg.informatique.jfl.labo10.modeles.ListesDeLecture;
 import cgg.informatique.jfl.labo10.modeles.Musique;
 import cgg.informatique.jfl.labo10.modeles.Token;
 
@@ -115,11 +117,13 @@ public class DAOMusique {
 	 * @param pIsActive If the song is currently activated.
      * @return token
      */
-    public Token modify(int pIdSong , int pIdOwner ,String pTitle ,  String pArtist ,String pCoverArt ,boolean pIsPublic ,boolean pIsActive) {
-    	LOGGER.info("DAOMusique->modify("+ pIdOwner+ "," + pTitle+ "," + pArtist+ "," + pIsPublic+ "," + pIsActive+")" );
+    public Token modify(int pIdSong ,String pTitle ,  String pArtist ,String pCoverArt ,boolean pIsPublic ,boolean pIsActive) {
+    	LOGGER.info("DAOMusique->modify("+ pIdSong+ "," + pTitle+ "," + pArtist+ "," + pIsPublic+ "," + pIsActive+")" );
         
-    	boolean userExist  = DAOUtilisateur.isUserExisting(pIdOwner);
-        boolean userActivated = DAOUtilisateur.isUserActivated(pIdOwner);
+    	
+    	int idOwner = 0 ; //TODO get from token in BD
+    	boolean userExist  = DAOUtilisateur.isUserExisting(idOwner);
+        boolean userActivated = DAOUtilisateur.isUserActivated(idOwner);
         Musique song  = daoSong.find(pIdSong);
         boolean songExist = song != null;
         boolean okTitle  = Musique.validateTitle(pTitle);
@@ -352,5 +356,30 @@ public class DAOMusique {
                 }
                 
 		return song;
+	}
+	
+	
+	/**
+	 * Get a private song.
+	 * 
+     * <ul>
+	 *  <li>Token must exist</li>
+     *  <li>Token must be ActionToken : email is set</li> 
+     * 	<li>User must exist</li>
+     *  <li>User must have at least 1 song</li>
+     * </ul>
+     * 
+	 * @param pIdToken ID of the token demanding action
+	 * @param pIdSong ID of asked song
+	 * @return musique List of song OR null
+	 */
+	public List<Musique> getMySongs(int pIdToken) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public List<ListesDeLecture> getPublicSongsList(int pFirst, int pLast) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

@@ -81,14 +81,14 @@ public class ServiceUtilisateur {
     @Path("/logoff")
 	@PUT
 	public Token logoff(@QueryParam( "idToken")      int   pIdToken,
-            			@QueryParam("cle") 	      String pKey,
-            			@QueryParam("courriel")   String pCourriel) {
-    		LOGGER.info("ServiceUtilisateur->logoff("+pIdToken+","+pKey+","+pCourriel+")" );
+            			@QueryParam("cle") 	      String pKey) {
+    		LOGGER.info("ServiceUtilisateur->logoff("+pIdToken+","+pKey+")" );
     		//TODO delete all token w/ user email is referenced
     		
     		Token token = daoToken.confirmCanDoAction(pIdToken, pKey );
         	if ( token.getEtat()  ){
-        		return daoUtil.logoff(pCourriel);
+        		String email = ""; //TODO find in BD
+        		return daoUtil.logoff(email);
         		
         	}
 	    return token;
@@ -99,17 +99,17 @@ public class ServiceUtilisateur {
     public Token modify(
     		           @QueryParam( "idToken")     int   pIdToken,
                        @QueryParam("cle") 	      String pKey,
-                       @QueryParam( "idUtil")      int   pIdUser,
                        @QueryParam("courriel") 	  String pEMaill,
                        @QueryParam("motDePasse")  String pPasword,
                        @QueryParam("alias")       String pAlias,
                        @QueryParam("avatar")      int    pIdAvatar) {
-    	LOGGER.info("ServiceToken->modifier("+ pIdToken + ","+ pKey + ","+ pIdUser + ","+ pEMaill + ","+ pPasword + ","+ pAlias + ","+ pIdAvatar +")" );
+    	LOGGER.info("ServiceToken->modifier("+ pIdToken + ","+ pKey + ","+ pEMaill + ","+ pPasword + ","+ pAlias + ","+ pIdAvatar +")" );
     	Token token = daoToken.confirmCanDoAction(pIdToken, pKey );
     	if ( token.getEtat()  ){
-    		Token token2 =  daoUtil.modifier (pIdUser, pAlias, pPasword, pEMaill, pIdAvatar);
-    		Utilisateur util = daoUtil.rechercher(pIdUser);
-    		if (util.getId() == pIdUser && 
+    		int idUser = 3; //TODO find from token
+    		daoUtil.modifier (idUser, pAlias, pPasword, pEMaill, pIdAvatar);
+    		Utilisateur util = DAOUtilisateur.rechercher(idUser);
+    		if (util.getId() == idUser && 
     			util.getAlias().equals(pAlias) &&
     			util.getAvatar() == pIdAvatar &&
     			util.getEMaill().equals(pEMaill) &&

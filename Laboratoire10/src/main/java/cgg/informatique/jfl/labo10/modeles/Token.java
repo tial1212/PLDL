@@ -221,7 +221,7 @@ public class Token extends Modele {
 	 *@param pSalt The salt to validate.
 	 * @return ok
 	 */
-	public boolean validateSalt(String pSalt){
+	public static boolean validateSalt(String pSalt){
 		int length = pSalt.length();
 		boolean ok = length>=8 && length<=50;
 		if (!ok) {
@@ -264,7 +264,7 @@ public class Token extends Modele {
 	 *@param pCaptchaStr The salt to validate.
 	 * @return ok
 	 */
-	public boolean validateCaptchaStr(String pCaptchaStr){
+	public static boolean validateCaptchaStr(String pCaptchaStr){
 		int length = pCaptchaStr.length();
 		boolean ok = length>=5 && length<=15;
 		if (!ok) {
@@ -304,7 +304,7 @@ public class Token extends Modele {
 	 *@param pAction The action to validate.
 	 * @return ok
 	 */
-	public boolean validateAction(String pAction){
+	public static boolean validateAction(String pAction){
 		int length = pAction.length();
 		boolean ok = length>=5 && length<=50;
 		if (!ok) {

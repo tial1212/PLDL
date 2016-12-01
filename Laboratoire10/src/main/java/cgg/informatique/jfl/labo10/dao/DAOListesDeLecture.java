@@ -293,7 +293,7 @@ public class DAOListesDeLecture {
 	 * 
 	 * @param pFirst First result interval
 	 * @param pLast  Last result interval
-	 * @return ListOfPlaylist
+	 * @return ListOfPlaylist OR null
 	 */
 	public List<ListesDeLecture> getPublicPlaylistList(int pFirst, int pLast ) {
 		LOGGER.info("DAOListesDeLecture->getPublicPlaylistList("+pFirst+","+pLast+")");

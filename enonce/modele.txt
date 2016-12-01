@@ -1,5 +1,6 @@
 public STATIC boolean validateSalt(String pSalt)
-
+HTML A2 effacer user —>pas bon numéro 
+HTML P2 getPublicPlaylistList—>pas bon numéro —> A5
 
 TODO String vs Text
 TODO DAOMusique , DAOListesdelecture_musiques , DAOListesDeLecture 
