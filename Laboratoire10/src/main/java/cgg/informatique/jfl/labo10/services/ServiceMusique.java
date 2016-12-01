@@ -37,7 +37,7 @@ public class ServiceMusique {
     
 	@Path("/createSong")
     @PUT
-    public Token createSong(@QueryParam("idToken")     int	  pIdToken,
+    public Token createSong(@QueryParam("idToken")    int	  pIdToken,
 				            @QueryParam("cle") 	      String  pKey,
                        		@QueryParam("titre")      String  pTitle,
                        		@QueryParam("artiste")    String  pArtist,
@@ -56,7 +56,7 @@ public class ServiceMusique {
     
     @Path("/getPrivateSong")
 	@PUT
-	public Musique getPrivateSong(@QueryParam("idToken")	int		pIdToken,
+	public Musique getPrivateSong(@QueryParam("idToken")int		pIdToken,
             					  @QueryParam("cle") 	String  pKey ,  
             					  @QueryParam("idSong") int		pIdSong ) {
 		LOGGER.info("ServiceMusique->getPrivateSong(" + pIdToken + "," +pKey+ "," +pIdSong+")" );
@@ -68,8 +68,8 @@ public class ServiceMusique {
     
     @Path("/getPublicSong")
 	@PUT
-	public Musique getPublicSong(@QueryParam("idToken")    int   pIdToken,
-								 @QueryParam("cle") 	    String pKey ,  
+	public Musique getPublicSong(@QueryParam("idToken") int   	pIdToken,
+								 @QueryParam("cle") 	String pKey ,  
             			   		 @QueryParam("idSong") 	int    pIdSong ) {
 		LOGGER.info("ServiceMusique->getPublicSong("+pIdToken+","+pKey+ "," +pIdSong+")" );
     	if ( !daoToken.confirmCanDoAction(pIdToken, pKey ).getEtat()  ){
@@ -114,7 +114,7 @@ public class ServiceMusique {
     
     @Path("/setPublic")
 	@PUT
-	public Token setPublic(@QueryParam("idToken")    int     pIdToken,
+	public Token setPublic(@QueryParam("idToken")   int     pIdToken,
             			   @QueryParam("cle") 	    String  pKey ,  
             			   @QueryParam("idSong") 	int     pIdSong ,
             			   @QueryParam("publique") 	boolean pIsPublic   ) {
@@ -128,13 +128,15 @@ public class ServiceMusique {
 
 	@Path("/getMySongs")
 	@PUT
-	public List<Musique> getMySongs(@QueryParam("idToken")    int   pIdToken,
-								 @QueryParam("cle") 	    String pKey ) {
-		LOGGER.info("ServiceMusique->getMySongs("+pIdToken+ "," +pKey+")" );
+	public List<Musique> getMySongs(@QueryParam("idToken")  int   	pIdToken,
+								    @QueryParam("cle") 	    String  pKey,
+								    @QueryParam("premier")	int		pFirst,
+						            @QueryParam("dernier")	int		pLast) {
+		LOGGER.info("ServiceMusique->getMySongs("+pIdToken+ "," +pKey+","+pFirst+","+pLast+")" );
 		if ( !daoToken.confirmCanDoAction(pIdToken, pKey ).getEtat()  ){
 			return null;
 		}
-		return daoMusique.getMySongs(pIdToken);
+		return daoMusique.getMySongs(pIdToken,pFirst, pLast);
 	}
 
 	@Path("/getPublicSongsList")

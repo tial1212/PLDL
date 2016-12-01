@@ -16,6 +16,7 @@
  */
 package cgg.informatique.jfl.labo10.dao;
 import cgg.informatique.jfl.labo10.demarrage.Demarrage;
+import cgg.informatique.jfl.labo10.modeles.Musique;
 import cgg.informatique.jfl.labo10.modeles.Token;
 import cgg.informatique.jfl.labo10.modeles.Utilisateur;
 
@@ -84,6 +85,7 @@ public class DAOUtilisateur {
 		
     	Utilisateur utilisateur = dao.querrySingle("SELECT u FROM Utilisateur u WHERE u.eMaill = :email", "email", pCourriel);
 	    if (utilisateur != null) {
+	    	//TODO delete all token w/ user email is referenced  --> ? working
 	    	if (utilisateur.isActive() ) {
 	    		dao.querry("DELETE FROM Token t WHERE t.eMail = :email", "email", pCourriel, true);
 		    	Token token = new Token(true, "logoff success");
@@ -337,4 +339,19 @@ public class DAOUtilisateur {
     	
         
     }
+
+    /**
+     * Get an User.
+     * <ul>
+	 *  <li>User must exist</li>
+     *  <li>Token must match</li>
+     * </ul>
+     * 
+     * @param pIdToken ID of the token demanding action
+     * @return id OR -1
+     */
+	public Utilisateur getUser(int pIdToken) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

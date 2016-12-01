@@ -28,7 +28,6 @@ import javax.ws.rs.DELETE;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 
@@ -162,23 +161,6 @@ public class ServiceListeLecture {
 	}
     	return token;
     }
-    
-    /*
-    @Path("/getPrivatePlaylist")
-    @POST
-    public List<ListesDeLecture> getMyPlaylists(
-		    		@QueryParam( "idToken")	int		pIdToken,
-		            @QueryParam("cle")		String	pKey,
-		            @QueryParam("premier")	int		pFirst,
-		            @QueryParam("dernier")	int		pLast){
-    	LOGGER.info("ServiceListeLecture->getMyPlaylists("+pIdToken+","+pKey+","+pFirst+","+pLast+")" );
-    	Token token = daoToken.confirmCanDoAction(pIdToken, pKey );
-    	if ( token.getEtat()  ){
-    		daoPlaylist.getMyPlaylists(pIdToken ,pFirst, pLast);
-		}
-    	return null;
-    }
-    */
     
     @Path("/getPublicPlaylistList")
     @POST

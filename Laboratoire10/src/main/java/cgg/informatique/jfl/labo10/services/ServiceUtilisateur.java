@@ -20,6 +20,7 @@ import cgg.informatique.jfl.labo10.dao.DAO;
 import cgg.informatique.jfl.labo10.dao.DAOToken;
 import cgg.informatique.jfl.labo10.dao.DAOUtilisateur;
 import cgg.informatique.jfl.labo10.demarrage.Demarrage;
+import cgg.informatique.jfl.labo10.modeles.Musique;
 import cgg.informatique.jfl.labo10.modeles.Token;
 import cgg.informatique.jfl.labo10.modeles.Utilisateur;
 
@@ -78,12 +79,23 @@ public class ServiceUtilisateur {
 	    return token;
 	}
     
+    
+    @Path("/getUser")
+	@PUT
+	public Utilisateur getUser( @QueryParam("idToken")	int		pIdToken,
+            				@QueryParam("cle") 		String  pKey ) {
+		LOGGER.info("ServiceMusique->getPrivateSong(" + pIdToken + "," +pKey+")" );
+    	if ( !daoToken.confirmCanDoAction(pIdToken, pKey ).getEtat()  ){
+    		return null;
+		}
+    	return daoUtil.getUser(pIdToken);
+	}
+    
     @Path("/logoff")
 	@PUT
 	public Token logoff(@QueryParam( "idToken")      int   pIdToken,
             			@QueryParam("cle") 	      String pKey) {
     		LOGGER.info("ServiceUtilisateur->logoff("+pIdToken+","+pKey+")" );
-    		//TODO delete all token w/ user email is referenced
     		
     		Token token = daoToken.confirmCanDoAction(pIdToken, pKey );
         	if ( token.getEtat()  ){

@@ -3,7 +3,8 @@ HTML A2 effacer user —>pas bon numéro
 HTML P2 getPublicPlaylistList—>pas bon numéro —> A5
 
 TODO String vs Text
-TODO DAOMusique , DAOListesdelecture_musiques , DAOListesDeLecture 
+TODO U14 à U18
+
 TODO offrir possibilité upload avatar
 
 avatar

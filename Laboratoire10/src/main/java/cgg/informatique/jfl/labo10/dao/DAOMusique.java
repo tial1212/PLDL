@@ -370,10 +370,12 @@ public class DAOMusique {
      * </ul>
      * 
 	 * @param pIdToken ID of the token demanding action
+	 * @param pLast 
+	 * @param pFirst 
 	 * @param pIdSong ID of asked song
 	 * @return musique List of song OR null
 	 */
-	public List<Musique> getMySongs(int pIdToken) {
+	public List<Musique> getMySongs(int pIdToken, int pFirst, int pLast) {
 		// TODO Auto-generated method stub
 		return null;
 	}
