@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Client :  127.0.0.1
--- Généré le :  Sam 03 Décembre 2016 à 19:43
+-- Généré le :  Sam 03 Décembre 2016 à 23:43
 -- Version du serveur :  5.7.14
 -- Version de PHP :  5.6.25
 
@@ -122,7 +122,7 @@ INSERT INTO `listesdelecture` (`Id`, `Proprietaire`, `Nom`, `Publique`, `Active`
 CREATE TABLE `listesdelecture_musiques` (
   `ListeDeLecture` int(11) NOT NULL,
   `Musique` int(11) NOT NULL,
-  `Date` datetime NOT NULL
+  `Date` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 --

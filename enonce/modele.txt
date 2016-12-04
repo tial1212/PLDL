@@ -1,9 +1,10 @@
-public STATIC boolean validateSalt(String pSalt)
 HTML A2 effacer user —>pas bon numéro 
 HTML P2 getPublicPlaylistList—>pas bon numéro —> A5
 
 TODO String vs Text
+
 TODO U14 à U18
+TODO A8 , A9
 
 TODO offrir possibilité upload avatar
 
@@ -11,15 +12,12 @@ avatar
     Id      int
     Nom     String    
     Avatar  String B64
-    
-    
-//// contenu sur liste //////
+   
 listesdelecture_musiques  
     ListeDeLecture int    @listesdelecture.id
     Musique        int    @musiques.id
     Date           datetime
     
-//// info sur liste //////
 listesdelecture
    Id           int
    Proprietaire int   @utilisateurs
@@ -27,8 +25,6 @@ listesdelecture
    Publique     bln
    Active`      bln
    Date         datetime
-
-    
 
 musiques
   Id              int 
@@ -41,9 +37,6 @@ musiques
   Active          bln
   Date`           datetime NOT NULL
   
-  
-  
-
 utilisateurs
   Id            int
   Courriel      String
