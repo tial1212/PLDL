@@ -2,7 +2,6 @@
 package cgg.informatique.jfl.labo10.services;
 
 import cgg.informatique.jfl.labo10.dao.DAO;
-import cgg.informatique.jfl.labo10.dao.DAOToken;
 import cgg.informatique.jfl.labo10.demarrage.Demarrage;
 import cgg.informatique.jfl.labo10.modeles.Token;
 import cgg.informatique.jfl.labo10.modeles.Utilisateur;
@@ -19,37 +18,34 @@ import java.util.logging.Logger;
 @Path("/service/token")
 @Produces("application/json")
 public class ServiceToken {
-
-	@Inject
-    private DAOToken daoToken;
+  Logger LOGGER = Logger.getLogger(Demarrage.class.getName());
     
-	 @Inject
-	 private DAO dao;
-	
-    Logger LOGGER = Logger.getLogger(Demarrage.class.getName());
-
-	private EntityManager em;
+  @Inject
+  private DAO dao;
+  
+  private EntityManager em;
     
-    
-    @Path("/getActionToken")
-	@PUT
-	public Token getActionToken(@QueryParam("courriel")    String pEMail) {
-		LOGGER.info("ServiceToken->getActionToken(" + pEMail +")" );
-		
-		//TODO querry user exist && isActive
-		Utilisateur util = (Utilisateur) em.createQuery("SELECT u FROM utilisateur u WHERE u.Courriel LIKE :UserEmail " ).
-				setParameter("UserEmail", pEMail)
-		        .getResultList();
+  @Path("/getTokenAction")
+  @PUT
+  public Token getTokenAction(@QueryParam("courriel") String email) {
+    LOGGER.info("ServiceToken.getTokenAction(" + email + ")");
 
-		
-		String message = "getActionToken";
-		if (util == null || !util.isActive()) {
-			message = ( !util.isActive() ?"Utilisateur non actif":"Utilisateur non existant");
-			return new Token(false, message);
-		} else {
-			 Token token = Token.generateActionToken(pEMail);
-			 daoToken.persistToken( token );
-			 return token;
-		}
-	}
+    //TODO querry user exist && isActive
+    Utilisateur util = (Utilisateur) em.createQuery("SELECT u FROM utilisateur u WHERE u.Courriel LIKE :email " )
+            .setParameter("email", email).getResultList();
+
+
+    String message = "getActionToken";
+    if (util == null) {
+      message = "Utilisateur non existant";
+      return new Token(false, message);
+    } else if (!util.isActive()) {
+      message = ("Utilisateur non actif");
+      return new Token(false, message);
+    } else {
+      Token token = Token.genererTokenAction(email);
+      dao.persister(token);
+      return token;
+    }
+  }
 }

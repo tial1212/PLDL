@@ -15,8 +15,10 @@
   <script>
     
     // Constants
-    let serverPath = 'http://424t.cgodin.qc.ca:8480/';
-    let appName = '/rest-example';
+    // http://localhost:8080 (HOME)
+    // http://424t.cgodin.qc.ca:8480 (SCHOOL)
+    let serverPath = 'http://localhost:8080';
+    let appName = '/pldl';
     let serviceCommonPath = '/service';
     let servicePathGroups = { token : '/token', utilisateur : '/utilisateur',
       musique : '/musique', listeLecture : '/listeLecture',
@@ -31,7 +33,7 @@
       let placeholder = document.getElementById('servicesTesterPlaceholder');
 
       // token
-      createServiceTester(placeholder, 'PUT', 'A1', 'getActionToken',
+      createServiceTester(placeholder, 'PUT', 'A1', 'getTokenAction',
         servicePathGroups.token, false, [ 'Courriel:courriel' ]);
 
       // utilisateur
@@ -293,8 +295,6 @@
 
     function submitQuerry(service) {
       servicePathWithParam = buildQuerry(service);
-
-      //$('#' + service.PathGroup + '_' + serviceName + '_submitQuerryResult').load(servicePathWithParam);
 
       $.ajax({
         url: servicePathWithParam,

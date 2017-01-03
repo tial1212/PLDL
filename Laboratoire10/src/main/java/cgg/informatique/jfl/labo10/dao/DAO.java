@@ -1,32 +1,16 @@
-/*
- *     Licensed to the Apache Software Foundation (ASF) under one or more
- *     contributor license agreements.  See the NOTICE file distributed with
- *     this work for additional information regarding copyright ownership.
- *     The ASF licenses this file to You under the Apache License, Version 2.0
- *     (the "License"); you may not use this file except in compliance with
- *     the License.  You may obtain a copy of the License at
- *
- *        http://www.apache.org/licenses/LICENSE-2.0
- *
- *     Unless required by applicable law or agreed to in writing, software
- *     distributed under the License is distributed on an "AS IS" BASIS,
- *     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *     See the License for the specific language governing permissions and
- *     limitations under the License.
- */
 package cgg.informatique.jfl.labo10.dao;
+
+import cgg.informatique.jfl.labo10.demarrage.Demarrage;
 
 import javax.ejb.Lock;
 import javax.ejb.LockType;
 import javax.ejb.Singleton;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
-
-import cgg.informatique.jfl.labo10.demarrage.Demarrage;
 
 import java.util.List;
 import java.util.logging.Logger;
+import javax.persistence.Query;
 
 /**
  * Simply maps the entitymanager.
@@ -35,223 +19,188 @@ import java.util.logging.Logger;
 @Singleton
 @Lock(LockType.READ)
 public class DAO {
+  private static final Logger LOGGER = Logger.getLogger(Demarrage.class.getName());
 
-    @PersistenceContext(unitName = "PERSISTENCE10")
-    private EntityManager em;
+  @PersistenceContext(unitName = "PERSISTENCE10")
+  private static EntityManager em;
+
+  /**
+   * remove an object in DB
+   * @param classe The class of desired object
+   * @param id
+   */
+  public static <E> void enlever(Class<E> classe, int id) {
+    LOGGER.info("DAO->remove(" + classe + ", " + id + ")");
+
+    em.remove(em.find(classe, id));
+  }
+  
+  /**
+   * Find an object List by id
+   * @param classe The class of desired objects
+   * @param requete
+   * @return
+   */
+  public static <E> int executerRequete(Class<E> classe, String requete, String parametre, Object valeurParametre) {
+    LOGGER.info("DAO.trouverParRequete(" + classe + ", " + requete + ")");
     
-    private Logger LOGGER = Logger.getLogger(Demarrage.class.getName());
-    private static Logger LOGGER2 = Logger.getLogger(Demarrage.class.getName());
+    Query requeteCree = em.createQuery(requete, classe);
     
+    requeteCree.setParameter(parametre, valeurParametre);
+
+    return requeteCree.executeUpdate();
+  }
+  
+  public static <E> int executerRequete(Class<E> classe, String requete, String[] parametres, Object[] valeursParametres) {
+    LOGGER.info("DAO.executerRequete(" + classe + ", " + requete + ")");
     
-    /**
-     * Persist an object in DB
-     * @param e The object to persist
-     * @return e The persisted object
-     */
-    public <E> E persist(E e) {
-    	LOGGER.info("DAO->persist("+e+")" );
-        em.persist(e);
-       
-        return e;
+    Query requeteCree = em.createQuery(requete, classe);
+    
+    for (int i = 0; i < parametres.length && i < valeursParametres.length; i++) {
+      LOGGER.info(".setParameter(" + parametres[i] + ", " + valeursParametres[i] + ")");
+      requeteCree.setParameter(parametres[i], valeursParametres[i]);
     }
+
+    return requeteCree.executeUpdate();
+  }
+
+  public static <E> E modifier(E e) {
+    LOGGER.info("DAO.modifier(" + e + ")");
+
+    return em.merge(e);
+  }
+
+  /**
+   * Persist an object in DB
+   * @param e The object to persist
+   * @return e The persisted object
+   */
+  public static <E> E persister(E e) {
+    LOGGER.info("DAO.persister(" + e + ")");
+
+    em.persist(e);
+    return e;
+  }
+
+  /**
+   * Find an object by id
+   * @param classe The class of desired object
+   * @param id 
+   * @return
+   */
+  public static <E> E trouverParId(Class<E> classe, int id) {
+    LOGGER.info("DAO.trouverParId(" + classe + ", " + id + ")");
+
+    return em.find(classe, id);
+  }
+
+  /**
+   * Find an object List by id
+   * @param classe The class of desired objects
+   * @param requete
+   * @return
+   */
+  public static <E> List<E> trouverParRequete(Class<E> classe, String requete) {
+    LOGGER.info("DAO.trouverParRequete(" + classe + ", " + requete + ")");
+
+    return em.createQuery(requete, classe).getResultList();
+  }
+  
+  /**
+   * Find an object List by id
+   * @param classe The class of desired objects
+   * @param requete
+   * @return
+   */
+  public static <E> List<E> trouverParRequete(Class<E> classe, String requete, String parametre, Object valeurParametre) {
+    LOGGER.info("DAO.trouverParRequete(" + classe + ", " + requete + ")");
     
-    public <E> E modifier(E e) {
-    	LOGGER.info("DAO->modifier("+e+")" );
-        return em.merge(e);
-    }
+    Query requeteCree = em.createQuery(requete, classe);
     
-    /**
-     * remove an object in DB
-     * @param clazz The class of desired object
-     * @param pId
-     */
-    public <E> void remove(Class<E> clazz, int pId) {
-    	LOGGER.info("DAO->remove("+clazz+","+pId+")" );
-        em.remove(em.find(clazz, pId));
-    }
+    requeteCree.setParameter(parametre, valeurParametre);
+
+    return em.createQuery(requete, classe).getResultList();
+  }
+  
+  /**
+   * Find an object List by id
+   * @param classe The class of desired objects
+   * @param requete
+   * @return
+   */
+  public static <E> List<E> trouverParRequete(Class<E> classe, String requete, String[] parametres, Object[] valeursParametres) {
+    LOGGER.info("DAO.trouverParRequete(" + classe + ", " + requete + ")");
     
-    /**
-     * Find an object by id
-     * @param clazz The class of desired object
-     * @param id 
-     * @return
-     */
-    public <E> E find(Class<E> clazz, int id) {
-    	LOGGER.info("DAO->find("+clazz+","+id+")" );
-        return em.find(clazz, id);
-    }
+    Query requeteCree = em.createQuery(requete, classe);
     
-    /**
-     * Find an object List by id
-     * @param clazz The class of desired objects
-     * @param query
-     * @param premier First index from result
-     * @param dernier Last index from result
-     * @return
-     */
-    public <E> List<E> find(Class<E> clazz, String query, int premier, int dernier) {
-    	LOGGER.info("DAO->find("+clazz+","+query+","+premier+","+dernier+")" );
-        return queryRange(em.createQuery(query, clazz), premier, dernier).getResultList();
+    for (int i = 0; i < parametres.length && i < valeursParametres.length; i++) {
+      LOGGER.info(".setParameter(" + parametres[i] + ", " + valeursParametres[i] + ")");
+      requeteCree.setParameter(parametres[i], valeursParametres[i]);
     }
+
+    return em.createQuery(requete, classe).getResultList();
+  }
+
+  /**
+   * Find an object List by id
+   * @param classe The class of desired objects
+   * @param requete
+   * @param premier First index from result
+   * @param dernier Last index from result
+   * @return
+   */
+  public static <E> List<E> trouverParRequete(Class<E> classe, String requete, int premier, int dernier) {
+    LOGGER.info("DAO.trouverParRequete(" + classe + ", " + requete + ", " + premier + ", " + dernier + ")");
+
+    if (premier < 0)
+      LOGGER.warning("DAO.find(...) Paramètre \"premier\" (" + premier + ") plus petit que 0");
+    else if (dernier < 0)
+      LOGGER.warning("DAO.find(...) Paramètre \"dernier\" (" + dernier + ") plus petit que 0");
+    else if (premier > dernier)
+      LOGGER.warning("DAO.find(...) Paramètre \"premier\" (" + premier + ")"
+                   + " est plus grand que paramètre \"dernier\" (" + dernier + ")");
+
+    return em.createQuery(requete, classe).setFirstResult(premier).setMaxResults(dernier - premier).getResultList();
+  }
+
+  public static <E> E trouverParRequeteUnResultat(Class<E> classe, String requete) {
+    LOGGER.info("DAO.find(" + classe + ", " + requete + ")");
+
+    return em.createQuery(requete, classe).getSingleResult();
+  }
+  
+  /**
+   * Find an object List by id
+   * @param classe The class of desired objects
+   * @param requete
+   * @return
+   */
+  public static <E> E trouverParRequeteUnResultat(Class<E> classe, String requete, String parametre, Object valeurParametre) {
+    LOGGER.info("DAO.trouverParRequeteUnResultat(" + classe + ", " + requete + ")");
     
-    public <E> List<E> rechercheParRequete(Class<E> clazz, String query, int premier, int dernier) {
-    	LOGGER.info("DAO->rechercheParRequete("+clazz+","+query+","+premier+","+dernier+")" );
-    	
-        return queryRange(em.createNamedQuery(query, clazz), premier, dernier).getResultList();
-    }
+    Query requeteCree = em.createQuery(requete, classe);
     
-    private static Query queryRange(Query query, int premier, int dernier) {
-    	LOGGER2.info("DAO->queryRange("+query+","+premier+","+dernier+")" );
-        if (dernier >= 0) {
-            query.setMaxResults(dernier);
-        }
-        if (premier >= 0) {
-            query.setFirstResult(premier);
-        }
-        return query;
-    }
+    requeteCree.setParameter(parametre, valeurParametre);
+
+    return em.createQuery(requete, classe).getSingleResult();
+  }
+  
+  /**
+   * Find an object List by id
+   * @param classe The class of desired objects
+   * @param requete
+   * @return
+   */
+  public static <E> E trouverParRequeteUnResultat(Class<E> classe, String requete, String[] parametres, Object[] valeursParametres) {
+    LOGGER.info("DAO.trouverParRequeteUnResultat(" + classe + ", " + requete + ")");
     
-    /**
-     * Execute a desired querry.<br>
-     * ***MAKE SURE TO VERIFY THE RESULT***<br>
-     *  Might return empty list or even cause a roolback
-     *
-     *@param pQuerry , a querry to execute.
-     * @return result , the result of the querry
-     */
-    public <E> List<E> querry(String pQuerry) {
-    	LOGGER.info("DAO->querry("+pQuerry+")" );
-    	Query query = em.createQuery(pQuerry);
-    	List<E> results = query.getResultList();
-    	return results;
-    }
+    Query requeteCree = em.createQuery(requete, classe);
     
-    public <E> E querry(String pQuerry, String pParam, String pParamValue) {
-    	LOGGER.info("DAO->querry("+pQuerry+")" );
-    	Query query = em.createQuery(pQuerry).setParameter(pParam, pParamValue);
-    	E results = null;
-        try {
-          results = (E) ( query.getResultList().isEmpty() ? null : query.getResultList() );
-        } catch (Exception e) {
-          LOGGER.info("DAO->getResultList() found nothing");
-        }
-    	return results;
+    for (int i = 0; i < parametres.length && i < valeursParametres.length; i++) {
+      LOGGER.info(".setParameter(" + parametres[i] + ", " + valeursParametres[i] + ")");
+      requeteCree.setParameter(parametres[i], valeursParametres[i]);
     }
-    
-    public <E> E querry(String pQuerry, String pParam, String pParamValue, boolean doUpdate) {
-    	LOGGER.info("DAO->querry("+pQuerry+")" );
-    	Query query = em.createQuery(pQuerry).setParameter(pParam, pParamValue);
-    	E results = null;
-        try {
-          if (doUpdate)
-            results = (E) ( query.executeUpdate() == 0 ? null : query.executeUpdate() );
-          else
-            results = (E) ( query.getResultList().isEmpty() ? null : query.getResultList() );
-        } catch (Exception e) {
-          LOGGER.info("DAO->getResultList() found nothing");
-        }
-    	return results;
-    }
-    
-    public <E> E querry(String pQuerry, String pParam, int pParamValue) {
-    	LOGGER.info("DAO->querry("+pQuerry+")" );
-    	Query query = em.createQuery(pQuerry).setParameter(pParam, pParamValue);
-        E results = null;
-        try {
-          results = (E) ( query.getResultList().isEmpty() ? null : query.getResultList() );
-        } catch (Exception e) {
-          LOGGER.info("DAO->getResultList() found nothing");
-        }
-    	return results;
-    }
-    
-    public <E> E querry(String pQuerry, String[] pParams, int[] pParamValues, boolean doUpdate) {
-    	LOGGER.info("DAO->querry("+pQuerry+")" );
-    	Query query = em.createQuery(pQuerry);
-        for (int i = 0; i < pParams.length && i < pParamValues.length; i++) {
-            query.setParameter(pParams[i], pParamValues[i]);
-            LOGGER.info("DAO->querry() Parameter " + pParams[i] + " : " + pParamValues[i]);
-        }
-    	E results = null;
-        try {
-          if (doUpdate)
-            results = (E) ( query.executeUpdate() == 0 ? null : query.executeUpdate() );
-          else
-            results = (E) ( query.getResultList().isEmpty() ? null : query.getResultList() );
-        } catch (Exception e) {
-          LOGGER.info("DAO->getSingleResult() found nothing");
-        }
-    	return results;
-    }
-    
-    /**
-     * Execute a desired querry.<br>
-     * RETURNING 1 OBJECT.<br>
-     * ***MAKE SURE TO VERIFY THE RESULT***<br>
-     *  Might return empty or even cause a roolback
-     *
-     *@param pQuerry , a querry to execute.
-     * @return 
-     * @return result , the result of the querry
-     */
-    public <E> E querrySingle(String pQuerry) {
-    	LOGGER.info("DAO->querry("+pQuerry+")" );
-    	Query query = em.createQuery(pQuerry);
-    	E results = (E) query.getSingleResult();
-    	return results;
-    }
-    
-    public <E> E querrySingle(String pQuerry, String pParam, String pParamValue) {
-    	LOGGER.info("DAO->querry("+pQuerry+")" + "[" + pParam + ", " + pParamValue + "]" );
-    	Query query = em.createQuery(pQuerry).setParameter(pParam, pParamValue);
-    	E results = null;
-        try {
-          results = (E) ( query.getResultList().isEmpty() ? null : query.getSingleResult() );
-        } catch (Exception e) {
-          LOGGER.info("DAO->getSingleResult() found nothing");
-        }
-    	return results;
-    }
-    
-    public <E> E querrySingle(String pQuerry, String[] pParams, String[] pParamValues) {
-    	LOGGER.info("DAO->querry("+pQuerry+")" );
-    	Query query = em.createQuery(pQuerry);
-        for (int i = 0; i < pParams.length && i < pParamValues.length; i++)
-            query.setParameter(pParams[i], pParamValues[i]);
-    	E results = null;
-        try {
-          results = (E) ( query.getResultList().isEmpty() ? null : query.getSingleResult() );
-        } catch (Exception e) {
-          LOGGER.info("DAO->getSingleResult() found nothing");
-        }
-    	return results;
-    }
-    
-    public <E> E querrySingle(String pQuerry, String pParam, int pParamValue) {
-    	LOGGER.info("DAO->querry("+pQuerry+")" + "[" + pParam + ", " + pParamValue + "]" );
-    	Query query = em.createQuery(pQuerry).setParameter(pParam, pParamValue);
-        E results = null;
-        try {
-          results = (E) ( query.getResultList().isEmpty() ? null : query.getSingleResult() );
-        } catch (Exception e) {
-          LOGGER.info("DAO->getSingleResult() found nothing");
-        }
-    	return results;
-    }
-    
-    public <E> E querrySingle(String pQuerry, String[] pParams, int[] pParamValues) {
-    	LOGGER.info("DAO->querry("+pQuerry+")" );
-    	Query query = em.createQuery(pQuerry);
-        for (int i = 0; i < pParams.length && i < pParamValues.length; i++) {
-            query.setParameter(pParams[i], pParamValues[i]);
-            LOGGER.info("DAO->querrySingle() Parameter " + pParams[i] + " : " + pParamValues[i]);
-        }
-    	E results = null;
-        try {
-          results = (E) ( query.getResultList().isEmpty() ? null : query.getSingleResult() );
-        } catch (Exception e) {
-          LOGGER.info("DAO->getSingleResult() found nothing");
-        }
-    	return results;
-    }
+
+    return em.createQuery(requete, classe).getSingleResult();
+  }
 }

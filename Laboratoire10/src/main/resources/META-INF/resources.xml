@@ -15,6 +15,10 @@
     See the License for the specific language governing permissions and
     limitations under the License.
 -->
+<!--
+207.162.80.103:3306 (HOME)
+192.168.10.5:3306   (SCHOOL)
+-->
 <resources>
 
   <Resource   
@@ -23,7 +27,7 @@
 	auth = Container 
 	 
     driverClassName = com.mysql.jdbc.Driver
-    url = jdbc:mysql://192.168.10.5:3306/web4?useSSL=false
+    url = jdbc:mysql://207.162.80.103:3306/web4?useSSL=false
     UserName = web4
     Password = 5PA123
     JtaManaged = true
@@ -36,7 +40,7 @@
 	auth =  Container
 	 
     driverClassName = com.mysql.jdbc.Driver
-    url = jdbc:mysql://192.168.10.5:3306/web4?useSSL=false
+    url = jdbc:mysql://207.162.80.103:3306/web4?useSSL=false
     UserName = web4
     Password = 5PA123
     JtaManaged = false
